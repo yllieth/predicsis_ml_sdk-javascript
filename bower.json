@@ -1,0 +1,17 @@
+{
+  "name": "predicsis_ml_sdk-javascript",
+  "version": "0.0.0",
+  "authors": [
+    "Yllieth <sylvnimes@hotmail.com>"
+  ],
+  "description": "Javascript SDK for PredicSis ML API",
+  "keywords": [
+    "predicsis",
+    "API",
+    "sdk",
+    "javascript",
+    "angular",
+    "restangular"
+  ],
+  "license": "MIT"
+}
