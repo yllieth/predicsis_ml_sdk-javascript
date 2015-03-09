@@ -1,0 +1,191 @@
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/edit/master/lib/model/Reports.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L64" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Reports</code>
+<div><span class="hint">service in module <code ng:non-bindable="">API.model</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="api-model-reports-page"><table>
+<tr>
+  <td><span class="badge post">post</span> <kbd>/reports</kbd></td>
+  <td><kbd><a href="#/api/API.model.Reports#methods_createtrainclassifierevaluationreport">Reports.createTrainClassifierEvaluationReport()</a></kbd></td>
+  <td><span class="badge async">async</span></td>
+</tr>
+<tr>
+  <td><span class="badge post">post</span> <kbd>/reports</kbd></td>
+  <td><kbd><a href="#/api/API.model.Reports#methods_createtestclassifierevaluationreport">Reports.createTestClassifierEvaluationReport()</a></kbd></td>
+  <td><span class="badge async">async</span></td>
+</tr>
+<tr>
+  <td><span class="badge post">post</span> <kbd>/reports</kbd></td>
+  <td><kbd><a href="#/api/API.model.Reports#methods_createunivariatesupervisedreport">Reports.createUnivariateSupervisedReport()</a></kbd></td>
+  <td><span class="badge async">async</span></td>
+</tr>
+<tr>
+  <td><span class="badge post">post</span> <kbd>/reports</kbd></td>
+  <td><kbd><a href="#/api/API.model.Reports#methods_create">Reports.create()</a></kbd></td>
+  <td><span class="badge async">async</span></td>
+</tr>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/reports</kbd></td>
+  <td><kbd><a href="#/api/API.model.Reports#methods_all">Reports.all()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/reports/:id</kbd></td>
+  <td><kbd><a href="#/api/API.model.Reports#methods_get">Reports.get()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge patch">patch</span> <kbd>/reports/:id</kbd></td>
+  <td><kbd><a href="#/api/API.model.Reports#methods_update">Reports.update()</a></kbd></td>
+  <td><span class="badge async">async</span></td>
+</tr>
+<tr>
+  <td><span class="badge delete">delete</span> <kbd>/reports/:id</kbd></td>
+  <td><kbd><a href="#/api/API.model.Reports#methods_delete">Reports.delete()</a></kbd></td>
+  <td></td>
+</tr>
+<tfoot>
+  <tr><td colspan="3">
+    Official documentation is available at:
+    <ul>
+      <li><a href="https://developer.predicsis.com/doc/v1/reports/">https://developer.predicsis.com/doc/v1/reports/</a></li>
+      <li><a href="https://developer.predicsis.com/doc/v1/reports/classifier_evaluation/">https://developer.predicsis.com/doc/v1/reports/classifier_evaluation/</a></li>
+      <li><a href="https://developer.predicsis.com/doc/v1/reports/univariate_supervised/">https://developer.predicsis.com/doc/v1/reports/univariate_supervised/</a></li>
+      <li><a href="https://developer.predicsis.com/doc/v1/reports/univariate_unsupervised/">https://developer.predicsis.com/doc/v1/reports/univariate_unsupervised/</a></li>
+    </ul>
+    </td></tr>
+</tfoot>
+</table></div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/ng.$q">$q</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/apiRestangular">apiRestangular</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/jobCompletion">jobCompletion</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/ng.$injector">$injector</a></code>
+<div class="api-model-reports-page"><ul>
+<li>Datasets</li>
+</ul>
+</div></li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L217" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([reportIds])</h3>
+<div class="all"><div class="all-page"><p>Get all (or a list of) generated reports</p>
+</div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[reportIds]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of report&#39;s id you want to fetch</p>
+</div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="all-page"><p>Promise of a report list</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L205" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
+<div class="create"><div class="create-page"><p>Send POST request to the <code>report</code> API resource.</p>
+<p> This request is able to generate different types of report:
+ <ul>
+   <li>classifier evaluation:
+   <pre class="prettyprint linenums">
+   {
+     type:              "classifier_evaluation",
+     dataset_id:        "53c7dea470632d3417020000",
+     classifier_id:     "5436431070632d15f4260000",
+     modalities_set_id: "53fdfa7070632d0fc5030000",
+     main_modality:     "1"
+   }
+   </pre>
+   </li>
+   <li>univariate supervised:
+   <pre class="prettyprint linenums">
+   {
+     type:          "univariate_supervised",
+     variable_id:   "5329601c1757f446e6000002",
+     dataset_id:    "53c7dea470632d3417020000",
+     dictionary_id: "5363b7fc6879644ae7010000"
+   }
+   </pre>
+   </li>
+   <li>univariate unsupervised:
+   <pre class="prettyprint linenums">
+   {
+     type:          "univariate_unsupervised",
+     dictionary_id: "5363b7fc6879644ae7010000",
+     dataset_id:    "53c7dea470632d3417020000"
+   }
+   </pre>
+   </li>
+ </ul></p>
+</div><h5 id="methods_create_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="create-page"><p>See above example regarding of the type of report you want to generate.</p>
+</div></td></tr></tbody></table><h5 id="methods_create_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="create-page"><p>Promise of a report</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L130" class="view-source icon-eye-open"> </a><h3 id="methods_createtestclassifierevaluationreport">createTestClassifierEvaluationReport(project)</h3>
+<div class="createtestclassifierevaluationreport"><div class="createtestclassifierevaluationreport-page"><p>Generate a classifier evaluation report for test subset</p>
+<p> Parameters required to create such a report:
+ <pre class="prettyprint linenums">
+ {
+   type:              "classifier_evaluation",
+   dataset_id:        "53c7dea470632d3417020000",
+   classifier_id:     "5436431070632d15f4260000",
+   modalities_set_id: "53fdfa7070632d0fc5030000",
+   main_modality:     "1"
+ }
+ </pre>
+</div><h5 id="methods_createtestclassifierevaluationreport_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="createtestclassifierevaluationreport-page"><p>Required to have all required ids</p>
+</div></td></tr></tbody></table><h5 id="methods_createtestclassifierevaluationreport_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="createtestclassifierevaluationreport-page"><p>Promise of a report</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L106" class="view-source icon-eye-open"> </a><h3 id="methods_createtrainclassifierevaluationreport">createTrainClassifierEvaluationReport(project)</h3>
+<div class="createtrainclassifierevaluationreport"><div class="createtrainclassifierevaluationreport-page"><p>Generate a classifier evaluation report for train subset</p>
+<p> Parameters required to create such a report:
+ <pre class="prettyprint linenums">
+ {
+   type:              "classifier_evaluation",
+   dataset_id:        "53c7dea470632d3417020000",
+   classifier_id:     "5436431070632d15f4260000",
+   modalities_set_id: "53fdfa7070632d0fc5030000",
+   main_modality:     "1"
+ }
+ </pre>
+</div><h5 id="methods_createtrainclassifierevaluationreport_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="createtrainclassifierevaluationreport-page"><p>Required to have all required ids</p>
+</div></td></tr></tbody></table><h5 id="methods_createtrainclassifierevaluationreport_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="createtrainclassifierevaluationreport-page"><p>Promise of a report</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L153" class="view-source icon-eye-open"> </a><h3 id="methods_createunivariatesupervisedreport">createUnivariateSupervisedReport(project)</h3>
+<div class="createunivariatesupervisedreport"><div class="createunivariatesupervisedreport-page"><p>Generate an univariate supervised report.</p>
+<p> Parameters required to create such a report:
+ <pre class="prettyprint linenums">
+ {
+   type:          "univariate_supervised",
+   variable_id:   "5329601c1757f446e6000002",
+   dataset_id:    "53c7dea470632d3417020000",
+   dictionary_id: "5363b7fc6879644ae7010000"
+ }
+ </pre>
+</div><h5 id="methods_createunivariatesupervisedreport_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="createunivariatesupervisedreport-page"><p>Required to have all required ids</p>
+</div></td></tr></tbody></table><h5 id="methods_createunivariatesupervisedreport_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="createunivariatesupervisedreport-page"><p>Promise of a report</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L268" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(ReportId)</h3>
+<div class="delete"><div class="delete-page"><p>Remove specified report</p>
+</div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>ReportId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="delete-page"><p>report identifier</p>
+</div></td></tr></tbody></table><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="delete-page"><p>Promise of a report</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L237" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(reportId)</h3>
+<div class="get"><div class="get-page"><p>Get a single report by its id</p>
+</div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>reportId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Report identifier</p>
+</div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="get-page"><p>Promise of a report</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Reports.js#L256" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(reportId, changes)</h3>
+<div class="update"><div class="update-page"><p>Update specified report</p>
+<p> You can update the following parameters:
+ <ul>
+   <li><code>{String} title</code></li>
+ </ul></p>
+</div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>reportId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="update-page"><p>Id of the report you want to update</p>
+</div></td></tr><tr><td>changes</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="update-page"><p>see above description to know parameters you are able to update</p>
+</div></td></tr></tbody></table><h5 id="methods_update_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="update-page"><p>Promise of the updated report</p>
+</div></td></tr></table></div>
+</li>
+</ul>
+</div>
+</div>

@@ -1,0 +1,71 @@
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/edit/master/lib/model/Jobs.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Jobs.js#L44" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Jobs</code>
+<div><span class="hint">service in module <code ng:non-bindable="">API.model</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="api-model-jobs-page"><table>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/jobs</kbd></td>
+  <td><kbd><a href="#/api/API.model.Jobs#methods_all">Jobs.all()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/jobs/:id</kbd></td>
+  <td><kbd><a href="#/api/API.model.Jobs#methods_get">Jobs.get()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge delete">delete</span> <kbd>/jobs/:id</kbd></td>
+  <td><kbd><a href="#/api/API.model.Jobs#methods_delete">Jobs.delete()</a></kbd></td>
+  <td></td>
+</tr>
+<tfoot>
+<tr><td colspan="3">Official documentation is available at <a href="https://developer.predicsis.com/doc/v1/job">https://developer.predicsis.com/doc/v1/job</a></td></tr>
+</tfoot>
+</table>
+
+<p>Output example:
+<pre class="prettyprint linenums">
+{
+id: "53c7ded570632d3417050000",
+action: "Generate dictionary",
+status: "completed",
+error: null,
+warnings: null,
+created_at: "2014-05-02T15:42:51.687Z",
+started_at: "2014-05-02T15:42:52.687Z",
+finished_at: "2014-05-02T15:52:51.687Z",
+user_id: "5363b25c687964476d000000",
+runnable_id: "5363b7fc6879644ae7010000"
+}
+</pre>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/ng.$q">$q</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/apiRestangular">apiRestangular</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Jobs.js#L60" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([jobIds])</h3>
+<div class="all"><div class="all-page"><p>Get all (or a list of) async job</p>
+</div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[jobIds]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of job id you want to fetch</p>
+</div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="all-page"><p>Promise of a job list</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Jobs.js#L92" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(jobId)</h3>
+<div class="delete"><div class="delete-page"><p>Permanently destroy a specified job</p>
+</div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>jobId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="delete-page"><p>Id of the job you want to remove</p>
+</div></td></tr></tbody></table><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="delete-page"><p>Promise of an empty job</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/57998e2/lib/model/Jobs.js#L80" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(jobId)</h3>
+<div class="get"><div class="get-page"><p>Get a single job by its id</p>
+</div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>jobId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Job identifier</p>
+</div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="get-page"><p>Promise of a job</p>
+</div></td></tr></table></div>
+</li>
+</ul>
+</div>
+</div>
