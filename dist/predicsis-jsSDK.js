@@ -915,7 +915,7 @@ angular.module('predicsis.jsSDK')
      */
     this.createClassifier = function(preparationRulesSetId) {
       return self.create({type: 'classifier', preparation_rules_set_id: preparationRulesSetId});
-    }
+    };
 
     // -----------------------------------------------------------------------------------------------------------------
 
