@@ -537,7 +537,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(dictionaryIds) {
       if(dictionaryIds === undefined) {
-        return dictionaries(dictionaryIds).getList();
+        return dictionaries().getList();
       } else {
         dictionaryIds = dictionaryIds || [];
 
@@ -653,7 +653,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(jobIds) {
       if(jobIds === undefined) {
-        return jobs(jobIds).getList();
+        return jobs().getList();
       } else {
         jobIds = jobIds || [];
 
@@ -1254,7 +1254,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(projectIds) {
       if(projectIds === undefined) {
-        return projects(projectIds).getList();
+        return projects().getList();
       } else {
         projectIds = projectIds || [];
 
@@ -1531,7 +1531,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(reportIds) {
       if(reportIds === undefined) {
-        return reports(reportIds).getList();
+        return reports().getList();
       } else {
         reportIds = reportIds || [];  // allow empty reportIds
 
@@ -2114,7 +2114,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(dictionaryId, variablesIds) {
       if(variablesIds === undefined) {
-        return variables(dictionaryId, variablesIds).getList();
+        return variables(dictionaryId).getList();
       } else {
         variablesIds = variablesIds || [];
 
