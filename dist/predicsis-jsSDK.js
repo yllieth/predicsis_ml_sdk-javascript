@@ -8,6 +8,7 @@ angular.module('predicsis.jsSDK', ['restangular'])
 
     this.setOauthToken = function(token) { oauthToken = token; };
     this.getOauthToken = function() { return oauthToken; };
+    this.hasOauthToken = function() { return Boolean(oauthToken === undefined); };
 
     this.$get = function(Restangular, Datasets, Dictionaries, Jobs, Modalities, Models, PreparationRules, Projects, Reports, Sources, Uploads, Users, Variables, jobsHelper, modelHelper, projectsHelper) {
       Restangular.setBaseUrl(this.getBaseUrl());
@@ -43,7 +44,9 @@ angular.module('predicsis.jsSDK', ['restangular'])
 
         jobsHelper: jobsHelper,
         modelHelper: modelHelper,
-        projectsHelper: projectsHelper
+        projectsHelper: projectsHelper,
+
+        _restangular: Restangular
       };
     };
   });
@@ -537,7 +540,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(dictionaryIds) {
       if(dictionaryIds === undefined) {
-        return dictionaries().getList();
+        return dictionaries(dictionaryIds).getList();
       } else {
         dictionaryIds = dictionaryIds || [];
 
@@ -653,7 +656,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(jobIds) {
       if(jobIds === undefined) {
-        return jobs().getList();
+        return jobs(jobIds).getList();
       } else {
         jobIds = jobIds || [];
 
@@ -1254,7 +1257,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(projectIds) {
       if(projectIds === undefined) {
-        return projects().getList();
+        return projects(projectIds).getList();
       } else {
         projectIds = projectIds || [];
 
@@ -1531,7 +1534,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(reportIds) {
       if(reportIds === undefined) {
-        return reports().getList();
+        return reports(reportIds).getList();
       } else {
         reportIds = reportIds || [];  // allow empty reportIds
 
@@ -2114,7 +2117,7 @@ angular.module('predicsis.jsSDK')
      */
     this.all = function(dictionaryId, variablesIds) {
       if(variablesIds === undefined) {
-        return variables(dictionaryId).getList();
+        return variables(dictionaryId, variablesIds).getList();
       } else {
         variablesIds = variablesIds || [];
 
