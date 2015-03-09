@@ -330,8 +330,8 @@ angular.module('predicsis.jsSDK')
      * @methodOf predicsis.jsSDK.Datasets
      * @description Get learning/testing subsets of an original dataset
      * <div><span class="badge get">get</span><code>/datasets</code></div>
-     * <div><span class="badge get">get</span><code>/dataset/:learned_dataset_id</code></div>
-     * <div><span class="badge get">get</span><code>/dataset/:tested_dataset_id</code></div>
+     * <div><span class="badge get">get</span><code>/datasets/:learned_dataset_id</code></div>
+     * <div><span class="badge get">get</span><code>/datasets/:tested_dataset_id</code></div>
      *
      * @param {String} id Identifier of an original dataset
      * @return {Promise}
