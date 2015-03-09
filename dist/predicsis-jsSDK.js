@@ -1,44 +1,94 @@
+angular.module('predicsis.jsSDK', ['restangular'])
+  .provider('predicsisAPI', function () {
+    var baseURL;
+    var oauthToken;
+
+    this.setBaseUrl = function(url) { baseURL = url; };
+    this.getBaseUrl = function() { return baseURL; };
+
+    this.setOauthToken = function(token) { oauthToken = token; };
+    this.getOauthToken = function() { return oauthToken; };
+
+    this.$get = function(Restangular, Datasets, Dictionaries, Jobs, Modalities, Models, PreparationRules, Projects, Reports, Sources, Uploads, Users, Variables, jobsHelper, modelHelper, projectsHelper) {
+      Restangular.setBaseUrl(this.getBaseUrl());
+      Restangular.setDefaultHeaders({ accept: 'application/json' });
+      Restangular.addResponseInterceptor(function(data, operation, what, url, response) {
+        //operation is one of 'getList', 'post', 'get', 'patch'
+        if (['getList', 'post', 'get', 'patch'].indexOf(operation) > -1) {
+          //Any api response except 204 - No-Content is an object (wrapping either an object or an array)
+          if(response.status !== 204) {
+            // replace { tokens: [ {}, {}, ... ]} by [ {}, {}, ... ]
+            var resourceName = Object.keys(data)[0];
+            if (resourceName) {
+              data = data[resourceName];
+            }
+          }
+        }
+        return data;
+      });
+
+      return {
+        Datasets: Datasets,
+        Dictionaries: Dictionaries,
+        Jobs: Jobs,
+        Modalities: Modalities,
+        Models: Models,
+        PreparationRules: PreparationRules,
+        Projects: Projects,
+        Reports: Reports,
+        Sources: Sources,
+        Uploads: Uploads,
+        Users: Users,
+        Variables: Variables,
+
+        jobsHelper: jobsHelper,
+        modelHelper: modelHelper,
+        projectsHelper: projectsHelper
+      };
+    };
+  });
+
 /**
  * @ngdoc service
- * @name API.model.Datasets
+ * @name predicsis.jsSDK.Datasets
  * @requires $q
- * @requires apiRestangular
- * @requires jobCompletion
+ * @requires Restangular
+ * @requires jobsHelper
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/datasets</kbd></td>
- *     <td><kbd>{@link API.model.Datasets#methods_create Datasets.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Datasets#methods_create Datasets.create()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/datasets</kbd></td>
- *     <td><kbd>{@link API.model.Datasets#methods_split Datasets.split()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Datasets#methods_split Datasets.split()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/datasets</kbd></td>
- *     <td><kbd>{@link API.model.Datasets#methods_all Datasets.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Datasets#methods_all Datasets.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/datasets/:id</kbd></td>
- *     <td><kbd>{@link API.model.Datasets#methods_get Datasets.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Datasets#methods_get Datasets.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span><span class="badge get">get</span><span class="badge get">get</span></td>
- *     <td><kbd>{@link API.model.Datasets#methods_getchildren Datasets.getChildren()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Datasets#methods_getchildren Datasets.getChildren()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/datasets/:id</kbd></td>
- *     <td><kbd>{@link API.model.Datasets#methods_update Datasets.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Datasets#methods_update Datasets.update()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/datasets/:id</kbd></td>
- *     <td><kbd>{@link API.model.Datasets#methods_delete Datasets.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Datasets#methods_delete Datasets.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -150,20 +200,20 @@
  * }
  * </pre>
  */
-angular.module('API.model')
-  .service('Datasets', function($q, apiRestangular, jobCompletion) {
+angular.module('predicsis.jsSDK')
+  .service('Datasets', function($q, Restangular, jobsHelper) {
 
     var self = this;
 
-    function dataset(id) { return apiRestangular.one('datasets', id); }
-    function datasets() { return apiRestangular.all('datasets'); }
+    function dataset(id) { return Restangular.one('datasets', id); }
+    function datasets() { return Restangular.all('datasets'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.Datasets
+     * @methodOf predicsis.jsSDK.Datasets
      * @description Create a dataset from a source
      *  <h4>Basic dataset creation</h4>
      *  <pre>
@@ -196,13 +246,13 @@ angular.module('API.model')
      * @return {Promise} New dataset or new scoreset
      */
     this.create = function(params) {
-      return jobCompletion.wrapAsyncPromise(datasets().post({dataset: params}));
+      return jobsHelper.wrapAsyncPromise(datasets().post({dataset: params}));
     };
 
     /**
      * @ngdoc function
      * @name split
-     * @methodOf API.model.Datasets
+     * @methodOf predicsis.jsSDK.Datasets
      * @description Split a dataset into subsets according to <code>smapling</code> ratio.
      *  <b>Note:</b>
      *  <ul>
@@ -243,7 +293,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Datasets
+     * @methodOf predicsis.jsSDK.Datasets
      * @description Get all (or a list of) datasets
      *
      * @param {Array} [ids] List of datasets' id you want to fetch
@@ -264,7 +314,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Datasets
+     * @methodOf predicsis.jsSDK.Datasets
      * @description Get a single dataset by its id
      *
      * @param {String} id Dataset identifier
@@ -277,7 +327,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name getChildren
-     * @methodOf API.model.Datasets
+     * @methodOf predicsis.jsSDK.Datasets
      * @description Get learning/testing subsets of an original dataset
      * <div><span class="badge get">get</span><code>/datasets</code></div>
      * <div><span class="badge get">get</span><code>/dataset/:learned_dataset_id</code></div>
@@ -311,7 +361,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.Datasets
+     * @methodOf predicsis.jsSDK.Datasets
      * @description Update specified dataset
      *  You can update the following parameters:
      *  <ul>
@@ -341,13 +391,13 @@ angular.module('API.model')
         changes.separator = '\\t';
       }
 
-      return jobCompletion.wrapAsyncPromise(dataset(id).patch({dataset: changes}));
+      return jobsHelper.wrapAsyncPromise(dataset(id).patch({dataset: changes}));
     };
 
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Datasets
+     * @methodOf predicsis.jsSDK.Datasets
      * @description Permanently destroy a specified dataset
      * @param {String} id Id of the dataset you want to remove
      * @return {Promise} Removed dataset
@@ -360,40 +410,40 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Dictionaries
+ * @name predicsis.jsSDK.Dictionaries
  * @requires $q
- * @requires apiRestangular
- * @requires jobCompletion
+ * @requires Restangular
+ * @requires jobsHelper
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/dictionaries</kbd></td>
- *     <td><kbd>{@link API.model.Dictionaries#methods_create Dictionaries.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Dictionaries#methods_create Dictionaries.create()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/dictionaries</kbd></td>
- *     <td><kbd>{@link API.model.Dictionaries#methods_createFromDataset Dictionaries.createFromDataset()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Dictionaries#methods_createFromDataset Dictionaries.createFromDataset()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/dictionaries</kbd></td>
- *     <td><kbd>{@link API.model.Dictionaries#methods_all Dictionaries.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Dictionaries#methods_all Dictionaries.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/dictionaries/:id</kbd></td>
- *     <td><kbd>{@link API.model.Dictionaries#methods_get Dictionaries.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Dictionaries#methods_get Dictionaries.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/dictionaries/:id</kbd></td>
- *     <td><kbd>{@link API.model.Dictionaries#methods_update Dictionaries.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Dictionaries#methods_update Dictionaries.update()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/dictionaries/:id</kbd></td>
- *     <td><kbd>{@link API.model.Dictionaries#methods_delete Dictionaries.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Dictionaries#methods_delete Dictionaries.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -423,18 +473,18 @@ angular.module('API.model')
  * }
  * </pre>
  */
-angular.module('API.model')
-  .service('Dictionaries', function($q, apiRestangular, jobCompletion) {
+angular.module('predicsis.jsSDK')
+  .service('Dictionaries', function($q, Restangular, jobsHelper) {
 
-    function dictionary(id) { return apiRestangular.one('dictionaries', id); }
-    function dictionaries() { return apiRestangular.all('dictionaries'); }
+    function dictionary(id) { return Restangular.one('dictionaries', id); }
+    function dictionaries() { return Restangular.all('dictionaries'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name createFromDataset
-     * @methodOf API.model.Dictionaries
+     * @methodOf predicsis.jsSDK.Dictionaries
      * @description Create a dictionary from an existing dataset.
      * @param {Object} dataset We need a dataset to generate a dictionary, and especially the following information:
      * - <code>dataset.name</code> to name the dictionary like: <code>"dictionary_#{name}"</code>
@@ -457,7 +507,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.Dictionaries
+     * @methodOf predicsis.jsSDK.Dictionaries
      * @description Send POST request to the <code>dictionary</code> API resource.
      *  This request is going to generate a dictionary regarding to a given dataset. This generation is delegated to
      *  ML core tool. That's why this request is asynchronous.
@@ -474,13 +524,13 @@ angular.module('API.model')
      * @return {Object} Promise of a new dictionary
      */
     this.create = function(params) {
-      return jobCompletion.wrapAsyncPromise(dictionaries().post({dictionary: params}));
+      return jobsHelper.wrapAsyncPromise(dictionaries().post({dictionary: params}));
     };
 
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Dictionaries
+     * @methodOf predicsis.jsSDK.Dictionaries
      * @description Get all (or a list of) generated dictionaries
      * @param {Array} [dictionaryIds] List of dictionaries's id you want to fetch
      * @return {Object} Promise of a dictionaries list
@@ -500,7 +550,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Dictionaries
+     * @methodOf predicsis.jsSDK.Dictionaries
      * @description Get a single dictionary by its id
      * @param {String} dictionaryId Dictionary identifier
      * @return {Object} Promise of a dictionary
@@ -512,7 +562,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.Dictionaries
+     * @methodOf predicsis.jsSDK.Dictionaries
      * @description Update specified dictionary
      *  You can update the following parameters:
      *  <ul>
@@ -525,13 +575,13 @@ angular.module('API.model')
      * @return {Object} Promise of the updated dictionary
      */
     this.update = function(dictionaryId, changes) {
-      return jobCompletion.wrapAsyncPromise(dictionary(dictionaryId).patch({dictionary: changes}));
+      return jobsHelper.wrapAsyncPromise(dictionary(dictionaryId).patch({dictionary: changes}));
     };
 
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Dictionaries
+     * @methodOf predicsis.jsSDK.Dictionaries
      * @description Permanently destroy a specified dictionary
      * @param {String} dictionaryId Id of the dictionary you want to remove
      * @return {Object} Promise of an empty dictionary
@@ -544,24 +594,24 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Jobs
+ * @name predicsis.jsSDK.Jobs
  * @requires $q
- * @requires apiRestangular
+ * @requires Restangular
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/jobs</kbd></td>
- *     <td><kbd>{@link API.model.Jobs#methods_all Jobs.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Jobs#methods_all Jobs.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/jobs/:id</kbd></td>
- *     <td><kbd>{@link API.model.Jobs#methods_get Jobs.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Jobs#methods_get Jobs.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/jobs/:id</kbd></td>
- *     <td><kbd>{@link API.model.Jobs#methods_delete Jobs.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Jobs#methods_delete Jobs.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -585,18 +635,18 @@ angular.module('API.model')
  * }
  * </pre>
  */
-angular.module('API.model')
-  .service('Jobs', function($q, apiRestangular) {
+angular.module('predicsis.jsSDK')
+  .service('Jobs', function($q, Restangular) {
 
-    function job(id) { return apiRestangular.one('jobs', id); }
-    function jobs() { return apiRestangular.all('jobs'); }
+    function job(id) { return Restangular.one('jobs', id); }
+    function jobs() { return Restangular.all('jobs'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Jobs
+     * @methodOf predicsis.jsSDK.Jobs
      * @description Get all (or a list of) async job
      * @param {Array} [jobIds] List of job id you want to fetch
      * @return {Object} Promise of a job list
@@ -616,7 +666,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Jobs
+     * @methodOf predicsis.jsSDK.Jobs
      * @description Get a single job by its id
      * @param {String} jobId Job identifier
      * @return {Object} Promise of a job
@@ -628,7 +678,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Jobs
+     * @methodOf predicsis.jsSDK.Jobs
      * @description Permanently destroy a specified job
      * @param {String} jobId Id of the job you want to remove
      * @return {Object} Promise of an empty job
@@ -641,30 +691,30 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Modalities
+ * @name predicsis.jsSDK.Modalities
  * @requires $q
- * @requires apiRestangular
- * @requires jobCompletion
+ * @requires Restangular
+ * @requires jobsHelper
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/modalities_sets</kbd></td>
- *     <td><kbd>{@link API.model.Modalities#methods_create Modalities.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Modalities#methods_create Modalities.create()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/modalities_sets</kbd></td>
- *     <td><kbd>{@link API.model.Modalities#methods_all Modalities.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Modalities#methods_all Modalities.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/modalities_sets/:id</kbd></td>
- *     <td><kbd>{@link API.model.Modalities#methods_get Modalities.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Modalities#methods_get Modalities.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/modalities_sets/:id</kbd></td>
- *     <td><kbd>{@link API.model.Modalities#methods_delete Modalities.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Modalities#methods_delete Modalities.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -672,18 +722,18 @@ angular.module('API.model')
  *   </tfoot>
  * </table>
  */
-angular.module('API.model')
-  .service('Modalities', function($q, apiRestangular, jobCompletion) {
+angular.module('predicsis.jsSDK')
+  .service('Modalities', function($q, Restangular, jobsHelper) {
 
-    function modality(id) { return apiRestangular.one('modalities_sets', id); }
-    function modalities() { return apiRestangular.all('modalities_sets'); }
+    function modality(id) { return Restangular.one('modalities_sets', id); }
+    function modalities() { return Restangular.all('modalities_sets'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.Modalities
+     * @methodOf predicsis.jsSDK.Modalities
      * @description Send POST request to the <code>modalities_sets</code> API resource.
      *
      *  You can / must give the following parameters to ask for a modalities set creation:
@@ -700,13 +750,13 @@ angular.module('API.model')
      * @return {Promise} New modalities set
      */
     this.create = function(params) {
-      return jobCompletion.wrapAsyncPromise(modalities().post({source: params}));
+      return jobsHelper.wrapAsyncPromise(modalities().post({source: params}));
     };
 
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Modalities
+     * @methodOf predicsis.jsSDK.Modalities
      * @description Get all (or a list of) generated modalities sets
      * @param {Array} [modalitiesSetIds] List of modalities sets ids you want to fetch
      * @return {Promise} A list of modalities sets
@@ -726,7 +776,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Modalities
+     * @methodOf predicsis.jsSDK.Modalities
      * @description Get a single modalities set by its id
      * @param {String} id Modalities set identifier
      * @return {Promise} A modalities set
@@ -738,7 +788,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Modalities
+     * @methodOf predicsis.jsSDK.Modalities
      * @description Permanently destroy a specified source
      * @param {String} id Id of the source you want to remove
      * @return {Promise} A removed source
@@ -751,40 +801,40 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Models
+ * @name predicsis.jsSDK.Models
  * @requires $q
- * @requires apiRestangular
- * @requires jobCompletion
+ * @requires Restangular
+ * @requires jobsHelper
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/models</kbd></td>
- *     <td><kbd>{@link API.model.Models#methods_create Models.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Models#methods_create Models.create()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/models</kbd></td>
- *     <td><kbd>{@link API.model.Models#methods_create Models.createClassifier()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Models#methods_create Models.createClassifier()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/models</kbd></td>
- *     <td><kbd>{@link API.model.Models#methods_all Models.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Models#methods_all Models.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/models/:id</kbd></td>
- *     <td><kbd>{@link API.model.Models#methods_get Models.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Models#methods_get Models.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/models/:id</kbd></td>
- *     <td><kbd>{@link API.model.Models#methods_update Models.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Models#methods_update Models.update()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/models/:id</kbd></td>
- *     <td><kbd>{@link API.model.Models#methods_delete Models.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Models#methods_delete Models.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -837,23 +887,23 @@ angular.module('API.model')
  *   }
  * </pre>
  */
-angular.module('API.model')
-  .service('Models', function($q, apiRestangular, jobCompletion) {
+angular.module('predicsis.jsSDK')
+  .service('Models', function($q, Restangular, jobsHelper) {
 
     var self = this;
-    function model(id) { return apiRestangular.one('models', id); }
-    function models() { return apiRestangular.all('models'); }
+    function model(id) { return Restangular.one('models', id); }
+    function models() { return Restangular.all('models'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name createClassifier
-     * @methodOf API.model.Models
+     * @methodOf predicsis.jsSDK.Models
      * @description Create a new classifier.
-     * Simple shortcut for <code>{@link API.model.Models#method_create Models.create()} function.
+     * Simple shortcut for <code>{@link predicsis.jsSDK.Models#method_create Models.create()} function.
      *
-     * @param {String} preparationRulesSetId See {@link API.model.PreparationRules preparation rules} documentation
+     * @param {String} preparationRulesSetId See {@link predicsis.jsSDK.PreparationRules preparation rules} documentation
      * @return {Promise} A new classifier
      */
     this.createClassifier = function(preparationRulesSetId) {
@@ -865,7 +915,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.Models
+     * @methodOf predicsis.jsSDK.Models
      * @description Create a model
      *
      *  This request is able to create different types of models:
@@ -885,13 +935,13 @@ angular.module('API.model')
      * @return {Promise} New model
      */
     this.create = function(params) {
-      return jobCompletion.wrapAsyncPromise(models().post({model: params}));
+      return jobsHelper.wrapAsyncPromise(models().post({model: params}));
     };
 
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Models
+     * @methodOf predicsis.jsSDK.Models
      * @description Get all (or a list of) models
      * @param {Array} [modelIds] List of models ids you want to fetch
      * @return {Promise} A list of models
@@ -911,7 +961,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Models
+     * @methodOf predicsis.jsSDK.Models
      * @description Get a single model by its id
      * @param {String} id Model identifier
      * @return {Promise} A model
@@ -923,7 +973,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.Models
+     * @methodOf predicsis.jsSDK.Models
      * @description Update specified model
      *  You can update the following parameters:
      *  <ul>
@@ -935,13 +985,13 @@ angular.module('API.model')
      * @return {Promise} Updated model
      */
     this.update = function(id, changes) {
-      return jobCompletion.wrapAsyncPromise(model(id).patch({model: changes}));
+      return jobsHelper.wrapAsyncPromise(model(id).patch({model: changes}));
     };
 
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Models
+     * @methodOf predicsis.jsSDK.Models
      * @description Permanently destroy a specified model
      * @param {String} id Id of the model you want to remove
      * @return {Promise} A removed model
@@ -954,35 +1004,35 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.PreparationRules
+ * @name predicsis.jsSDK.PreparationRules
  * @requires $q
- * @requires apiRestangular
- * @requires jobCompletion
+ * @requires Restangular
+ * @requires jobsHelper
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/preparation_rules_sets</kbd></td>
- *     <td><kbd>{@link API.model.PreparationRules#methods_create PreparationRules.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.PreparationRules#methods_create PreparationRules.create()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/preparation_rules_sets</kbd></td>
- *     <td><kbd>{@link API.model.PreparationRules#methods_all PreparationRules.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.PreparationRules#methods_all PreparationRules.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/preparation_rules_sets/:id</kbd></td>
- *     <td><kbd>{@link API.model.PreparationRules#methods_get PreparationRules.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.PreparationRules#methods_get PreparationRules.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/preparation_rules_sets/:id</kbd></td>
- *     <td><kbd>{@link API.model.PreparationRules#methods_update PreparationRules.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.PreparationRules#methods_update PreparationRules.update()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/preparation_rules_sets/:id</kbd></td>
- *     <td><kbd>{@link API.model.PreparationRules#methods_delete PreparationRules.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.PreparationRules#methods_delete PreparationRules.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -1004,18 +1054,18 @@ angular.module('API.model')
  *   }
  * </pre>
  */
-angular.module('API.model')
-  .service('PreparationRules', function($q, apiRestangular, jobCompletion) {
+angular.module('predicsis.jsSDK')
+  .service('PreparationRules', function($q, Restangular, jobsHelper) {
 
-    function preparationRulesSet(id) { return apiRestangular.one('preparation_rules_sets', id); }
-    function preparationRulesSets() { return apiRestangular.all('preparation_rules_sets'); }
+    function preparationRulesSet(id) { return Restangular.one('preparation_rules_sets', id); }
+    function preparationRulesSets() { return Restangular.all('preparation_rules_sets'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.PreparationRules
+     * @methodOf predicsis.jsSDK.PreparationRules
      * @description Create a preparation rules set
      *
      *  You must give the following parameters to create a new preparation rules set:
@@ -1030,13 +1080,13 @@ angular.module('API.model')
      * @return {Promise} New preparation rules set
      */
     this.create = function(params) {
-      return jobCompletion.wrapAsyncPromise(preparationRulesSets().post({preparation_rules_set: params}));
+      return jobsHelper.wrapAsyncPromise(preparationRulesSets().post({preparation_rules_set: params}));
     };
 
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.PreparationRules
+     * @methodOf predicsis.jsSDK.PreparationRules
      * @description Get all (or a list of) preparation rules sets
      * @param {Array} [preparationRulesSetIds] List of preparation rules sets ids you want to fetch
      * @return {Promise} A list of preparation rules sets
@@ -1056,7 +1106,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.PreparationRules
+     * @methodOf predicsis.jsSDK.PreparationRules
      * @description Get a single preparation rules set by its id
      * @param {String} id Preparation rules set identifier
      * @return {Promise} A preparation rules set
@@ -1068,7 +1118,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.PreparationRules
+     * @methodOf predicsis.jsSDK.PreparationRules
      * @description Update specified preparation rules set
      *  You can update the following parameters:
      *  <ul>
@@ -1080,13 +1130,13 @@ angular.module('API.model')
      * @return {Promise} Updated preparation rules set
      */
     this.update = function(id, changes) {
-      return jobCompletion.wrapAsyncPromise(preparationRulesSet(id).patch({preparation_rules_set: changes}));
+      return jobsHelper.wrapAsyncPromise(preparationRulesSet(id).patch({preparation_rules_set: changes}));
     };
 
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.PreparationRules
+     * @methodOf predicsis.jsSDK.PreparationRules
      * @description Permanently destroy a specified preparation rules set
      * @param {String} id Id of the preparation rules set you want to remove
      * @return {Promise} A removed preparation rules set
@@ -1099,34 +1149,34 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Projects
+ * @name predicsis.jsSDK.Projects
  * @requires $q
- * @requires apiRestangular
+ * @requires Restangular
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/projects</kbd></td>
- *     <td><kbd>{@link API.model.Projects#methods_create Projects.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Projects#methods_create Projects.create()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/projects</kbd></td>
- *     <td><kbd>{@link API.model.Projects#methods_all Projects.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Projects#methods_all Projects.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/projects/:id</kbd></td>
- *     <td><kbd>{@link API.model.Projects#methods_get Projects.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Projects#methods_get Projects.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
- *     <td><kbd>{@link API.model.Projects#methods_update Projects.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Projects#methods_update Projects.update()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/projects/:id</kbd></td>
- *     <td><kbd>{@link API.model.Projects#methods_delete Projects.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Projects#methods_delete Projects.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -1160,32 +1210,32 @@ angular.module('API.model')
  * }
  * </pre>
  *
- * See {@link API.helper.projectsHelper projects helper} to get the following methods:
+ * See {@link predicsis.jsSDK.projectsHelper projects helper} to get the following methods:
  * <ul>
- *   <li><code>{@link API.helper.projectsHelper#methods_isModelDone isModelDone(Projects project)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_isDictionaryVerified isDictionaryVerified(Projects project)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_getCurrentState getCurrentState(Projects project)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_getCurrentStep getCurrentStep(String currentView)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_getStateFromStep getStateFromStep(Projects project, String toStep)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_addLearningDataset addLearningDataset(Projects project, String datasetId)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_addScoringDataset addScoringDataset(Projects project, String datasetId)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_addScoreset addScoreset(Projects project, String datasetId)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_resetDictionary resetDictionary(String projectId)}</code></li>
- *   <li><code>{@link API.helper.projectsHelper#methods_removeDependencies removeDependencies(String projectId)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_isModelDone isModelDone(Projects project)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_isDictionaryVerified isDictionaryVerified(Projects project)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_getCurrentState getCurrentState(Projects project)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_getCurrentStep getCurrentStep(String currentView)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_getStateFromStep getStateFromStep(Projects project, String toStep)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_addLearningDataset addLearningDataset(Projects project, String datasetId)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_addScoringDataset addScoringDataset(Projects project, String datasetId)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_addScoreset addScoreset(Projects project, String datasetId)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_resetDictionary resetDictionary(String projectId)}</code></li>
+ *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_removeDependencies removeDependencies(String projectId)}</code></li>
  * </ul>
  */
-angular.module('API.model')
-  .service('Projects', function($q, apiRestangular) {
+angular.module('predicsis.jsSDK')
+  .service('Projects', function($q, Restangular) {
 
-    function project(id) { return apiRestangular.one('projects', id); }
-    function projects() { return apiRestangular.all('projects'); }
+    function project(id) { return Restangular.one('projects', id); }
+    function projects() { return Restangular.all('projects'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.Projects
+     * @methodOf predicsis.jsSDK.Projects
      * @description Send POST request to the <code>project</code> API resource.
      * @param {Object} params See above example.
      * @return {Object} Promise of a new project
@@ -1197,7 +1247,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Projects
+     * @methodOf predicsis.jsSDK.Projects
      * @description Get all (or a list of) projects
      * @param {Array} [projectIds] List of project's id you want to fetch
      * @return {Object} Promise of a projects list
@@ -1217,7 +1267,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Projects
+     * @methodOf predicsis.jsSDK.Projects
      * @description Get a single project by its id
      * @param {String} projectId Project identifier
      * @return {Object} Promise of a project
@@ -1229,7 +1279,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.Projects
+     * @methodOf predicsis.jsSDK.Projects
      * @description Update specified project
      * @param {String} projectId Id of the project you want to update
      * @param {Object} changes see above description to know parameters you are able to update
@@ -1242,9 +1292,9 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Projects
+     * @methodOf predicsis.jsSDK.Projects
      * @description Permanently destroy a specified project
-     *  <b>Important:</b> {@link API.helper.projectsHelper#methods_removeDependencies Remove project's dependencies}
+     *  <b>Important:</b> {@link predicsis.jsSDK.projectsHelper#methods_removeDependencies Remove project's dependencies}
      *  prior to delete the project itself !
      *
      * @example
@@ -1265,52 +1315,52 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Reports
+ * @name predicsis.jsSDK.Reports
  * @requires $q
- * @requires apiRestangular
- * @requires jobCompletion
+ * @requires Restangular
+ * @requires jobsHelper
  * @requires $injector
  * - Datasets
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/reports</kbd></td>
- *     <td><kbd>{@link API.model.Reports#methods_createTrainClassifierEvaluationReport Reports.createTrainClassifierEvaluationReport()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Reports#methods_createTrainClassifierEvaluationReport Reports.createTrainClassifierEvaluationReport()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/reports</kbd></td>
- *     <td><kbd>{@link API.model.Reports#methods_createTestClassifierEvaluationReport Reports.createTestClassifierEvaluationReport()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Reports#methods_createTestClassifierEvaluationReport Reports.createTestClassifierEvaluationReport()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/reports</kbd></td>
- *     <td><kbd>{@link API.model.Reports#methods_createUnivariateSupervisedReport Reports.createUnivariateSupervisedReport()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Reports#methods_createUnivariateSupervisedReport Reports.createUnivariateSupervisedReport()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/reports</kbd></td>
- *     <td><kbd>{@link API.model.Reports#methods_create Reports.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Reports#methods_create Reports.create()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/reports</kbd></td>
- *     <td><kbd>{@link API.model.Reports#methods_all Reports.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Reports#methods_all Reports.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/reports/:id</kbd></td>
- *     <td><kbd>{@link API.model.Reports#methods_get Reports.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Reports#methods_get Reports.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/reports/:id</kbd></td>
- *     <td><kbd>{@link API.model.Reports#methods_update Reports.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Reports#methods_update Reports.update()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/reports/:id</kbd></td>
- *     <td><kbd>{@link API.model.Reports#methods_delete Reports.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Reports#methods_delete Reports.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -1326,12 +1376,12 @@ angular.module('API.model')
  *   </tfoot>
  * </table>
  */
-angular.module('API.model')
-  .service('Reports', function($q, $injector, apiRestangular, jobCompletion) {
+angular.module('predicsis.jsSDK')
+  .service('Reports', function($q, $injector, Restangular, jobsHelper) {
 
     var that = this;
-    var report = function(id) { return apiRestangular.one('reports', id); };
-    var reports = function() { return apiRestangular.all('reports'); };
+    var report = function(id) { return Restangular.one('reports', id); };
+    var reports = function() { return Restangular.all('reports'); };
     function createClassifierEvaluationReport(project, type) {
       var Datasets = $injector.get('Datasets');
       return Datasets.getChildren(project.learning_dataset_id)
@@ -1351,7 +1401,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name createTrainClassifierEvaluationReport
-     * @methodOf API.model.Reports
+     * @methodOf predicsis.jsSDK.Reports
      * @description Generate a classifier evaluation report for train subset
      *
      *  Parameters required to create such a report:
@@ -1375,7 +1425,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name createTestClassifierEvaluationReport
-     * @methodOf API.model.Reports
+     * @methodOf predicsis.jsSDK.Reports
      * @description Generate a classifier evaluation report for test subset
      *
      *  Parameters required to create such a report:
@@ -1399,7 +1449,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name createUnivariateSupervisedReport
-     * @methodOf API.model.Reports
+     * @methodOf predicsis.jsSDK.Reports
      * @description Generate an univariate supervised report.
      *
      *  Parameters required to create such a report:
@@ -1427,7 +1477,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.Reports
+     * @methodOf predicsis.jsSDK.Reports
      * @description Send POST request to the <code>report</code> API resource.
      *
      *  This request is able to generate different types of report:
@@ -1468,13 +1518,13 @@ angular.module('API.model')
      * @return {Object} Promise of a report
      */
     this.create = function(params) {
-      return jobCompletion.wrapAsyncPromise(reports().post({report: params}));
+      return jobsHelper.wrapAsyncPromise(reports().post({report: params}));
     };
 
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Reports
+     * @methodOf predicsis.jsSDK.Reports
      * @description Get all (or a list of) generated reports
      * @param {Array} [reportIds] List of report's id you want to fetch
      * @return {Object} Promise of a report list
@@ -1494,7 +1544,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Reports
+     * @methodOf predicsis.jsSDK.Reports
      * @description Get a single report by its id
      * @param {String} reportId Report identifier
      * @return {Object} Promise of a report
@@ -1506,7 +1556,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.Reports
+     * @methodOf predicsis.jsSDK.Reports
      * @description Update specified report
      *
      *  You can update the following parameters:
@@ -1519,13 +1569,13 @@ angular.module('API.model')
      * @return {Object} Promise of the updated report
      */
     this.update = function(reportId, changes) {
-      return jobCompletion.wrapAsyncPromise(report(reportId).patch({report: changes}));
+      return jobsHelper.wrapAsyncPromise(report(reportId).patch({report: changes}));
     };
 
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Reports
+     * @methodOf predicsis.jsSDK.Reports
      * @description Remove specified report
      * @param {String} ReportId report identifier
      * @return {Object} Promise of a report
@@ -1538,36 +1588,36 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Sources
+ * @name predicsis.jsSDK.Sources
  * @requires $q
- * @requires apiRestangular
- * @requires jobCompletion
+ * @requires Restangular
+ * @requires jobsHelper
  * @description Sources are a representation of an uploaded file on our storage. At time, all uploads are sent to Amazon S3.
  *
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/sources</kbd></td>
- *     <td><kbd>{@link API.model.Sources#methods_create Sources.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Sources#methods_create Sources.create()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/sources</kbd></td>
- *     <td><kbd>{@link API.model.Sources#methods_all Sources.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Sources#methods_all Sources.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/sources/:id</kbd></td>
- *     <td><kbd>{@link API.model.Sources#methods_get Sources.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Sources#methods_get Sources.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/sources/:id</kbd></td>
- *     <td><kbd>{@link API.model.Sources#methods_update Sources.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Sources#methods_update Sources.update()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/sources/:id</kbd></td>
- *     <td><kbd>{@link API.model.Sources#methods_delete Sources.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Sources#methods_delete Sources.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -1594,18 +1644,18 @@ angular.module('API.model')
  * }
  * </pre>
  */
-angular.module('API.model')
-  .service('Sources', function($q, apiRestangular, jobCompletion) {
+angular.module('predicsis.jsSDK')
+  .service('Sources', function($q, Restangular, jobsHelper) {
 
-    function source(id) { return apiRestangular.one('sources', id); }
-    function sources() { return apiRestangular.all('sources'); }
+    function source(id) { return Restangular.one('sources', id); }
+    function sources() { return Restangular.all('sources'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.Sources
+     * @methodOf predicsis.jsSDK.Sources
      * @description Send POST request to the <code>source</code> API resource.
      *
      *  This request is going to create and persist in database a source object regarding to a given uploaded file.
@@ -1625,13 +1675,13 @@ angular.module('API.model')
      * @return {Promise} New source
      */
     this.create = function(params) {
-      return jobCompletion.wrapAsyncPromise(sources().post({source: params}));
+      return jobsHelper.wrapAsyncPromise(sources().post({source: params}));
     };
 
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Sources
+     * @methodOf predicsis.jsSDK.Sources
      * @description Get all (or a list of) generated sources
      * @param {Array} [sourceIds] List of sources' id you want to fetch
      * @return {Promise} A list of sources
@@ -1651,7 +1701,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Sources
+     * @methodOf predicsis.jsSDK.Sources
      * @description Get a single source by its id
      * @param {String} sourceId Source identifier
      * @return {Promise} A single source
@@ -1663,7 +1713,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.Sources
+     * @methodOf predicsis.jsSDK.Sources
      * @description Update specified source
      *
      *  You can update the following parameters:
@@ -1676,13 +1726,13 @@ angular.module('API.model')
      * @return {Promise} An updated source
      */
     this.update = function(sourceId, changes) {
-      return jobCompletion.wrapAsyncPromise(source(sourceId).patch({source: changes}));
+      return jobsHelper.wrapAsyncPromise(source(sourceId).patch({source: changes}));
     };
 
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Sources
+     * @methodOf predicsis.jsSDK.Sources
      * @description Permanently destroy a specified source
      * @param {String} sourceId Id of the source you want to remove
      * @return {Promise} A removed source
@@ -1695,20 +1745,19 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Uploads
+ * @name predicsis.jsSDK.Uploads
  * @requires $q
- * @requires apiRestangular
- * @requires jobCompletion
+ * @requires Restangular
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/sources/credentials/s3</kbd></td>
- *     <td><kbd>{@link API.model.Uploads#methods_getcredentials Upload.getCredentials()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Uploads#methods_getcredentials Upload.getCredentials()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/sources/credentials/s3</kbd></td>
- *     <td><kbd>{@link API.model.Uploads#methods_sign Upload.sign(key)}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Uploads#methods_sign Upload.sign(key)}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -1723,17 +1772,17 @@ angular.module('API.model')
  *   <li>Create a dataset from this source</li>
  * </ul>
  */
-angular.module('API.model')
-  .service('Uploads', function(apiRestangular) {
+angular.module('predicsis.jsSDK')
+  .service('Uploads', function(Restangular) {
 
-    function credentials(storageService) { return apiRestangular.all('sources').one('credentials', storageService); }
+    function credentials(storageService) { return Restangular.all('sources').one('credentials', storageService); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name getCredentials
-     * @methodOf API.model.Uploads
+     * @methodOf predicsis.jsSDK.Uploads
      * @description Request credentials to our storage service
      *  Credentials for S3 storage looks like:
      *  <pre>
@@ -1759,7 +1808,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name sign
-     * @methodOf API.model.Uploads
+     * @methodOf predicsis.jsSDK.Uploads
      * @description Sign POST requests from fineuploader library
      *  This route is required to use {@link http://docs.fineuploader.com/branch/master/endpoint_handlers/amazon-s3.html#required-server-side-tasks-all-browsers fineuploader library}.
      *
@@ -1793,44 +1842,44 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Users
+ * @name predicsis.jsSDK.Users
  * @requires $q
- * @requires apiRestangular
+ * @requires Restangular
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/users</kbd></td>
- *     <td><kbd>{@link API.model.Users#methods_create Users.create()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Users#methods_create Users.create()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/users/password</kbd></td>
- *     <td><kbd>{@link API.model.Users#methods_resetPassword Users.resetPassword()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Users#methods_resetPassword Users.resetPassword()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/users/:id</kbd></td>
- *     <td><kbd>{@link API.model.Users#methods_getcurrentuser Users.getCurrentUser()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Users#methods_getcurrentuser Users.getCurrentUser()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/settings</kbd></td>
- *     <td><kbd>{@link API.model.Users#methods_getsettings Users.getSettings()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Users#methods_getsettings Users.getSettings()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/settings</kbd></td>
- *     <td><kbd>{@link API.model.Users#methods_savesettings Users.saveSettings()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Users#methods_savesettings Users.saveSettings()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/users/:id</kbd><br/><span class="badge patch">patch</span> <kbd>/users/update_password</kbd></td>
- *     <td><kbd>{@link API.model.Users#methods_update Users.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Users#methods_update Users.update()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/users/:id</kbd></td>
- *     <td><kbd>{@link API.model.Users#methods_delete Users.delete()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Users#methods_delete Users.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -1853,19 +1902,19 @@ angular.module('API.model')
  *   }
  * </pre>
  */
-angular.module('API.model')
-  .service('Users', function($q, apiRestangular) {
+angular.module('predicsis.jsSDK')
+  .service('Users', function($q, Restangular) {
 
-    function user(id) { return apiRestangular.one('users', id); }
-    function users() { return apiRestangular.all('users'); }
-    function settings() { return apiRestangular.all('settings'); }
+    function user(id) { return Restangular.one('users', id); }
+    function users() { return Restangular.all('users'); }
+    function settings() { return Restangular.all('settings'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name create
-     * @methodOf API.model.Users
+     * @methodOf predicsis.jsSDK.Users
      * @description Create a new user
      *
      *  You must give the following parameters to create a new preparation rules set:
@@ -1887,7 +1936,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name resetPassword
-     * @methodOf API.model.Users
+     * @methodOf predicsis.jsSDK.Users
      * @description Reset user's password
      * @param {String} email Email of the account you want to reset the password
      * @param {String} redirectUri Url to be redirected after complete resetting password
@@ -1900,7 +1949,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name getCurrentUser
-     * @methodOf API.model.Users
+     * @methodOf predicsis.jsSDK.Users
      * @description Get authenticated user
      * @return {Promise} Current user
      */
@@ -1911,7 +1960,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name getSettings
-     * @methodOf API.model.Users
+     * @methodOf predicsis.jsSDK.Users
      * @description Get active user's settings
      * @return {Promise} User's settings
      * <pre>
@@ -1928,7 +1977,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name saveSettings
-     * @methodOf API.model.Users
+     * @methodOf predicsis.jsSDK.Users
      * @description Save user's settings
      * You can update the following parameters:
      *  <ul>
@@ -1946,7 +1995,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.Users
+     * @methodOf predicsis.jsSDK.Users
      * @description Update specified user
      *  You can update the following parameters:
      *  <ul>
@@ -1991,7 +2040,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name delete
-     * @methodOf API.model.Users
+     * @methodOf predicsis.jsSDK.Users
      * @description Permanently destroy a specified preparation rules set
      * @param {String} id Id of the preparation rules set you want to remove
      * @return {Promise} A removed preparation rules set
@@ -2004,24 +2053,24 @@ angular.module('API.model')
 
 /**
  * @ngdoc service
- * @name API.model.Variables
+ * @name predicsis.jsSDK.Variables
  * @requires $q
- * @requires apiRestangular
+ * @requires Restangular
  * @description
  * <table>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/dictionary/:dictionaryId/variables</kbd></td>
- *     <td><kbd>{@link API.model.Variables#methods_all Variables.all()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Variables#methods_all Variables.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/dictionary/:dictionaryId/variables/:variableId</kbd></td>
- *     <td><kbd>{@link API.model.Variables#methods_get Variables.get()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Variables#methods_get Variables.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/dictionary/:dictionaryId/variables/:variableId</kbd></td>
- *     <td><kbd>{@link API.model.Variables#methods_update Variables.update()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.Variables#methods_update Variables.update()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -2046,18 +2095,18 @@ angular.module('API.model')
  *
  * As a variable cannot live without being attached to a dictionary, all request need a <code>dictionaryId</code>.
  */
-angular.module('API.model')
-  .service('Variables', function($q, apiRestangular) {
+angular.module('predicsis.jsSDK')
+  .service('Variables', function($q, Restangular) {
 
-    function variable(dictionaryId, variableId) { return apiRestangular.one('dictionaries', dictionaryId).one('variables', variableId); }
-    function variables(dictionaryId) { return apiRestangular.one('dictionaries', dictionaryId).all('variables'); }
+    function variable(dictionaryId, variableId) { return Restangular.one('dictionaries', dictionaryId).one('variables', variableId); }
+    function variables(dictionaryId) { return Restangular.one('dictionaries', dictionaryId).all('variables'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @ngdoc function
      * @name all
-     * @methodOf API.model.Variables
+     * @methodOf predicsis.jsSDK.Variables
      * @description Get all (or a list of) generated dictionaries
      * @param {String} dictionaryId  Id of the container dictionary
      * @param {Array} [variablesIds] List of variables' id you want to fetch
@@ -2078,7 +2127,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name get
-     * @methodOf API.model.Variables
+     * @methodOf predicsis.jsSDK.Variables
      * @description Get a single variable by its id
      * @param {String} dictionaryId Id of the variable you want to fetch
      * @param {String} variableId   Id of the container dictionary
@@ -2091,7 +2140,7 @@ angular.module('API.model')
     /**
      * @ngdoc function
      * @name update
-     * @methodOf API.model.Variables
+     * @methodOf predicsis.jsSDK.Variables
      * @description Update specified variable
      *  You can update the following parameters:
      *  <ul>
@@ -2111,4 +2160,456 @@ angular.module('API.model')
 
   });
 
-angular.module('API.model', []);
+angular.module('predicsis.jsSDK')
+.service('jobsHelper', function($q, Jobs) {
+
+  var that = this;
+
+  that.listen = function(jobId) {
+
+    var deferred = $q.defer();
+
+    //Lock limiting interval loop to one concurrent request
+    var isRequestPending = false;
+    //Counter to manage timeout step (3 seconds the 1st minute, one minute after)
+    var requestCounter = 0;
+    //Store intervalId as a closure to be abble to stop interval loop
+    var intervalId = window.setInterval(function() {
+      //Limit to one concurrent request
+      if(!isRequestPending) {
+
+        isRequestPending = true;
+        requestCounter++;
+
+        Jobs.get(jobId).then(function(job) {
+            //reject promise if status is failed (and stop interval loop)
+            if (job.status === 'failed') {
+              clearInterval(intervalId);
+              var error = new Error(job.error.message);
+              error.status = job.error.status;
+              deferred.reject(error);
+            }
+            //resolve promise if status is completed (and stop interval loop)
+            else if (job.status === 'completed') {
+              clearInterval(intervalId);
+              deferred.resolve(jobId);
+            }
+            //continue interval calls otherwise (wait timeout seconds before accepting new request)
+            else {
+              //Job is pulled each minute (except 1st minute)
+              var timeout = 60;
+              //Job is pulled each 3 seconds during the 1st minute (for fast jobs)
+              if(requestCounter < 20) {
+                timeout = 3;
+              }
+              //Unlock request Lock after timeout seconds
+              window.setTimeout(function() {
+                isRequestPending = false;
+              }, timeout * 1000);
+            }
+          })
+          //catch request errors, reject promise and stop interval loop
+          .then(null, function(error) {
+            clearInterval(intervalId);
+            deferred.reject(error);
+          });
+      }
+    }, 1000);
+
+    return deferred.promise;
+  };
+
+  /**
+   * Transform an async promise into the same promise resolving only when job is completed
+   *
+   * @param  parent dataset
+   * @param {promise} promise
+   * @param {Array} promise.job_ids list of jobs (the last one will be listened)
+   * @return {Promise}
+   */
+  that.wrapAsyncPromise = function(promise) {
+    return promise
+      .then(function(asyncResult) {
+        var jobId = _(asyncResult.job_ids).last();
+        return that.listen(jobId)
+          .then(function() {
+            return asyncResult;
+          });
+      });
+  };
+});
+
+/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.modelHelper
+ * @require $injector
+ * - Datasets
+ * - Models
+ * - Reports
+ * - Projects
+ * - PreparationRules
+ * - $q
+ */
+angular.module('predicsis.jsSDK')
+  .service('modelHelper', function($injector) {
+
+    this.learn = function(project) {
+      var Datasets = $injector.get('Datasets');
+      var Models = $injector.get('Models');
+      var Reports = $injector.get('Reports');
+      var Projects = $injector.get('Projects');
+      var PreparationRules = $injector.get('PreparationRules');
+      var $q = $injector.get('$q');
+      var results = {};
+
+      return Datasets.getChildren(project.learning_dataset_id)
+        .then(function(children) {
+          if(!children.train) {
+            throw 'Invalid project on POST preparation_rules, no valid train dataset found';
+          }
+
+          return PreparationRules.create({
+            variable_id: project.target_variable_id,
+            dataset_id: children.train.id
+          });
+        })
+        // create the model from preparation rules set
+        .then(function(preparationRulesRet) {
+          results.preparation_rules_set = preparationRulesRet;
+          return Models.createClassifier(preparationRulesRet.id);
+        })
+        // generate reports
+        .then(function(classifier) {
+          results.classifier = classifier;
+          // classifier_id is required to generate reports,
+          // but the PATCH request will occurs after the learn process.
+          // this tweak allow project generation.
+          project.classifier_id = classifier.id;
+          return $q.all([
+            Reports.createTrainClassifierEvaluationReport(project),
+            Reports.createTestClassifierEvaluationReport(project),
+            Reports.createUnivariateSupervisedReport(project)
+          ]);
+        })
+        //update project
+        .then(function(reports) {
+          var reportIds = reports.map(function(report) {
+            return report.id;
+          });
+          return Projects.update(project.id, {
+            preparation_rules_set_id: results.preparation_rules_set.id,
+            classifier_id: results.classifier.id,
+            report_ids: reportIds
+          });
+        })
+        //return classifier
+        .then(function() {
+          return results.classifier;
+        });
+    };
+
+    /**
+     * Get multiple data related to the model.
+     *
+     *  GET /models/:model_id
+     *  GET /preparation_rules_set/:preparation_rules_set_id
+     *  GET /datasets/:dataset_id
+     *
+     *  Once these data are fetched from the API, they are stored in the returned
+     *  model object.
+     */
+    this.fetchRelatedData = function(modelId) {
+      var Models = $injector.get('Models');
+      var Datasets = $injector.get('Datasets');
+      var PreparationRules = $injector.get('PreparationRules');
+
+      return Models.get(modelId)
+        .then(function(model) {
+          return PreparationRules.get(model.preparation_rules_set_id)
+            .then(function(preparationRules) {
+              model.preparationRules = preparationRules;
+
+              return Datasets.get(preparationRules.dataset_id)
+                .then(function(dataset) {
+                  model.preparationRules.dataset = dataset;
+                  return model;
+                });
+            });
+        });
+    };
+
+  });
+
+/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.projectsHelper
+ * @require $injector
+ */
+angular.module('predicsis.jsSDK')
+  .service('projectsHelper', function($injector) {
+
+    var Projects = $injector.get('Projects');
+
+    // --- Getter methods ----------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name isModelDone
+     * @description Tells if there is a model for the given project.
+     *
+     *  <b>Note:</b> A project can have only one Model. It means that you can go back to the first steps of the scenario
+     *  if your current project already has a model attached. If you want to change a parameter, you have to create a new
+     *  project.
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @return {boolean} <code>true</code> / <code>false</code>
+     */
+    this.isModelDone = function(project) {
+      return Boolean(project.classifier_id);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name isDictionaryVerified
+     * @description Tells if the user checked its project's dictionary.
+     *
+     *  A dictionary contains a description of each variable used (or unused) of the model. That's why scenario forces
+     *  the user to check generated dictionaries.
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @return {boolean} <code>true</code> / <code>false</code>
+     */
+    this.isDictionaryVerified = function(project) {
+      return Boolean(project.is_dictionary_verified);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name getCurrentState
+     * @description Return current router state based on project content.
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @return {Object}
+     * <pre>
+     * {
+     *   view: 'project.model_overview',
+     *   properties: { projectId: ___, modelId: ___ }
+     * }
+     * </pre>
+     * <ul>
+     *   <li>The <code>view</code> is the name of the state according to ui-router configuration</li>
+     *   <li><code>properties</code> is a list of required params required to rebuild the url</li>
+     * </ul>
+     */
+    this.getCurrentState = function(project) {
+      if (_.size(project.scoreset_ids)) {
+        //Scored files
+        return {
+          view: 'project.deploy-overview',
+          properties: {projectId: project.id}
+        };
+      } else if (_.size(project.scoring_dataset_ids)) {
+        //Deploy
+        return {
+          view: 'project.format-score',
+          properties: {projectId: project.id, datasetId: _.last(project.scoring_dataset_ids)}
+        };
+      } else if (project.classifier_id) {
+        //Model Overview
+        return {
+          view: 'project.model_overview',
+          properties: {projectId: project.id, modelId: project.classifier_id}
+        };
+      } else if (project.learning_dataset_id && project.dictionary_id) {
+        //Create Model: config
+        return {
+          view: 'project.learn-config',
+          properties: {projectId: project.id, datasetId:project.learning_dataset_id, dictionaryId:project.dictionary_id}
+        };
+      } else {
+        //Create Model: upload
+        return {
+          view: 'project.select_learned_dataset',
+          properties: {projectId: project.id}
+        };
+      }
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name getCurrentStep
+     * @description Map view to project step (One of model-creation, model-overview, deploy, deploy-overview)
+     *
+     * @param {String} currentView State name of the current page
+     * @return {String} State name displayed as "current" in breadcrumb
+     */
+    this.getCurrentStep = function(currentView) {
+      if(currentView === 'project.deploy-overview') {
+        return 'deploy-overview';
+      } else if (['project.model_overview', 'project.variables-inspection'].indexOf(currentView) >= 0) {
+        return 'model-overview';
+      }
+      else if(['project.create', 'project.select_learned_dataset', 'project.format', 'project.learn-config', 'project.learn'].indexOf(currentView) >= 0) {
+        return 'model-creation';
+      } else {
+        return 'deploy';
+      }
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name getStateFromStep
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} toStep --
+     * @return {Object}
+     * <pre>
+     * {
+     *   view: 'project.model_overview',
+     *   properties: { projectId: ___, modelId: ___ }
+     * }
+     * </pre>
+     */
+    this.getStateFromStep = function(project, toStep) {
+      if(toStep === 'model-overview' && project.classifier_id) {
+        return {
+          view: 'project.model_overview',
+          properties: {projectId: project.id, modelId: project.classifier_id}
+        };
+      } else if(toStep === 'deploy' && _.size(project.scoring_dataset_ids)) {
+        return {
+          view: 'project.select_scored_dataset',
+          properties: {projectId: project.id}
+        };
+      } else if (toStep === 'deploy-overview' && _.size(project.scoreset_ids)) {
+        return {
+          view: 'project.deploy-overview',
+          properties: {projectId: project.id}
+        };
+      } else {
+        //Even on model-creation false should be returned has user never navigate to this step
+        return false;
+      }
+    };
+
+    // --- Altering methods --------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name addLearningDataset
+     * @description Simply adds an entry to <code>learning_dataset_id</code> project's property.
+     *
+     * <span class="badge patch">patch</span><code>/projects/:projectId</code>
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will be used for learning
+     * @return {Object} Promise of an updated project
+     */
+    this.addLearningDataset = function(project, datasetId) {
+      return Projects.update(project.id, {learning_dataset_id: datasetId});
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name addScoringDataset
+     * @description Simply adds an entry to <code>scoring_dataset_ids</code> project's array.
+     *
+     * <span class="badge patch">patch</span><code>/projects/:projectId</code>
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will be used for score
+     * @return {Object} Promise of an updated project
+     */
+    this.addScoringDataset = function(project, datasetId) {
+      var update = {};
+      update.scoring_dataset_ids = project.scoring_dataset_ids || [];
+      update.scoring_dataset_ids.push(datasetId);
+      return Projects.update(project.id, update);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name addScoreset
+     * @description Simply adds an entry to <code>scoreset_ids</code> project's array.
+     *
+     * <span class="badge patch">patch</span><code>/projects/:projectId</code>
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will store score results
+     * @return {Object} Promise of an updated project
+     */
+    this.addScoreset = function(project, datasetId) {
+      var update = {};
+      update.scoreset_ids = project.scoreset_ids || [];
+      update.scoreset_ids.push(datasetId);
+      return Projects.update(project.id, update);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name resetDictionary
+     * @description Simply set to <code>null</code> the following project's properties:
+     * <ul>
+     *   <li><code>dictionary_id</code></li>
+     *   <li><code>is_dictionary_verified</code></li>
+     *   <li><code>target_variable_id</code></li>
+     *   <li><code>main_modality</code></li>
+     * </ul>
+     *
+     * <br/>
+     * <span class="badge patch">patch</span><code>/projects/:projectId</code>
+     *
+     * @param {String} projectId Id of the project you want to update
+     * @return {Object} Promise of an updated project
+     */
+    this.resetDictionary = function(projectId) {
+      return Projects.update(projectId, {
+        dictionary_id: null,
+        is_dictionary_verified: null,
+        target_variable_id: null,
+        main_modality: null
+      });
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.projectsHelper
+     * @name removeDependencies
+     * @description Removes linked resources prior to being able to remove the project
+     *
+     * <div><span class="badge get">get</span><code>/projects/:projectId</code></div>
+     * <div><span class="badge delete">delete</span><code>/dictionaries/:project.dictionary_id</code></div>
+     * <div><span class="badge delete">delete</span><code>/model/:project.classifier_id</code></div>
+     *
+     * @param {String} projectId Id of the project you want to update
+     * @return {Object} Promise of an updated project
+     */
+    this.removeDependencies = function(projectId) {
+      var Dictionaries = $injector.get('Dictionaries');
+      var Models = $injector.get('Models');
+
+      return Projects.get(projectId)
+        .then(function(project) {
+          // Delete dictionary if exists
+          return (_.isNull(project.dictionary_id))
+            ? project
+            : Dictionaries.delete(project.dictionary_id).then(function() { return project; });
+        })
+        .then(function(project) {
+          // Delete dictionary if exists
+          return (_.isNull(project.classifier_id))
+            ? project
+            : Models.delete(project.classifier_id).then(
+              function() { return project; },
+              function(err) { if (err.status === 404) { return project; } else { throw err; }}//In case the api has already deleted it when it's dataset has been deleted
+          );
+        });
+    };
+  });

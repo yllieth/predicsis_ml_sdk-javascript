@@ -30,8 +30,8 @@ module.exports = function(grunt) {
     // build all model files into a single js file
     concat: {
       dist: {
-        src: ['lib/model/*.js'],
-        dest: 'dist/predicsisMLSDK.js'
+        src: ['lib/predicsis-jsSDK.js', 'lib/model/*.js', 'lib/helper/*.js'],
+        dest: 'dist/predicsis-jsSDK.js'
       }
     },
 
@@ -60,8 +60,15 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'dist/predicsisMLSDK.min.js': ['dist/predicsisMLSDK.js']
+          'dist/predicsis-jsSDK.min.js': ['dist/predicsis-jsSDK.js']
         }
+      }
+    },
+
+    watch: {
+      all: {
+        files: ['lib/predicsis-jsSDK.js', 'lib/**/*.js'],
+        tasks: ['build', 'doc']
       }
     }
   });

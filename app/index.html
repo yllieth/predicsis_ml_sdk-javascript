@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body ng-app="demo-jsSDK">
+
+<div ng-controller="ExampleCtrl as Example">
+  <pre>{{ Example.projects | json }}</pre>
+</div>
+
+<script src="../vendor/angular/angular.js"></script>
+<script src="../vendor/restangular/dist/restangular.js"></script>
+<script src="../vendor/lodash/dist/lodash.js"></script>
+<script src="../dist/predicsis-jsSDK.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
