@@ -1,0 +1,28 @@
+/*$color-medium-red   : #E1683D;*/
+/*$color-medium-orange: #F7A500;*/
+/*$color-medium-blue  : ;*/
+/*$color-dark-blue    : #122634;*/
+/*$color-medium-green : #13C996;*/
+/*$color-lighter-grey : #F7F9FA;*/
+/*$color-light-grey   : #D7D8D9;*/
+/*$color-medium-grey  : #AFB1B3;*/
+/*$color-dark-grey    : #606466;*/
+/*$color-medium-black : #242D33;*/
+/*$color-medium-white : #FFFFFF;*/
+
+.badge {
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  font-weight: bold;
+  border-radius: 5px;
+  text-transform: uppercase;
+  padding: 0px 10px;
+  margin-right: 5px;
+  float: left;
+}
+
+.badge.async  { background-color: #B90000; }
+.badge.post   { background-color: #008CE1; }
+.badge.get    { background-color: #13C996; }
+.badge.patch  { background-color: #E1683D; }
+.badge.delete { background-color: #AFB1B3; }

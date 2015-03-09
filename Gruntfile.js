@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
     buildcontrol: {
       options: {
-        dir: 'doc',
+        dir: 'docs',
         commit: true,
         push: true,
         message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
@@ -23,7 +23,8 @@ module.exports = function(grunt) {
 
     // remove previous builds
     clean: {
-      dist: ['dist']
+      dist: ['dist'],
+      docs: ['docs/.git']
     },
 
     // build all model files into a single js file
@@ -65,13 +66,13 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('build', ['clean', 'concat', 'uglify']);
+  grunt.registerTask('build', ['clean:dist', 'concat', 'uglify']);
 
   grunt.registerTask('doc', function(target) {
-    grunt.task.run(['ngdocs']);
-
     if (target === 'deploy') {
-      grunt.task.run(['buildcontrol:github']);
+      grunt.task.run(['buildcontrol:github', 'clean:docs']);
+    } else {
+      grunt.task.run(['ngdocs']);
     }
   });
 
