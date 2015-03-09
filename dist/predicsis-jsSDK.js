@@ -205,7 +205,7 @@ angular.module('predicsis.jsSDK', ['restangular'])
  */
 angular.module('predicsis.jsSDK')
   .service('Datasets', function($q, Restangular, jobsHelper) {
-
+    'use strict';
     var self = this;
 
     function dataset(id) { return Restangular.one('datasets', id); }
@@ -478,6 +478,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Dictionaries', function($q, Restangular, jobsHelper) {
+    'use strict';
 
     function dictionary(id) { return Restangular.one('dictionaries', id); }
     function dictionaries() { return Restangular.all('dictionaries'); }
@@ -640,6 +641,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Jobs', function($q, Restangular) {
+    'use strict';
 
     function job(id) { return Restangular.one('jobs', id); }
     function jobs() { return Restangular.all('jobs'); }
@@ -727,6 +729,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Modalities', function($q, Restangular, jobsHelper) {
+    'use strict';
 
     function modality(id) { return Restangular.one('modalities_sets', id); }
     function modalities() { return Restangular.all('modalities_sets'); }
@@ -892,8 +895,9 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Models', function($q, Restangular, jobsHelper) {
-
+    'use strict';
     var self = this;
+
     function model(id) { return Restangular.one('models', id); }
     function models() { return Restangular.all('models'); }
 
@@ -1059,6 +1063,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('PreparationRules', function($q, Restangular, jobsHelper) {
+    'use strict';
 
     function preparationRulesSet(id) { return Restangular.one('preparation_rules_sets', id); }
     function preparationRulesSets() { return Restangular.all('preparation_rules_sets'); }
@@ -1229,6 +1234,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Projects', function($q, Restangular) {
+    'use strict';
 
     function project(id) { return Restangular.one('projects', id); }
     function projects() { return Restangular.all('projects'); }
@@ -1381,15 +1387,16 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Reports', function($q, $injector, Restangular, jobsHelper) {
+    'use strict';
+    var self = this;
 
-    var that = this;
     var report = function(id) { return Restangular.one('reports', id); };
     var reports = function() { return Restangular.all('reports'); };
     function createClassifierEvaluationReport(project, type) {
       var Datasets = $injector.get('Datasets');
       return Datasets.getChildren(project.learning_dataset_id)
         .then(function(children) {
-          return that.create({
+          return self.create({
             type: 'classifier_evaluation',
             dataset_id: children[type].id,
             classifier_id: project.classifier_id,
@@ -1469,7 +1476,7 @@ angular.module('predicsis.jsSDK')
      * @return {Object} Promise of a report
      */
     this.createUnivariateSupervisedReport = function(project) {
-      return that.create({
+      return self.create({
         type: 'univariate_supervised',
         dataset_id: project.learning_dataset_id,
         dictionary_id: project.dictionary_id,
@@ -1649,6 +1656,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Sources', function($q, Restangular, jobsHelper) {
+    'use strict';
 
     function source(id) { return Restangular.one('sources', id); }
     function sources() { return Restangular.all('sources'); }
@@ -1777,6 +1785,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Uploads', function(Restangular) {
+    'use strict';
 
     function credentials(storageService) { return Restangular.all('sources').one('credentials', storageService); }
 
@@ -1907,6 +1916,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Users', function($q, Restangular) {
+    'use strict';
 
     function user(id) { return Restangular.one('users', id); }
     function users() { return Restangular.all('users'); }
@@ -2100,6 +2110,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('Variables', function($q, Restangular) {
+    'use strict';
 
     function variable(dictionaryId, variableId) { return Restangular.one('dictionaries', dictionaryId).one('variables', variableId); }
     function variables(dictionaryId) { return Restangular.one('dictionaries', dictionaryId).all('variables'); }
@@ -2165,10 +2176,10 @@ angular.module('predicsis.jsSDK')
 
 angular.module('predicsis.jsSDK')
 .service('jobsHelper', function($q, Jobs) {
+  'use strict';
+  var self = this;
 
-  var that = this;
-
-  that.listen = function(jobId) {
+  self.listen = function(jobId) {
 
     var deferred = $q.defer();
 
@@ -2230,11 +2241,11 @@ angular.module('predicsis.jsSDK')
    * @param {Array} promise.job_ids list of jobs (the last one will be listened)
    * @return {Promise}
    */
-  that.wrapAsyncPromise = function(promise) {
+  self.wrapAsyncPromise = function(promise) {
     return promise
       .then(function(asyncResult) {
         var jobId = _(asyncResult.job_ids).last();
-        return that.listen(jobId)
+        return self.listen(jobId)
           .then(function() {
             return asyncResult;
           });
@@ -2255,6 +2266,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('modelHelper', function($injector) {
+    'use strict';
 
     this.learn = function(project) {
       var Datasets = $injector.get('Datasets');
@@ -2350,6 +2362,7 @@ angular.module('predicsis.jsSDK')
  */
 angular.module('predicsis.jsSDK')
   .service('projectsHelper', function($injector) {
+    'use strict';
 
     var Projects = $injector.get('Projects');
 
