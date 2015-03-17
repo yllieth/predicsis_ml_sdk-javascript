@@ -91,6 +91,19 @@ return api.Datasets.getChildren(project.learning_dataset_id).then(function(child
 
 See the [SDK documentation](http://yllieth.github.io/predicsis_ml_sdk-javascript) for more examples.
 
+## Run this project locally
+
+This project comes with a little angular application (located in the `app` folder). After a complete install, just run:
+
+```
+  bower install
+  npm install
+
+  # start the server
+  grunt connect:server
+```
+
+And go to `http://localhost:8100/app/index.html`.
 
 ## Getting Help
 

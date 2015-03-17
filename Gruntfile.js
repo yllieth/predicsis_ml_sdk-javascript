@@ -35,6 +35,16 @@ module.exports = function(grunt) {
       }
     },
 
+    connect: {
+      server: {
+        options: {
+          keepalive: true,
+          port: 8100,
+          hostname: '*'
+        }
+      }
+    },
+
     // generate documentation of MLStudio source code
     ngdocs: {
       options: {
