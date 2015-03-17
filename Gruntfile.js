@@ -78,7 +78,7 @@ module.exports = function(grunt) {
     watch: {
       all: {
         files: ['lib/predicsis-jsSDK.js', 'lib/**/*.js'],
-        tasks: ['build', 'doc']
+        tasks: ['build']
       }
     }
   });
