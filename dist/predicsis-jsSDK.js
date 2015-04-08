@@ -1608,7 +1608,7 @@ angular.module('predicsis.jsSDK')
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/sources</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.Sources#methods_create Sources.create()}</kbd></td>
- *     <td><span class="badge async">async</span></td>
+ *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/sources</kbd></td>
@@ -1686,7 +1686,7 @@ angular.module('predicsis.jsSDK')
      * @return {Promise} New source
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(sources().post({source: params}));
+      return sources().post({source: params});
     };
 
     /**
