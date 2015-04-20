@@ -58,6 +58,15 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "predicsis.jsSDK.OauthTokens",
+      "shortName": "predicsis.jsSDK.OauthTokens",
+      "type": "service",
+      "moduleName": "predicsis.jsSDK",
+      "shortDescription": "",
+      "keywords": "$q access_tokens action api appears application authorization avoid aware badge bearer bit case change class code colspan create created created_at createpersonaltoken creating creation database delete displays documentation doesn don error expiration explicit fact function getpersonaltokens getsettings header http identifier json jssdk keeping list methods_createpersonaltoken methods_getpersonalsettings methods_getpersonaltokens methods_savepersonalsettings no-content not-found note oauthtokens object patch personal post predicsis real remove request response restangular result reteive return revoke savesettings sending service setting settings single status things token tokenid tokens unauthorized unique updated_at valid"
+    },
+    {
+      "section": "api",
       "id": "predicsis.jsSDK.PreparationRules",
       "shortName": "predicsis.jsSDK.PreparationRules",
       "type": "service",
@@ -116,7 +125,16 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q account active api authenticated badge changes class colspan complete create created_at current current_password delete description destroy documentation doe email europe example fr-fr function getcurrentuser getsettings john jssdk locale methods_create methods_delete methods_getcurrentuser methods_getsettings methods_resetpassword methods_savesettings methods_update my-password org ouille output param parameters params password patch permanently post predicsis preparation properties redirected redirecturi remove removed reset resetpassword resetted resetting restangular rules save savesettings se service set settings test timezone update updated updated_at url user users"
+      "keywords": "$q account api authenticated badge changes class colspan complete create created_at current current_password delete description destroy documentation doe email example function getcurrentuser john jssdk methods_create methods_delete methods_getcurrentuser methods_resetpassword methods_update my-password org ouille output param parameters params password patch permanently post predicsis preparation properties redirected redirecturi remove removed reset resetpassword resetted resetting restangular rules service set test update updated updated_at url user users"
+    },
+    {
+      "section": "api",
+      "id": "predicsis.jsSDK.UserSettings",
+      "shortName": "predicsis.jsSDK.UserSettings",
+      "type": "service",
+      "moduleName": "predicsis.jsSDK",
+      "shortDescription": "",
+      "keywords": "active api badge class colspan description documentation europe fr-fr function jssdk locale methods_get methods_update parameters patch predicsis restangular save se service settings timezone update updated user usersettings"
     },
     {
       "section": "api",

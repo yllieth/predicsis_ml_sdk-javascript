@@ -1,0 +1,124 @@
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/edit/master/lib/model/OauthTokens.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/df735ec/lib/model/OauthTokens.js#L41" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">OauthTokens</code>
+<div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="predicsis-jssdk-oauthtokens-page"><table>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/settings</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.OauthTokens#methods_getpersonalsettings">Settings.getSettings()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge patch">patch</span> <kbd>/settings</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.OauthTokens#methods_savepersonalsettings">Settings.saveSettings()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge post">post</span> <kbd>/settings/tokens</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.OauthTokens#methods_createpersonaltoken">Settings.createPersonalToken()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/settings/tokens</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.OauthTokens#methods_getpersonaltokens">Settings.getPersonalTokens()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge delete">delete</span> <kbd>/settings/tokens/:token_id</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.OauthTokens#methods_getpersonaltokens">Settings.getPersonalTokens()</a></kbd></td>
+  <td></td>
+</tr>
+<tfoot>
+  <tr><td colspan="3">Official documentation is available at:
+    <ul>
+      <li><a href="https://developer.predicsis.com/doc/v1/overview/acces_tokens/">https://developer.predicsis.com/doc/v1/overview/acces_tokens/</a></li>
+    </td></tr>
+</tfoot>
+</table></div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/ng.$q">$q</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/Restangular">Restangular</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/df735ec/lib/model/OauthTokens.js#L118" class="view-source icon-eye-open"> </a><h3 id="methods_all">all()</h3>
+<div class="all"><div class="all-page"><p>Get the list of created and valid tokens</p>
+<p>Please note that tokens don&#39;t appears. They are only available after their creation.</p>
+</div><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="all-page"><pre class="prettyprint linenums">
+{
+  tokens: [
+    {
+      id: "5409cc5f69702d0007180000",
+      created_at: "2014-09-05T14:44:47.172Z",
+      updated_at: "2014-09-05T14:44:47.172Z"
+    },
+    {
+      id: "55353df361707000013c0300",
+      created_at: "2015-04-20T17:57:07.976Z",
+      updated_at: "2015-04-20T17:57:07.976Z"
+    },
+    {
+      id: "55353e3761707000013d0300",
+      created_at: "2015-04-20T17:58:15.454Z",
+      updated_at: "2015-04-20T17:58:15.454Z"
+    }
+  ]
+}
+</pre>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/df735ec/lib/model/OauthTokens.js#L83" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(name)</h3>
+<div class="create"><div class="create-page"><p>Create a new personal token.</p>
+<p>There are 2 things important to know about these tokens:</p>
+<ul>
+  <li>They have no expiration date, thus you should avoid keeping an API token that is not used and try change them as often as possible.</li>
+  <li>This creation request is the only one which displays the token</li>
+</ul>
+
+<p>JSON response for creating new tokens is a bit different from reteive action. It&#39;s mainly due to the fact that we
+give real token only in this function.</p>
+<pre class="prettyprint linenums">
+{
+  access_tokens: {
+    id: "55353df361707000013c0300",
+    token: "072ac0f1ced442f8c7ec4225e4546819bf8c9c2b8a77c8aebc057748d4ae7a64",
+    name: "Token for my personal application over Predicsis API",
+    created_at: "2015-04-20T17:57:07.976Z",
+    updated_at: "2015-04-20T17:57:07.976Z"
+  }
+}
+</pre>
+<p>Right after your token creation, you can use it by setting the Authorization header like:
+<pre class="prettyprint linenums">Authorization: Bearer ${new_token}</pre>
+</div><h5 id="methods_create_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>name</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="create-page"><p>Give an explicit name for your token</p>
+</div></td></tr></tbody></table><h5 id="methods_create_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="create-page"><p>Be aware that you can&#39;t get your token again.</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/df735ec/lib/model/OauthTokens.js#L156" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(tokenId)</h3>
+<div class="delete"><div class="delete-page"><p>Revoke a personal token</p>
+<p>By sending this request, we remove this token from our database which means that all request sent with its will
+get a 401 Unauthorized HTTP status.</p>
+<p>This request will result a 204 No-Content status code, except if the token can&#39;t be found (in this case, you will get a 404 Not-Found error).</p>
+</div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>tokenId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="delete-page"><p>Token unique identifier</p>
+</div></td></tr></tbody></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/df735ec/lib/model/OauthTokens.js#L139" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(tokenId)</h3>
+<div class="get"><div class="get-page"><p>Return a single token object. Be aware that this function&#39;s result doesn&#39;t contain the token.</p>
+</div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>tokenId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Token unique identifier</p>
+</div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="get-page"><pre class="prettyprint linenums">
+{
+  access_tokens: {
+    id "5409cc5f69702d0007180000",
+    created_at: "2014-09-05T14:44:47.172Z",
+    updated_at: "2014-09-05T14:44:47.172Z"
+  }
+}
+</pre>
+</div></td></tr></table></div>
+</li>
+</ul>
+</div>
+</div>
