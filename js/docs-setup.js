@@ -125,7 +125,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q account active api authenticated badge changes class colspan complete create created_at current current_password delete description destroy documentation doe email europe example fr-fr function getcurrentuser getsettings john jssdk locale methods_create methods_delete methods_getcurrentuser methods_getsettings methods_resetpassword methods_savesettings methods_update my-password org ouille output param parameters params password patch permanently post predicsis preparation properties redirected redirecturi remove removed reset resetpassword resetted resetting restangular rules save savesettings se service set settings test timezone update updated updated_at url user users"
+      "keywords": "$q account api authenticated badge changes class colspan complete create created_at current current_password delete description destroy documentation doe email example function getcurrentuser john jssdk methods_create methods_delete methods_getcurrentuser methods_resetpassword methods_update my-password org ouille output param parameters params password patch permanently post predicsis preparation properties redirected redirecturi remove removed reset resetpassword resetted resetting restangular rules service set test update updated updated_at url user users"
     },
     {
       "section": "api",
