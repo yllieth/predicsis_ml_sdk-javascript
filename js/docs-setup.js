@@ -63,7 +63,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q access_tokens action api appears application authorization avoid aware badge bearer bit case change class code colspan create created created_at createpersonaltoken creating creation database delete displays documentation doesn don error expiration explicit fact function getpersonaltokens getsettings header http identifier json jssdk keeping list methods_createpersonaltoken methods_getpersonalsettings methods_getpersonaltokens methods_savepersonalsettings no-content not-found note oauthtokens object patch personal post predicsis real remove request response restangular result reteive return revoke savesettings sending service setting settings single status things token tokenid tokens unauthorized unique updated_at valid"
+      "keywords": "$q access_tokens action api appears application authorization avoid aware badge bearer bit case change class code colspan create created created_at creating creation database delete displays documentation doesn don error expiration explicit fact function header http identifier json jssdk keeping list methods_all methods_create methods_delete methods_get no-content not-found note oauthtokens object personal post predicsis real remove request response restangular result reteive return revoke sending service setting single status things token tokenid tokens unauthorized unique updated_at valid"
     },
     {
       "section": "api",
