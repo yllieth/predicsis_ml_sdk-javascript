@@ -10,7 +10,7 @@ angular.module('predicsis.jsSDK', ['restangular'])
     this.getOauthToken = function() { return oauthToken; };
     this.hasOauthToken = function() { return Boolean(oauthToken === undefined); };
 
-    this.$get = function(Restangular, Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables, jobsHelper, modelHelper, projectsHelper) {
+    this.$get = function(Restangular, Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications, PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables, jobsHelper, modelHelper, projectsHelper) {
       Restangular.setBaseUrl(this.getBaseUrl());
       Restangular.setDefaultHeaders({ accept: 'application/json', Authorization: 'Bearer ' + this.getOauthToken() });
       Restangular.addResponseInterceptor(function(data, operation, what, url, response) {
@@ -35,6 +35,7 @@ angular.module('predicsis.jsSDK', ['restangular'])
         Modalities: Modalities,
         Models: Models,
         OauthTokens: OauthTokens,
+        OauthApplications: OauthApplications,
         PreparationRules: PreparationRules,
         Projects: Projects,
         Reports: Reports,
@@ -1013,8 +1014,114 @@ angular.module('predicsis.jsSDK')
 
 /**
  * @ngdoc service
+ * @name predicsis.jsSDK.OauthApplications
+ * @requires Restangular
+ * @description
+ * <table>
+ *   <tr>
+ *     <td><span class="badge post">post</span> <kbd>/settings/applications</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthApplications#methods_create OauthApplications.create()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge get">get</span> <kbd>/settings/applications</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthApplications#methods_all OauthApplications.all()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge get">get</span> <kbd>/settings/applications/:token_id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthApplications#methods_get OauthApplications.get()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge delete">delete</span> <kbd>/settings/applications/:token_id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthApplications#methods_delete OauthApplications.delete()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tfoot>
+ *     <tr><td colspan="3">Official documentation is available at:
+ *       <ul>
+ *         <li>https://developer.predicsis.com/doc/v1/overview/oauth2/</li>
+ *       </td></tr>
+ *   </tfoot>
+ * </table>
+ *
+ * Output example:
+ * <pre>
+ * {
+ *   application: {
+ *     id: "540778b5353834003e050000",
+ *     name: "essai",
+ *     uid: "829b6d53ac27d6cf9670725eb22288dd3914d4d3a811b0d036fd5eb2bc275540",
+ *     secret: "e7a9d71fbcd0e0f4f1a78b7dbbd8311d91517ca0ee1d74594db11b6a60a13732",
+ *     redirect_uri: "http://truc.bidule",
+ *     owner_id: "540762703263310008000000",
+ *     created_at: "2014-09-03T20:23:17.025Z",
+ *     updated_at: "2014-09-03T20:23:17.025Z"
+ *   }
+ * }
+ * </pre>
+ */
+angular.module('predicsis.jsSDK')
+  .service('OauthApplications', function(Restangular) {
+    'use strict';
+
+    function settings() { return Restangular.all('settings'); }
+    function applications() { return settings().all('applications'); }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name create
+     * @methodOf predicsis.jsSDK.OauthApplications
+     * @description Create a new Oauth application
+     * @param {String} name Your application's name
+     * @param {String} redirectURI The URL in your app where users will be sent after authorization
+     * @return {Object} A new and ready-to-use Oauth application
+     * <pre>
+     *
+     * </pre>
+     */
+    this.create = function(name, redirectURI) {
+      return applications().post({application: {name: name, redirect_uri: redirectURI}});
+    };
+
+    /**
+     * @ngdoc function
+     * @name all
+     * @methodOf predicsis.jsSDK.OauthApplications
+     * @description
+     */
+    this.all = function() {
+      return applications().getList();
+    };
+
+    /**
+     * @ngdoc function
+     * @name get
+     * @methodOf predicsis.jsSDK.OauthApplications
+     * @description
+     */
+    this.get = function(appId) {
+      return settings().one('applications', appId).get();
+    };
+
+    /**
+     * @ngdoc function
+     * @name delete
+     * @methodOf predicsis.jsSDK.OauthApplications
+     * @description
+     */
+    this.delete = function(appId) {
+      return settings().one('tokens', appId).remove();
+    };
+
+  });
+
+/**
+ * @ngdoc service
  * @name predicsis.jsSDK.OauthTokens
- * @requires $q
  * @requires Restangular
  * @description
  * <table>
@@ -1024,7 +1131,7 @@ angular.module('predicsis.jsSDK')
  *     <td></td>
  *   </tr>
  *   <tr>
- *     <td><span class="badge get">all</span> <kbd>/settings/tokens</kbd></td>
+ *     <td><span class="badge get">get</span> <kbd>/settings/tokens</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_all OauthTokens.all()}</kbd></td>
  *     <td></td>
  *   </tr>
@@ -1208,14 +1315,14 @@ angular.module('predicsis.jsSDK')
  * Output example:
  * <pre>
  *   {
- *     id": "5475d317617070000a300100",
- *     created_at": "2014-11-26T13:18:15.550Z",
- *     updated_at": "2014-11-26T13:18:18.546Z",
- *     name": null,
- *     user_id": "541b06dc617070006d060000",
- *     dataset_id": null,
- *     variable_id": "5475d285776f7200019a0300",
- *     job_ids": [ "5475d317617070000a310100" ]
+ *     id: "5475d317617070000a300100",
+ *     created_at: "2014-11-26T13:18:15.550Z",
+ *     updated_at: "2014-11-26T13:18:18.546Z",
+ *     name: null,
+ *     user_id: "541b06dc617070006d060000",
+ *     dataset_id: null,
+ *     variable_id: "5475d285776f7200019a0300",
+ *     job_ids: [ "5475d317617070000a310100" ]
  *   }
  * </pre>
  */
@@ -2084,27 +2191,22 @@ angular.module('predicsis.jsSDK')
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/users</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.Users#methods_create Users.create()}</kbd></td>
- *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/users/password</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.Users#methods_resetPassword Users.resetPassword()}</kbd></td>
- *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/users/:id</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.Users#methods_getcurrentuser Users.getCurrentUser()}</kbd></td>
- *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/users/:id</kbd><br/><span class="badge patch">patch</span> <kbd>/users/update_password</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.Users#methods_update Users.update()}</kbd></td>
- *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/users/:id</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.Users#methods_delete Users.delete()}</kbd></td>
- *     <td></td>
  *   </tr>
  *   <tfoot>
  *     <tr><td colspan="3">Official documentation is available at:
@@ -2433,18 +2535,49 @@ angular.module('predicsis.jsSDK')
 /**
  * @ngdoc service
  * @name predicsis.jsSDK.modelHelper
- * @require $injector
- * - Datasets
- * - Models
- * - Reports
- * - Projects
- * - PreparationRules
+ * @requires $injector
+ * - {@link predicsis.jsSDK.Datasets Datasets}
+ * - {@link predicsis.jsSDK.Models Models}
+ * - {@link predicsis.jsSDK.Reports Reports}
+ * - {@link predicsis.jsSDK.Projects Projects}
+ * - {@link predicsis.jsSDK.PreparationRules PreparationRules}
  * - $q
  */
 angular.module('predicsis.jsSDK')
   .service('modelHelper', function($injector) {
     'use strict';
 
+    /**
+     * @ngdoc function
+     * @name learn
+     * @methodOf predicsis.jsSDK.modelHelper
+     * @description Learn a model
+     *
+     * This function wraps the following requests:
+     * <ul>
+     *   <li>GET /datasets</li>
+     *   <li>GET /datasets/:trainDatasetId</li>
+     *   <li>GET /datasets/:testDatasetId</li>
+     *   <li>POST /preparation_rules_sets</li>
+     *   <li>POST /models</li>
+     *   <li>POST /reports</li>
+     *   <li>POST /reports</li>
+     *   <li>POST /reports</li>
+     *   <li>PATCH /projects/:projectId</li>
+     * </ul>
+     *
+     * ... and each time, waits for job termination!
+     *
+     * To do so, what we really use are the following parameters:
+     * <ul>
+     *   <li><kbd>project.learning_dataset_id</kbd> to find the training partition of the input dataset</li>
+     *   <li><kbd>project.target_variable_id</kbd> to create a valid {@link predicsis.jsSDK.PreparationRules PreparationRules}</li>
+     *   <li><kbd>project.id</kbd> to store preparation rules set, classifier and reports ids.</li>
+     * </ul>
+     *
+     * @param {Object} project Instance of a valid {@link predicsis.jsSDK.Projects Project}
+     * @return {Object} Instance of a complete {@link predicsis.jsSDK.Models Models}
+     */
     this.learn = function(project) {
       var Datasets = $injector.get('Datasets');
       var Models = $injector.get('Models');

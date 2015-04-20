@@ -99,7 +99,8 @@ Dictionary        |
 Jobs              | 
 Modality          | 
 Model             | Model helper
-OauthToken        | 
+Oauth token       | 
+Oauth application | 
 Preparation rules | 
 Project           | Project helper
 Report            | 
