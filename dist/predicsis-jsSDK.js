@@ -1019,28 +1019,23 @@ angular.module('predicsis.jsSDK')
  * @description
  * <table>
  *   <tr>
- *     <td><span class="badge get">get</span> <kbd>/settings</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_getpersonalsettings Settings.getSettings()}</kbd></td>
- *     <td></td>
- *   </tr>
- *   <tr>
- *     <td><span class="badge patch">patch</span> <kbd>/settings</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_savepersonalsettings Settings.saveSettings()}</kbd></td>
- *     <td></td>
- *   </tr>
- *   <tr>
  *     <td><span class="badge post">post</span> <kbd>/settings/tokens</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_createpersonaltoken Settings.createPersonalToken()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_create OauthTokens.create()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
- *     <td><span class="badge get">get</span> <kbd>/settings/tokens</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_getpersonaltokens Settings.getPersonalTokens()}</kbd></td>
+ *     <td><span class="badge get">all</span> <kbd>/settings/tokens</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_all OauthTokens.all()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge get">get</span> <kbd>/settings/tokens/:token_id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_get OauthTokens.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/settings/tokens/:token_id</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_getpersonaltokens Settings.getPersonalTokens()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthTokens#methods_delete OauthTokens.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
@@ -1162,7 +1157,7 @@ angular.module('predicsis.jsSDK')
      * By sending this request, we remove this token from our database which means that all request sent with its will
      * get a 401 Unauthorized HTTP status.
      *
-     * This request will result a 204 No-Content status code.
+     * This request will result a 204 No-Content status code, except if the token can't be found (in this case, you will get a 404 Not-Found error).
      *
      * @param {String} tokenId Token unique identifier
      */
@@ -2102,16 +2097,6 @@ angular.module('predicsis.jsSDK')
  *     <td></td>
  *   </tr>
  *   <tr>
- *     <td><span class="badge get">get</span> <kbd>/settings</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.Users#methods_getsettings Users.getSettings()}</kbd></td>
- *     <td></td>
- *   </tr>
- *   <tr>
- *     <td><span class="badge patch">patch</span> <kbd>/settings</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.Users#methods_savesettings Users.saveSettings()}</kbd></td>
- *     <td></td>
- *   </tr>
- *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/users/:id</kbd><br/><span class="badge patch">patch</span> <kbd>/users/update_password</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.Users#methods_update Users.update()}</kbd></td>
  *     <td></td>
@@ -2195,41 +2180,6 @@ angular.module('predicsis.jsSDK')
      */
     this.getCurrentUser = function() {
       return user('me').get();
-    };
-
-    /**
-     * @ngdoc function
-     * @name getSettings
-     * @methodOf predicsis.jsSDK.Users
-     * @description Get active user's settings
-     * @return {Promise} User's settings
-     * <pre>
-     *   {
-     *      timezone: 'Europe/Paris',
-     *      locale: 'fr-FR'
-     *   }
-     * </pre>
-     */
-    this.getSettings = function() {
-      return settings().getList();
-    };
-
-    /**
-     * @ngdoc function
-     * @name saveSettings
-     * @methodOf predicsis.jsSDK.Users
-     * @description Save user's settings
-     * You can update the following parameters:
-     *  <ul>
-     *    <li><code>{String} timezone</code></li>
-     *    <li><code>{String} locale</code></li>
-     *  </ul>
-     *
-     * @param {Object} settings Se above description
-     * @return {Promise} Updated user's settings
-     */
-    this.saveSettings = function(settings) {
-      return settings().patch({settings: changes});
     };
 
     /**
