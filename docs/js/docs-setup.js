@@ -45,7 +45,7 @@ NG_DOCS={
       "shortName": "predicsis.jsSDK.modelHelper",
       "type": "service",
       "moduleName": "predicsis.jsSDK",
-      "keywords": "$injector $q api datasets jssdk modelhelper models predicsis preparationrules projects reports service"
+      "keywords": "$injector $q api classifier complete create dataset datasets find function ids input instance job jssdk learn learning_dataset_id model modelhelper models parameters partition predicsis preparation preparationrules project projects reports requests rules service set store target_variable_id termination time training valid waits wraps"
     },
     {
       "section": "api",
@@ -63,7 +63,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q access_tokens action api appears application authorization avoid aware badge bearer bit case change class code colspan create created created_at creating creation database delete displays documentation doesn don error expiration explicit fact function header http identifier json jssdk keeping list methods_all methods_create methods_delete methods_get no-content not-found note oauthtokens object personal post predicsis real remove request response restangular result reteive return revoke sending service setting single status things token tokenid tokens unauthorized unique updated_at valid"
+      "keywords": "access_tokens action api appears application authorization avoid aware badge bearer bit case change class code colspan create created created_at creating creation database delete displays documentation doesn don error expiration explicit fact function header http identifier json jssdk keeping list methods_all methods_create methods_delete methods_get no-content not-found note oauthtokens object personal post predicsis real remove request response restangular result reteive return revoke sending service setting single status things token tokenid tokens unauthorized unique updated_at valid"
     },
     {
       "section": "api",
