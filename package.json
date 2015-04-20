@@ -1,6 +1,6 @@
 {
   "name": "predicsis_ml_sdk-javascript",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Javascript SDK for PredicSis ML API",
   "main": "index.js",
   "scripts": {
