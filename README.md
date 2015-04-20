@@ -91,6 +91,24 @@ return api.Datasets.getChildren(project.learning_dataset_id).then(function(child
 
 See the [SDK documentation](http://yllieth.github.io/predicsis_ml_sdk-javascript) for more examples.
 
+## Available services
+API resources     | Helpers
+------------------|---------
+Dataset           | 
+Dictionary        | 
+Jobs              | 
+Modality          | 
+Model             | Model helper
+OauthToken        | 
+Preparation rules | 
+Project           | Project helper
+Report            | 
+Source            | 
+Upload            | 
+User              | 
+User settings     | 
+Variable          | 
+
 ## Run this project locally
 
 This project comes with a little angular application (located in the `app` folder). After a complete install, just run:
