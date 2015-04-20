@@ -58,6 +58,15 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "predicsis.jsSDK.OauthApplications",
+      "shortName": "predicsis.jsSDK.OauthApplications",
+      "type": "service",
+      "moduleName": "predicsis.jsSDK",
+      "shortDescription": "",
+      "keywords": "active api app application applications authorization badge bidule class colspan create created_at delete documentation e7a9d71fbcd0e0f4f1a78b7dbbd8311d91517ca0ee1d74594db11b6a60a13732 essai example exists function http jssdk list methods_all methods_create methods_delete methods_get methods_update no-content oauth oauthapplications output owner_id patch post predicsis ready-to-use redirect_uri redirecturi requested restangular revoke secret service uid update updated_at url users"
+    },
+    {
+      "section": "api",
       "id": "predicsis.jsSDK.OauthTokens",
       "shortName": "predicsis.jsSDK.OauthTokens",
       "type": "service",
