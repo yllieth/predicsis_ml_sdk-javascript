@@ -19,9 +19,9 @@ angular.module('predicsis.jsSDK', ['restangular'])
           //Any api response except 204 - No-Content is an object (wrapping either an object or an array)
           if(response.status !== 204) {
             // replace { tokens: [ {}, {}, ... ]} by [ {}, {}, ... ]
-            var resourceName = Object.keys(data)[0];
+            var resourceName = Object.keys(response.data)[0];
             if (resourceName) {
-              data = data[resourceName];
+              data = response.data[resourceName];
             }
           }
         }
@@ -1034,6 +1034,11 @@ angular.module('predicsis.jsSDK')
  *     <td></td>
  *   </tr>
  *   <tr>
+ *     <td><span class="badge patch">patch</span> <kbd>/settings/applications/:token_id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.OauthApplications#methods_update OauthApplications.update()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/settings/applications/:token_id</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.OauthApplications#methods_delete OauthApplications.delete()}</kbd></td>
  *     <td></td>
@@ -1048,18 +1053,18 @@ angular.module('predicsis.jsSDK')
  *
  * Output example:
  * <pre>
- * {
- *   application: {
- *     id: "540778b5353834003e050000",
- *     name: "essai",
- *     uid: "829b6d53ac27d6cf9670725eb22288dd3914d4d3a811b0d036fd5eb2bc275540",
- *     secret: "e7a9d71fbcd0e0f4f1a78b7dbbd8311d91517ca0ee1d74594db11b6a60a13732",
- *     redirect_uri: "http://truc.bidule",
- *     owner_id: "540762703263310008000000",
- *     created_at: "2014-09-03T20:23:17.025Z",
- *     updated_at: "2014-09-03T20:23:17.025Z"
+ *   {
+ *     application: {
+ *       id: "540778b5353834003e050000",
+ *       name: "essai",
+ *       uid: "829b6d53ac27d6cf9670725eb22288dd3914d4d3a811b0d036fd5eb2bc275540",
+ *       secret: "e7a9d71fbcd0e0f4f1a78b7dbbd8311d91517ca0ee1d74594db11b6a60a13732",
+ *       redirect_uri: "http://truc.bidule",
+ *       owner_id: "540762703263310008000000",
+ *       created_at: "2014-09-03T20:23:17.025Z",
+ *       updated_at: "2014-09-03T20:23:17.025Z"
+ *     }
  *   }
- * }
  * </pre>
  */
 angular.module('predicsis.jsSDK')
@@ -1080,7 +1085,18 @@ angular.module('predicsis.jsSDK')
      * @param {String} redirectURI The URL in your app where users will be sent after authorization
      * @return {Object} A new and ready-to-use Oauth application
      * <pre>
-     *
+     * {
+     *   application: {
+     *     id: "540778b5353834003e050000",
+     *     name: "essai",
+     *     uid: "829b6d53ac27d6cf9670725eb22288dd3914d4d3a811b0d0365...",
+     *     secret: "e7a9d71fbcd0e0f4f1a78b7dbbd8311d91517ca0ee1d74594db...",
+     *     redirect_uri: "http://truc.bidule",
+     *     owner_id: "540762703263310008000000",
+     *     created_at: "2014-09-03T20:23:17.025Z",
+     *     updated_at: "2014-09-03T20:23:17.025Z"
+     *   }
+     * }
      * </pre>
      */
     this.create = function(name, redirectURI) {
@@ -1091,7 +1107,8 @@ angular.module('predicsis.jsSDK')
      * @ngdoc function
      * @name all
      * @methodOf predicsis.jsSDK.OauthApplications
-     * @description
+     * @return {Object} List of all active applications
+     * <pre>{ applications: [ {...}, {...}, {...} ] }</pre>
      */
     this.all = function() {
       return applications().getList();
@@ -1101,7 +1118,8 @@ angular.module('predicsis.jsSDK')
      * @ngdoc function
      * @name get
      * @methodOf predicsis.jsSDK.OauthApplications
-     * @description
+     * @return {Object} Requested application (if exists, 404 otherwise)
+     * <pre>{ application: {...} }</pre>
      */
     this.get = function(appId) {
       return settings().one('applications', appId).get();
@@ -1109,12 +1127,29 @@ angular.module('predicsis.jsSDK')
 
     /**
      * @ngdoc function
+     * @name update
+     * @methodOf predicsis.jsSDK.OauthApplications
+     * @param {String} appId Identifier of the application you want to update
+     * @param {Object} changes List of changes you want to save. You can act on the following parameters:
+     * <ul>
+     *   <li>name</li>
+     *   <li>redirect_uri</li>
+     * </ul>
+     * @return {Object} Updated application
+     * <pre>{ application: {...} }</pre>
+     */
+    this.update = function(appId, changes) {
+      return settings().one('applications', appId).patch({application: changes});
+    };
+
+    /**
+     * @ngdoc function
      * @name delete
      * @methodOf predicsis.jsSDK.OauthApplications
-     * @description
+     * @description Revoke an application (returns a 204 No-Content)
      */
     this.delete = function(appId) {
-      return settings().one('tokens', appId).remove();
+      return settings().one('applications', appId).remove();
     };
 
   });
@@ -1244,7 +1279,7 @@ angular.module('predicsis.jsSDK')
      * <pre>
      * {
      *   access_tokens: {
-     *     id "5409cc5f69702d0007180000",
+     *     id: "5409cc5f69702d0007180000",
      *     created_at: "2014-09-05T14:44:47.172Z",
      *     updated_at: "2014-09-05T14:44:47.172Z"
      *   }
