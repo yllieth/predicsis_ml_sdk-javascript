@@ -2,7 +2,8 @@
   "name": "predicsis_ml_sdk-javascript",
   "version": "0.1.5",
   "authors": [
-    "Yllieth <sylvnimes@hotmail.com>"
+    "Yllieth <sylvnimes@hotmail.com>",
+    "Dehau"
   ],
   "description": "Javascript SDK for PredicSis ML API",
   "keywords": [
@@ -17,7 +18,8 @@
   "license": "MIT",
   "dependencies": {
     "angular": "1.3.14",
-    "restangular": "1.4.0"
+    "restangular": "1.4.0",
+    "formfactory": "~0.2.0"
   },
   "main": "dist/predicsis-jsSDK.js",
   "ignore": [
