@@ -1,7 +1,8 @@
 angular.module('predicsis.jsSDK', ['restangular'])
   .provider('predicsisAPI', function () {
+    var errorHandler = function(response) { throw Error(response); }
     var baseURL = 'https://api.predicsis.com';
-    var oauthToken = '';
+    var oauthToken = 'no-token-defined';
 
     this.setBaseUrl = function(url) { baseURL = url; };
     this.getBaseUrl = function() { return baseURL; };
@@ -10,17 +11,20 @@ angular.module('predicsis.jsSDK', ['restangular'])
     this.getOauthToken = function() { return oauthToken; };
     this.hasOauthToken = function() { return Boolean(oauthToken === undefined); };
 
+    this.setErrorHandler = function(handler) { errorHandler = handler; };
+
     this.$get = function(Restangular, Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications, PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables, jobsHelper, modelHelper, projectsHelper) {
       var self = this;
 
       Restangular.setBaseUrl(this.getBaseUrl());
       Restangular.setDefaultHeaders({ accept: 'application/json', Authorization: 'Bearer ' + this.getOauthToken() });
+      Restangular.setErrorInterceptor(function(response) { errorHandler(response); });
       Restangular.addResponseInterceptor(function(data, operation, what, url, response) {
         //operation is one of 'getList', 'post', 'get', 'patch'
         if (['getList', 'post', 'get', 'patch'].indexOf(operation) > -1) {
           //Any api response except 204 - No-Content is an object (wrapping either an object or an array)
           if(response.status !== 204) {
-            // replace { tokens: [ {}, {}, ... ]} by [ {}, {}, ... ]
+            // remove strong parameters : replace { tokens: [ {}, {}, ... ]} by [ {}, {}, ... ]
             var resourceName = Object.keys(response.data)[0];
             if (resourceName) {
               data = response.data[resourceName];
@@ -54,6 +58,9 @@ angular.module('predicsis.jsSDK', ['restangular'])
         _restangular: Restangular,
         setOauthToken: function(token) {
           self.setOauthToken(token);
+        },
+        setErrorHandler: function(handler) {
+          self.setErrorHandler(handler);
         }
       };
     };

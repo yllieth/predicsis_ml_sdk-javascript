@@ -36,8 +36,9 @@ angular.module('YourAngularApplication', ['predicsis.jsSDK'])
     predicsisAPIProvider.setBaseUrl('http://localhost:8003');
   })
 
-  .run(function(predicsisAPI) {
-    predicsisAPI.setOauthToken('d75d2750e04ab0c3c6f44a20271496098600d22e602a6e002deacfa5b07be6c5');
+  .run(function(predicsisAPI, $cookieStore) {
+    predicsisAPI.setOauthToken($cookieStore.get('session'));
+    predicsisAPI.setErrorHandler(console.log.bind(console));
   })
 
   .controller('ExampleCtrl', function(predicsisAPI) {
@@ -46,7 +47,10 @@ angular.module('YourAngularApplication', ['predicsis.jsSDK'])
   });
 ```
 
-By default, api endpoint is: `https://api.predicsis.com`
+Default values: 
+- api endpoint: `https://api.predicsis.com`
+- error handler: `throw Error(response);`
+- oauth access token: `no-token-defined`
 
 ## Getting Started
 
