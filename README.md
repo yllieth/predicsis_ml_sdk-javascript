@@ -14,16 +14,36 @@ bower install predicsis_ml_sdk-javascript --save-dev
 
 If you want to change PredicSis API host, add these lines to your `app.js` configuration file.
 
-```ruby
+```javascript
 angular.module('YourAngularApplication', ['predicsis.jsSDK'])
   .config(function(predicsisAPIProvider, config) {
     predicsisAPIProvider.setBaseUrl('https://predicsis_api_host');
+    predicsisAPIProvider.setOauthToken('4V83j2BWgcPONK8Xw8P7953yPvnTzz784V83j2BWgcPONK8Xw8P7953yPvnTzz78');
   })
   
-  // optional definition, just if you want to make your code more explicit, you also can add a factory to rename this service:
-  .factory('api', function(predicsisAPI) {
-    return predicsisAPI;
+  .controller('ExampleCtrl', function(predicsisAPI) {
+    var self = this;
+    predicsisAPI.Datasets.all().then(function(datasetList) { self.datasets = datasetList; });
+  });
+```
+
+You can also setup your personal access token within a _run_ context. This can be useful if your token is stored in a
+cookie or in localStorage.
+
+```javascript
+angular.module('YourAngularApplication', ['predicsis.jsSDK'])
+  .config(function(predicsisAPIProvider) {
+    predicsisAPIProvider.setBaseUrl('http://localhost:8003');
   })
+
+  .run(function(predicsisAPI) {
+    predicsisAPI.setOauthToken('d75d2750e04ab0c3c6f44a20271496098600d22e602a6e002deacfa5b07be6c5');
+  })
+
+  .controller('ExampleCtrl', function(predicsisAPI) {
+    var self = this;
+    predicsisAPI.Datasets.all().then(function(datasetList) { self.datasets = datasetList; });
+  });
 ```
 
 By default, api endpoint is: `https://api.predicsis.com`
