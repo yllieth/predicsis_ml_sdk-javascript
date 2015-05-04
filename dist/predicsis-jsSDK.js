@@ -2562,20 +2562,17 @@ angular.module('predicsis.jsSDK')
   /**
    * Transform an async promise into the same promise resolving only when job is completed
    *
-   * @param  parent dataset
-   * @param {promise} promise
-   * @param {Array} promise.job_ids list of jobs (the last one will be listened)
+   * @param {Promise|Array} promise or list of jobs (the last one will be listened)
    * @return {Promise}
    */
   self.wrapAsyncPromise = function(promise) {
-    return promise
-      .then(function(asyncResult) {
-        var jobId = _(asyncResult.job_ids).last();
-        return self.listen(jobId)
-          .then(function() {
-            return asyncResult;
-          });
-      });
+    return promise.then(function(asyncResult) {
+      var jobId = (asyncResult.job_ids || []).slice(-1)[0];
+      return self.listen(jobId)
+        .then(function() {
+          return asyncResult;
+        });
+    });
   };
 });
 
@@ -2777,17 +2774,17 @@ angular.module('predicsis.jsSDK')
      * </ul>
      */
     this.getCurrentState = function(project) {
-      if (_.size(project.scoreset_ids)) {
+      if (project.scoreset_ids.length > 0) {
         //Scored files
         return {
           view: 'project.deploy-overview',
           properties: {projectId: project.id}
         };
-      } else if (_.size(project.scoring_dataset_ids)) {
+      } else if (project.scoring_dataset_ids.length > 0) {
         //Deploy
         return {
           view: 'project.format-score',
-          properties: {projectId: project.id, datasetId: _.last(project.scoring_dataset_ids)}
+          properties: {projectId: project.id, datasetId: project.scoring_dataset_ids.slice(-1)[0]}
         };
       } else if (project.classifier_id) {
         //Model Overview
@@ -2852,12 +2849,12 @@ angular.module('predicsis.jsSDK')
           view: 'project.model_overview',
           properties: {projectId: project.id, modelId: project.classifier_id}
         };
-      } else if(toStep === 'deploy' && _.size(project.scoring_dataset_ids)) {
+      } else if(toStep === 'deploy' && project.scoring_dataset_ids.length > 0) {
         return {
           view: 'project.select_scored_dataset',
           properties: {projectId: project.id}
         };
-      } else if (toStep === 'deploy-overview' && _.size(project.scoreset_ids)) {
+      } else if (toStep === 'deploy-overview' && project.scoreset_ids.length > 0) {
         return {
           view: 'project.deploy-overview',
           properties: {projectId: project.id}
@@ -2971,13 +2968,13 @@ angular.module('predicsis.jsSDK')
       return Projects.get(projectId)
         .then(function(project) {
           // Delete dictionary if exists
-          return (_.isNull(project.dictionary_id))
+          return (project.dictionary_id === null)
             ? project
             : Dictionaries.delete(project.dictionary_id).then(function() { return project; });
         })
         .then(function(project) {
           // Delete dictionary if exists
-          return (_.isNull(project.classifier_id))
+          return (project.classifier_id === null)
             ? project
             : Models.delete(project.classifier_id).then(
               function() { return project; },
