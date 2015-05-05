@@ -58,6 +58,7 @@ angular.module('predicsis.jsSDK', ['restangular'])
         _restangular: Restangular,
         setOauthToken: function(token) {
           self.setOauthToken(token);
+          Restangular.setDefaultHeaders({ accept: 'application/json', Authorization: token });
         },
         setErrorHandler: function(handler) {
           self.setErrorHandler(handler);
@@ -3016,7 +3017,6 @@ angular.module('predicsis.jsSDK')
             'Content-Type': 'multipart/form-data',
             success_action_status: 201,
             acl: 'private',
-            'x-amz-meta-filename': file.name,
             policy: credential.policy,
             signature: credential.signature
           }, {
@@ -3027,7 +3027,7 @@ angular.module('predicsis.jsSDK')
           if(progressHandler) {
             xhr2.upload.addEventListener('progress', progressHandler);
           }
-          xhr2.addEventListener('loadend', function() {
+          xhr2.addEventListener('load', function() {
             if(xhr2.status === 201) {
               deferred.resolve({filename: file.name, key: key});
             } else {
@@ -3038,7 +3038,6 @@ angular.module('predicsis.jsSDK')
             deferred.reject(err);
           });
           xhr2.send(form);
-          deferred.resolve({xhr2: xhr2, filename: file.name, key: key});
         });
         return deferred.promise;
     };
