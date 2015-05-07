@@ -58,6 +58,7 @@ angular.module('predicsis.jsSDK', ['restangular'])
         _restangular: Restangular,
         setOauthToken: function(token) {
           self.setOauthToken(token);
+          Restangular.setDefaultHeaders({ accept: 'application/json', Authorization: token });
         },
         setErrorHandler: function(handler) {
           self.setErrorHandler(handler);
@@ -771,7 +772,7 @@ angular.module('predicsis.jsSDK')
      * @return {Promise} New modalities set
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(modalities().post({source: params}));
+      return jobsHelper.wrapAsyncPromise(modalities().post({modalities_set: params}));
     };
 
     /**
@@ -2774,13 +2775,13 @@ angular.module('predicsis.jsSDK')
      * </ul>
      */
     this.getCurrentState = function(project) {
-      if (project.scoreset_ids.length > 0) {
+      if (project.scoreset_ids && project.scoreset_ids.length) {
         //Scored files
         return {
           view: 'project.deploy-overview',
           properties: {projectId: project.id}
         };
-      } else if (project.scoring_dataset_ids.length > 0) {
+      } else if (project.scoring_dataset_ids && project.scoring_dataset_ids.length) {
         //Deploy
         return {
           view: 'project.format-score',
@@ -2981,5 +2982,63 @@ angular.module('predicsis.jsSDK')
               function(err) { if (err.status === 404) { return project; } else { throw err; }}//In case the api has already deleted it when it's dataset has been deleted
           );
         });
+    };
+  });
+
+/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.s3FileHelper
+ * @require $injector
+ */
+angular.module('predicsis.jsSDK')
+  .service('s3FileHelper', function($injector) {
+    'use strict';
+
+    var Upload = $injector.get('Uploads');
+    var $q = $injector.get('$q');
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.s3FileHelper
+     * @name upload
+     * @description upload a file to S3
+     *
+     * @param {Object} file html5 File instance
+     * @return {Promise}
+     */
+    this.upload = function(file, progressHandler) {
+      var deferred = $q.defer();
+      Upload.getCredentials('s3')
+        .then(function(credential) {
+          var key = credential.key.replace('${filename}', file.name);
+          var form = formFactory({
+            key: key,
+            AWSAccessKeyId: credential.aws_access_key_id,
+            'Content-Type': 'multipart/form-data',
+            success_action_status: 201,
+            acl: 'private',
+            policy: credential.policy,
+            signature: credential.signature
+          }, {
+            file: file
+          });
+          var xhr2 = new XMLHttpRequest();
+          xhr2.open('POST', credential.s3_endpoint, true);
+          if(progressHandler) {
+            xhr2.upload.addEventListener('progress', progressHandler);
+          }
+          xhr2.addEventListener('load', function() {
+            if(xhr2.status === 201) {
+              deferred.resolve({filename: file.name, key: key});
+            } else {
+              deferred.reject({status: xhr2.status, err: xhr2.responseText});
+            }
+          });
+          xhr2.addEventListener('error', function(err) {
+            deferred.reject(err);
+          });
+          xhr2.send(form);
+        });
+        return deferred.promise;
     };
   });

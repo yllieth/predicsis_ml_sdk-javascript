@@ -20,7 +20,7 @@ angular.module('YourAngularApplication', ['predicsis.jsSDK'])
     predicsisAPIProvider.setBaseUrl('https://predicsis_api_host');
     predicsisAPIProvider.setOauthToken('4V83j2BWgcPONK8Xw8P7953yPvnTzz784V83j2BWgcPONK8Xw8P7953yPvnTzz78');
   })
-  
+
   .controller('ExampleCtrl', function(predicsisAPI) {
     var self = this;
     predicsisAPI.Datasets.all().then(function(datasetList) { self.datasets = datasetList; });
@@ -47,7 +47,7 @@ angular.module('YourAngularApplication', ['predicsis.jsSDK'])
   });
 ```
 
-Default values: 
+Default values:
 - api endpoint: `https://api.predicsis.com`
 - error handler: `throw Error(response);`
 - oauth access token: `no-token-defined`
@@ -79,13 +79,13 @@ return api.Datasets.getChildren(project.learning_dataset_id).then(function(child
       dataset_id: children.train.id
     });
   })
-  
+
   // create the model from preparation rules set
   .then(function(preparationRulesRet) {
     preparationRulesSet = preparationRulesRet
     return api.Models.createClassifier(preparationRulesRet.id);
   })
-  
+
   // generate reports
   .then(function(classifier) {
     classifier = classifier
@@ -95,7 +95,7 @@ return api.Datasets.getChildren(project.learning_dataset_id).then(function(child
       api.Reports.createUnivariateSupervisedReport(project)
     ]);
   })
-  
+
   //update project
   .then(function(reports) {
     return api.Projects.update(project.id, {
@@ -104,7 +104,7 @@ return api.Datasets.getChildren(project.learning_dataset_id).then(function(child
       report_ids: reportIds
     });
   })
-  
+
   //return classifier
   .then(function() {
     return classifier;
@@ -118,21 +118,42 @@ See the [SDK documentation](http://yllieth.github.io/predicsis_ml_sdk-javascript
 ## Available services
 API resources     | Helpers
 ------------------|---------
-Dataset           | 
-Dictionary        | 
-Jobs              | 
-Modality          | 
+Dataset           |
+Dictionary        |
+Jobs              |
+Modality          |
 Model             | Model helper
-Oauth token       | 
-Oauth application | 
-Preparation rules | 
+Oauth token       |
+Oauth application |
+Preparation rules |
 Project           | Project helper
-Report            | 
-Source            | 
-Upload            | 
-User              | 
-User settings     | 
-Variable          | 
+Report            |
+Source            |
+Upload            | S3 file helper
+User              |
+User settings     |
+Variable          |
+
+## Upload a file to S3
+
+```javascript
+//Get an HTML5 File instance
+fileInput.addEventListener('change', function(evt) {
+  var file = evt.target.files[0];
+  s3FileHelper
+    .upload(file, function progressHandler(event) {
+      //Update a progress bar using standard XMLHttpRequestProgressEvent
+    })
+    .then(function(params) {
+      //file successfully uploaded to s3
+      var filename = params.filename;
+      var key = params.key;//S3 key
+    })
+    .catch(function(err){
+
+    });
+});
+```
 
 ## Run this project locally
 
