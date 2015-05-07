@@ -132,7 +132,28 @@ Source            |
 Upload            | S3 file helper
 User              |
 User settings     |
-Variable          | 
+Variable          |
+
+## Upload a file to S3
+
+```javascript
+//Get an HTML5 File instance
+fileInput.addEventListener('change', function(evt) {
+  var file = evt.target.files[0];
+  s3FileHelper
+    .upload(file, function progressHandler(event) {
+      //Update a progress bar using standard XMLHttpRequestProgressEvent
+    })
+    .then(function(params) {
+      //file successfully uploaded to s3
+      var filename = params.filename;
+      var key = params.key;//S3 key
+    })
+    .catch(function(err){
+
+    });
+});
+```
 
 ## Run this project locally
 
