@@ -2775,13 +2775,13 @@ angular.module('predicsis.jsSDK')
      * </ul>
      */
     this.getCurrentState = function(project) {
-      if (project.scoreset_ids.length > 0) {
+      if (project.scoreset_ids && project.scoreset_ids.length) {
         //Scored files
         return {
           view: 'project.deploy-overview',
           properties: {projectId: project.id}
         };
-      } else if (project.scoring_dataset_ids.length > 0) {
+      } else if (project.scoring_dataset_ids && project.scoring_dataset_ids.length) {
         //Deploy
         return {
           view: 'project.format-score',
