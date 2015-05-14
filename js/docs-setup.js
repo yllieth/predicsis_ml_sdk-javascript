@@ -45,7 +45,7 @@ NG_DOCS={
       "shortName": "predicsis.jsSDK.modelHelper",
       "type": "service",
       "moduleName": "predicsis.jsSDK",
-      "keywords": "$injector $q api classifier complete create dataset datasets find function ids input instance job jssdk learn learning_dataset_id model modelhelper models parameters partition predicsis preparation preparationrules project projects reports requests rules service set store target_variable_id termination time training valid waits wraps"
+      "keywords": "$injector $q $rootscope api broadcast classifier complete create dataset datasets events find function ids input instance job jssdk learn learning_dataset_id model modelhelper models parameters partition predicsis preparation preparationrules project projects reports requests rules service set start-creating-preparation-rules start-generating-reports start-learning start-retrieving-train-dataset start-updating-project store target_variable_id termination time training valid waits wraps"
     },
     {
       "section": "api",
@@ -111,6 +111,14 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "predicsis.jsSDK.s3FileHelper",
+      "shortName": "predicsis.jsSDK.s3FileHelper",
+      "type": "service",
+      "moduleName": "predicsis.jsSDK",
+      "keywords": "$injector $q api err fail file function html5 instance jssdk key predicsis promise resolved response responsetext s3 s3filehelper service status success upload uploads xhr2"
+    },
+    {
+      "section": "api",
       "id": "predicsis.jsSDK.Sources",
       "shortName": "predicsis.jsSDK.Sources",
       "type": "service",
@@ -152,7 +160,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q api attached badge categorical changes characters class colspan container continuous created_at description dictionaries dictionary dictionary_id dictionaryid documentation example fetch function generated https jssdk length list live methods_all methods_get methods_update modalities_set_ids null output parameters patch predicsis promise request restangular sepal service single true type update updated updated_at variable variableid variables"
+      "keywords": "$q api attached badge categorical changes characters class colspan container continuous created_at description dictionary dictionary_id dictionaryid documentation example fetch function https jssdk length list live methods_all methods_get methods_update modalities_set_ids null output parameters patch predicsis promise request restangular sepal service single true type update updated updated_at variable variableid variables"
     }
   ],
   "apis": {

@@ -1,4 +1,4 @@
-<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/edit/master/lib/helper/modelHelper.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/6c5c118/lib/helper/modelHelper.js#L12" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">modelHelper</code>
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/edit/master/lib/helper/modelHelper.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/5f65291/lib/helper/modelHelper.js#L13" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">modelHelper</code>
 <div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK</code>
 </span>
 </div>
@@ -12,11 +12,12 @@
 <li><a href="#/api/predicsis.jsSDK.Projects">Projects</a></li>
 <li><a href="#/api/predicsis.jsSDK.PreparationRules">PreparationRules</a></li>
 <li>$q</li>
+<li>$rootScope</li>
 </ul>
 </div></li>
 </ul>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/6c5c118/lib/helper/modelHelper.js#L47" class="view-source icon-eye-open"> </a><h3 id="methods_learn">learn(project)</h3>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript.git/blob/5f65291/lib/helper/modelHelper.js#L57" class="view-source icon-eye-open"> </a><h3 id="methods_learn">learn(project)</h3>
 <div class="learn"><div class="learn-page"><p>Learn a model</p>
 <p>This function wraps the following requests:</p>
 <ul>
@@ -37,6 +38,15 @@
   <li><kbd>project.learning_dataset_id</kbd> to find the training partition of the input dataset</li>
   <li><kbd>project.target_variable_id</kbd> to create a valid <a href="#/api/predicsis.jsSDK.PreparationRules">PreparationRules</a></li>
   <li><kbd>project.id</kbd> to store preparation rules set, classifier and reports ids.</li>
+</ul>
+
+<p>We also broadcast the following events:</p>
+<ul>
+  <li>jsSDK.learn.start-retrieving-train-dataset</li>
+  <li>jsSDK.learn.start-creating-preparation-rules</li>
+  <li>jsSDK.learn.start-learning</li>
+  <li>jsSDK.learn.start-generating-reports</li>
+  <li>jsSDK.learn.start-updating-project</li>
 </ul></div><h5 id="methods_learn_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="learn-page"><p>Instance of a valid <a href="#/api/predicsis.jsSDK.Projects">Project</a></p>
 </div></td></tr></tbody></table><h5 id="methods_learn_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="learn-page"><p>Instance of a complete <a href="#/api/predicsis.jsSDK.Models">Models</a></p>
 </div></td></tr></table></div>
