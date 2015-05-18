@@ -37,7 +37,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q api async badge class colspan create creation dataset_id delete destroy documentation example fetch function generated https identifier ids jobshelper jssdk list methods_all methods_create methods_delete methods_get modalities parameters params permanently post predicsis remove removed request required resource restangular send service set sets single source variable_id"
+      "keywords": "$q api async badge class colspan create created_at creation dataset_id delete destroy documentation example explicitly fact fetch function generated https identifier ids job_ids jobshelper jssdk list methods_all methods_create methods_delete methods_get modalities object parameters params permanently post predicsis remove removed request required resource restangular returned send service set sets single source user_id variable_id"
     },
     {
       "section": "api",
@@ -45,7 +45,7 @@ NG_DOCS={
       "shortName": "predicsis.jsSDK.modelHelper",
       "type": "service",
       "moduleName": "predicsis.jsSDK",
-      "keywords": "$injector $q $rootscope api broadcast classifier complete create dataset datasets events find function ids input instance job jssdk learn learning_dataset_id model modelhelper models parameters partition predicsis preparation preparationrules project projects reports requests rules service set start-creating-preparation-rules start-generating-reports start-learning start-retrieving-train-dataset start-updating-project store target_variable_id termination time training valid waits wraps"
+      "keywords": "$injector $q $rootscope api broadcast classifier complete create created dataset datasets doesn evaluation events find function generate ids input instance job jssdk learn learning_dataset_id model modelhelper models note parameter parameters partition predicsis preparation preparationrules project projects property report reports requests rules service set start-creating-preparation-rules start-generating-reports start-learning start-retrieving-train-dataset start-updating-project store supervised target_variable_id termination test time train training univariate valid waits wraps"
     },
     {
       "section": "api",
