@@ -37,7 +37,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q api async badge class colspan create creation dataset_id delete destroy documentation example fetch function generated https identifier ids jobshelper jssdk list methods_all methods_create methods_delete methods_get modalities parameters params permanently post predicsis remove removed request required resource restangular send service set sets single source variable_id"
+      "keywords": "$q api async badge class colspan create created_at creation dataset_id delete destroy documentation example explicitly fact fetch function generated https identifier ids job_ids jobshelper jssdk list methods_all methods_create methods_delete methods_get modalities object parameters params permanently post predicsis remove removed request required resource restangular returned send service set sets single source user_id variable_id"
     },
     {
       "section": "api",
@@ -45,7 +45,7 @@ NG_DOCS={
       "shortName": "predicsis.jsSDK.modelHelper",
       "type": "service",
       "moduleName": "predicsis.jsSDK",
-      "keywords": "$injector $q $rootscope api broadcast classifier complete create dataset datasets events find function ids input instance job jssdk learn learning_dataset_id model modelhelper models parameters partition predicsis preparation preparationrules project projects reports requests rules service set start-creating-preparation-rules start-generating-reports start-learning start-retrieving-train-dataset start-updating-project store target_variable_id termination time training valid waits wraps"
+      "keywords": "$injector $q $rootscope api broadcast classifier complete create created dataset datasets doesn evaluation events find function generate ids input instance job jssdk learn learning_dataset_id model modelhelper models note parameter parameters partition predicsis preparation preparationrules project projects property report reports requests rules service set start-creating-preparation-rules start-generating-reports start-learning start-retrieving-train-dataset start-updating-project store supervised target_variable_id termination test time train training univariate valid waits wraps"
     },
     {
       "section": "api",
@@ -90,7 +90,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q addlearningdataset addscoreset addscoringdataset api async badge changes class classifier_id colspan create created_at datasetid delete dependencies description destroy dictionary_id documentation dualplay empty example fetch function helper identifier is_dictionary_verified isdictionaryverified ismodeldone jssdk learning_dataset_id list main_modality methods methods_addlearningdataset methods_addscoreset methods_addscoringdataset methods_all methods_create methods_delete methods_get methods_isdictionaryverified methods_ismodeldone methods_removedependencies methods_resetdictionary methods_update modalities_set_id official output parameters params patch permanently post predicsis preparation_rules_set_id prior project projectid projectids projects projectshelper promise remove removedependencies report_ids request resetdictionary resource restangular return scoreset_ids scoring_dataset_ids send service single string target_variable_id title true update updated updated_at user_id"
+      "keywords": "$q addlearningdataset addscoreset addscoringdataset api array async badge changes class classifier_id colspan create created_at datasetid delete dependencies description destroy dictionary_id documentation dualplay empty evaluation example fetch function helper identifier ids is_dictionary_verified isdictionaryverified ismodeldone jssdk learning_dataset_id list main_modality methods methods_addlearningdataset methods_addscoreset methods_addscoringdataset methods_all methods_create methods_delete methods_get methods_isdictionaryverified methods_ismodeldone methods_removedependencies methods_resetdictionary methods_update modalities_set_id official order output parameters params patch permanently post predicsis preparation_rules_set_id prior project projectid projectids projects projectshelper promise remove removedependencies report report_ids reports request resetdictionary resource restangular return scoreset_ids scoring_dataset_ids send service single stored string supervised target_variable_id test title train true unsupervised update updated updated_at user_id"
     },
     {
       "section": "api",
