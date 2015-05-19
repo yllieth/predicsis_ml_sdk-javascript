@@ -75,6 +75,13 @@ module.exports = function(grunt) {
       }
     },
 
+    karma: {
+      unit: {
+        configFile: 'test/configure.js',
+        singleRun: true
+      }
+    },
+
     watch: {
       all: {
         files: ['lib/predicsis-jsSDK.js', 'lib/**/*.js'],
