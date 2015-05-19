@@ -769,7 +769,19 @@ angular.module('predicsis.jsSDK')
      *  Both <code>variable_id</code> and <code>dataset_id</code> are required.
      *
      * @param {Object} params See above example.
-     * @return {Promise} New modalities set
+     * @return {Promise} Returned modalities set does not contain modalities themselves.
+     * If you want them, you must explicitly {@link predicsis.jsSDK.Modalities#methods_get get} them.
+     * In fact, you will get an object like:
+     * <pre>
+     *   {
+     *     id": "53fdfa7070632d0fc5030000",
+     *     created_at: "2014-05-02T17:13:56.687Z",
+     *     user_id: "5363b25c687964476d000000",
+     *     dataset_id: "53c7dea470632d3417020000",
+     *     variable_id: "5329601c1757f446e6000002",
+     *     job_ids: [ "53c8c88970632d3b9a030001" ]
+     *   }
+     * </pre>
      */
     this.create = function(params) {
       return jobsHelper.wrapAsyncPromise(modalities().post({modalities_set: params}));
@@ -1531,13 +1543,18 @@ angular.module('predicsis.jsSDK')
  * }
  * </pre>
  *
+ * <b><code>reports_ids</code></b> : is an array of ids where reports should always be stored in the same order:
+ * <ol>
+ *   <li>classifier evaluation report for train part</li>
+ *   <li>classifier evaluation report for test part</li>
+ *   <li>univariate supervised report</li>
+ *   <li>univariate unsupervised report</li>
+ * </ol>
+ *
  * See {@link predicsis.jsSDK.projectsHelper projects helper} to get the following methods:
  * <ul>
  *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_isModelDone isModelDone(Projects project)}</code></li>
  *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_isDictionaryVerified isDictionaryVerified(Projects project)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_getCurrentState getCurrentState(Projects project)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_getCurrentStep getCurrentStep(String currentView)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_getStateFromStep getStateFromStep(Projects project, String toStep)}</code></li>
  *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_addLearningDataset addLearningDataset(Projects project, String datasetId)}</code></li>
  *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_addScoringDataset addScoringDataset(Projects project, String datasetId)}</code></li>
  *   <li><code>{@link predicsis.jsSDK.projectsHelper#methods_addScoreset addScoreset(Projects project, String datasetId)}</code></li>
@@ -2448,7 +2465,7 @@ angular.module('predicsis.jsSDK')
      * @ngdoc function
      * @name all
      * @methodOf predicsis.jsSDK.Variables
-     * @description Get all (or a list of) generated dictionaries
+     * @description Get all (or a list of) variables of a specified dictionary
      * @param {String} dictionaryId  Id of the container dictionary
      * @param {Array} [variablesIds] List of variables' id you want to fetch
      * @return {Object} Promise of a variables list
@@ -2460,7 +2477,7 @@ angular.module('predicsis.jsSDK')
         variablesIds = variablesIds || [];
 
         return $q.all(variablesIds.map(function(id) {
-          return variables(dictionaryId, id).get();
+          return variable(dictionaryId, id).get();
         }));
       }
     };
@@ -2587,6 +2604,7 @@ angular.module('predicsis.jsSDK')
  * - {@link predicsis.jsSDK.Projects Projects}
  * - {@link predicsis.jsSDK.PreparationRules PreparationRules}
  * - $q
+ * - $rootScope
  */
 angular.module('predicsis.jsSDK')
   .service('modelHelper', function($injector) {
@@ -2620,6 +2638,19 @@ angular.module('predicsis.jsSDK')
      *   <li><kbd>project.id</kbd> to store preparation rules set, classifier and reports ids.</li>
      * </ul>
      *
+     * Please also note that if your project doesn't have a <code>main_modality</code> parameter, only univariate
+     * supervised report will be created. If this property is here, we also generate classifier evaluation reports
+     * for train and test datasets.
+     *
+     * We also broadcast the following events:
+     * <ul>
+     *   <li>jsSDK.learn.start-retrieving-train-dataset</li>
+     *   <li>jsSDK.learn.start-creating-preparation-rules</li>
+     *   <li>jsSDK.learn.start-learning</li>
+     *   <li>jsSDK.learn.start-generating-reports</li>
+     *   <li>jsSDK.learn.start-updating-project</li>
+     * </ul>
+     *
      * @param {Object} project Instance of a valid {@link predicsis.jsSDK.Projects Project}
      * @return {Object} Instance of a complete {@link predicsis.jsSDK.Models Models}
      */
@@ -2630,13 +2661,18 @@ angular.module('predicsis.jsSDK')
       var Projects = $injector.get('Projects');
       var PreparationRules = $injector.get('PreparationRules');
       var $q = $injector.get('$q');
+      var $rootScope = $injector.get('$rootScope');
       var results = {};
+
+      $rootScope.$broadcast('jsSDK.learn.start-retrieving-train-dataset');
 
       return Datasets.getChildren(project.learning_dataset_id)
         .then(function(children) {
           if(!children.train) {
             throw 'Invalid project on POST preparation_rules, no valid train dataset found';
           }
+
+          $rootScope.$broadcast('jsSDK.learn.start-creating-preparation-rules');
 
           return PreparationRules.create({
             variable_id: project.target_variable_id,
@@ -2646,6 +2682,7 @@ angular.module('predicsis.jsSDK')
         // create the model from preparation rules set
         .then(function(preparationRulesRet) {
           results.preparation_rules_set = preparationRulesRet;
+          $rootScope.$broadcast('jsSDK.learn.start-learning');
           return Models.createClassifier(preparationRulesRet.id);
         })
         // generate reports
@@ -2655,17 +2692,29 @@ angular.module('predicsis.jsSDK')
           // but the PATCH request will occurs after the learn process.
           // this tweak allow project generation.
           project.classifier_id = classifier.id;
-          return $q.all([
-            Reports.createTrainClassifierEvaluationReport(project),
-            Reports.createTestClassifierEvaluationReport(project),
-            Reports.createUnivariateSupervisedReport(project)
-          ]);
+          $rootScope.$broadcast('jsSDK.learn.start-generating-reports');
+
+          var requestedReports = {
+            univariate_supervised_report: Reports.createUnivariateSupervisedReport(project)
+          };
+
+          if (project.main_modality !== null) {
+            requestedReports['train_classifier_evaluation_report'] = Reports.createTrainClassifierEvaluationReport(project);
+            requestedReports['test_classifier_evaluation_reports'] = Reports.createTestClassifierEvaluationReport(project);
+          }
+
+          return $q.all(requestedReports);
         })
         //update project
         .then(function(reports) {
-          var reportIds = reports.map(function(report) {
-            return report.id;
-          });
+          var reportIds = [];
+          reportIds[0] = reports.train_classifier_evaluation_report.id;
+          reportIds[1] = reports.test_classifier_evaluation_reports.id;
+          reportIds[2] = reports.univariate_supervised_report.id;
+          //reportIds[3] = reports.univariate_unsupervised_report.id;
+
+          $rootScope.$broadcast('jsSDK.learn.start-updating-project');
+
           return Projects.update(project.id, {
             preparation_rules_set_id: results.preparation_rules_set.id,
             classifier_id: results.classifier.id,
@@ -2754,116 +2803,6 @@ angular.module('predicsis.jsSDK')
      */
     this.isDictionaryVerified = function(project) {
       return Boolean(project.is_dictionary_verified);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.projectsHelper
-     * @name getCurrentState
-     * @description Return current router state based on project content.
-     * @param {Object} project {@link API.model.Projects Projects model}
-     * @return {Object}
-     * <pre>
-     * {
-     *   view: 'project.model_overview',
-     *   properties: { projectId: ___, modelId: ___ }
-     * }
-     * </pre>
-     * <ul>
-     *   <li>The <code>view</code> is the name of the state according to ui-router configuration</li>
-     *   <li><code>properties</code> is a list of required params required to rebuild the url</li>
-     * </ul>
-     */
-    this.getCurrentState = function(project) {
-      if (project.scoreset_ids && project.scoreset_ids.length) {
-        //Scored files
-        return {
-          view: 'project.deploy-overview',
-          properties: {projectId: project.id}
-        };
-      } else if (project.scoring_dataset_ids && project.scoring_dataset_ids.length) {
-        //Deploy
-        return {
-          view: 'project.format-score',
-          properties: {projectId: project.id, datasetId: project.scoring_dataset_ids.slice(-1)[0]}
-        };
-      } else if (project.classifier_id) {
-        //Model Overview
-        return {
-          view: 'project.model_overview',
-          properties: {projectId: project.id, modelId: project.classifier_id}
-        };
-      } else if (project.learning_dataset_id && project.dictionary_id) {
-        //Create Model: config
-        return {
-          view: 'project.learn-config',
-          properties: {projectId: project.id, datasetId:project.learning_dataset_id, dictionaryId:project.dictionary_id}
-        };
-      } else {
-        //Create Model: upload
-        return {
-          view: 'project.select_learned_dataset',
-          properties: {projectId: project.id}
-        };
-      }
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.projectsHelper
-     * @name getCurrentStep
-     * @description Map view to project step (One of model-creation, model-overview, deploy, deploy-overview)
-     *
-     * @param {String} currentView State name of the current page
-     * @return {String} State name displayed as "current" in breadcrumb
-     */
-    this.getCurrentStep = function(currentView) {
-      if(currentView === 'project.deploy-overview') {
-        return 'deploy-overview';
-      } else if (['project.model_overview', 'project.variables-inspection'].indexOf(currentView) >= 0) {
-        return 'model-overview';
-      }
-      else if(['project.create', 'project.select_learned_dataset', 'project.format', 'project.learn-config', 'project.learn'].indexOf(currentView) >= 0) {
-        return 'model-creation';
-      } else {
-        return 'deploy';
-      }
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.projectsHelper
-     * @name getStateFromStep
-     * @param {Object} project {@link API.model.Projects Projects model}
-     * @param {String} toStep --
-     * @return {Object}
-     * <pre>
-     * {
-     *   view: 'project.model_overview',
-     *   properties: { projectId: ___, modelId: ___ }
-     * }
-     * </pre>
-     */
-    this.getStateFromStep = function(project, toStep) {
-      if(toStep === 'model-overview' && project.classifier_id) {
-        return {
-          view: 'project.model_overview',
-          properties: {projectId: project.id, modelId: project.classifier_id}
-        };
-      } else if(toStep === 'deploy' && project.scoring_dataset_ids.length > 0) {
-        return {
-          view: 'project.select_scored_dataset',
-          properties: {projectId: project.id}
-        };
-      } else if (toStep === 'deploy-overview' && project.scoreset_ids.length > 0) {
-        return {
-          view: 'project.deploy-overview',
-          properties: {projectId: project.id}
-        };
-      } else {
-        //Even on model-creation false should be returned has user never navigate to this step
-        return false;
-      }
     };
 
     // --- Altering methods --------------------------------------------------------------------------------------------
@@ -2989,8 +2928,11 @@ angular.module('predicsis.jsSDK')
  * @ngdoc service
  * @name predicsis.jsSDK.s3FileHelper
  * @require $injector
+ * - Uploads
+ * - $q
  */
-angular.module('predicsis.jsSDK')
+angular
+  .module('predicsis.jsSDK')
   .service('s3FileHelper', function($injector) {
     'use strict';
 
@@ -3004,13 +2946,18 @@ angular.module('predicsis.jsSDK')
      * @description upload a file to S3
      *
      * @param {Object} file html5 File instance
-     * @return {Promise}
+     * @return {Promise} Resolved promise my have 2 response whether if upload success or fail:
+     * <ul>
+     *   <li><b>Success</b> <code>{filename: file.name, key: key}</code></li>
+     *   <li><b>Fail</b> <code>{status: xhr2.status, err: xhr2.responseText}</code></li>
+     * </ul>
      */
     this.upload = function(file, progressHandler) {
       var deferred = $q.defer();
       Upload.getCredentials('s3')
         .then(function(credential) {
           var key = credential.key.replace('${filename}', file.name);
+          var xhr2 = new XMLHttpRequest();
           var form = formFactory({
             key: key,
             AWSAccessKeyId: credential.aws_access_key_id,
@@ -3022,11 +2969,13 @@ angular.module('predicsis.jsSDK')
           }, {
             file: file
           });
-          var xhr2 = new XMLHttpRequest();
+
           xhr2.open('POST', credential.s3_endpoint, true);
+
           if(progressHandler) {
             xhr2.upload.addEventListener('progress', progressHandler);
           }
+
           xhr2.addEventListener('load', function() {
             if(xhr2.status === 201) {
               deferred.resolve({filename: file.name, key: key});
@@ -3034,9 +2983,11 @@ angular.module('predicsis.jsSDK')
               deferred.reject({status: xhr2.status, err: xhr2.responseText});
             }
           });
+
           xhr2.addEventListener('error', function(err) {
             deferred.reject(err);
           });
+
           xhr2.send(form);
         });
         return deferred.promise;
