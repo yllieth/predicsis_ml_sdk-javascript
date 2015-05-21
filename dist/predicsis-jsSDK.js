@@ -132,7 +132,7 @@ angular.module('predicsis.jsSDK', ['restangular'])
  *   sampling: 100,
  *   nb_of_lines: 50002,
  *   children_dataset_ids: [],
- *   dictionaries_ids: [],
+ *   dictionary_ids: [],
  *   generated_dictionaries_ids: [],
  *   data_file: {
  *     id: '54904b09776f720001650000',
@@ -265,7 +265,10 @@ angular.module('predicsis.jsSDK')
      * @return {Promise} New dataset or new scoreset
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(datasets().post({dataset: params}));
+      return jobsHelper.wrapAsyncPromise(datasets().post({dataset: params}))
+        .then(function(result) {
+          return dataset(result.id).get();
+        });
     };
 
     /**
@@ -410,7 +413,10 @@ angular.module('predicsis.jsSDK')
         changes.separator = '\\t';
       }
 
-      return jobsHelper.wrapAsyncPromise(dataset(id).patch({dataset: changes}));
+      return jobsHelper.wrapAsyncPromise(dataset(id).patch({dataset: changes}))
+        .then(function(result) {
+          return dataset(result.id).get();
+        });
     };
 
     /**
@@ -544,7 +550,10 @@ angular.module('predicsis.jsSDK')
      * @return {Object} Promise of a new dictionary
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(dictionaries().post({dictionary: params}));
+      return jobsHelper.wrapAsyncPromise(dictionaries().post({dictionary: params}))
+        .then(function(result) {
+          return dictionary(result.id).get();
+        });
     };
 
     /**
@@ -595,7 +604,10 @@ angular.module('predicsis.jsSDK')
      * @return {Object} Promise of the updated dictionary
      */
     this.update = function(dictionaryId, changes) {
-      return jobsHelper.wrapAsyncPromise(dictionary(dictionaryId).patch({dictionary: changes}));
+      return jobsHelper.wrapAsyncPromise(dictionary(dictionaryId).patch({dictionary: changes}))
+        .then(function(result) {
+          return dictionary(result.id).get();
+        });
     };
 
     /**
@@ -784,7 +796,10 @@ angular.module('predicsis.jsSDK')
      * </pre>
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(modalities().post({modalities_set: params}));
+      return jobsHelper.wrapAsyncPromise(modalities().post({modalities_set: params}))
+        .then(function(result) {
+          return modality(result.id).get();
+        });
     };
 
     /**
@@ -970,7 +985,10 @@ angular.module('predicsis.jsSDK')
      * @return {Promise} New model
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(models().post({model: params}));
+      return jobsHelper.wrapAsyncPromise(models().post({model: params}))
+        .then(function(result) {
+          return model(result.id).get();
+        });
     };
 
     /**
@@ -1020,7 +1038,10 @@ angular.module('predicsis.jsSDK')
      * @return {Promise} Updated model
      */
     this.update = function(id, changes) {
-      return jobsHelper.wrapAsyncPromise(model(id).patch({model: changes}));
+      return jobsHelper.wrapAsyncPromise(model(id).patch({model: changes}))
+        .then(function(result) {
+          return model(result.id).get();
+        });
     };
 
     /**
@@ -1413,7 +1434,10 @@ angular.module('predicsis.jsSDK')
      * @return {Promise} New preparation rules set
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(preparationRulesSets().post({preparation_rules_set: params}));
+      return jobsHelper.wrapAsyncPromise(preparationRulesSets().post({preparation_rules_set: params}))
+        .then(function(result) {
+          return preparationRulesSet(result.id).get();
+        });
     };
 
     /**
@@ -1463,7 +1487,10 @@ angular.module('predicsis.jsSDK')
      * @return {Promise} Updated preparation rules set
      */
     this.update = function(id, changes) {
-      return jobsHelper.wrapAsyncPromise(preparationRulesSet(id).patch({preparation_rules_set: changes}));
+      return jobsHelper.wrapAsyncPromise(preparationRulesSet(id).patch({preparation_rules_set: changes}))
+        .then(function(result) {
+          return preparationRulesSet(result.id).get();
+        });
     };
 
     /**
@@ -1858,7 +1885,10 @@ angular.module('predicsis.jsSDK')
      * @return {Object} Promise of a report
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(reports().post({report: params}));
+      return jobsHelper.wrapAsyncPromise(reports().post({report: params}))
+        .then(function(result) {
+          return report(result.id).get();
+        });
     };
 
     /**
@@ -1909,7 +1939,10 @@ angular.module('predicsis.jsSDK')
      * @return {Object} Promise of the updated report
      */
     this.update = function(reportId, changes) {
-      return jobsHelper.wrapAsyncPromise(report(reportId).patch({report: changes}));
+      return jobsHelper.wrapAsyncPromise(report(reportId).patch({report: changes}))
+        .then(function(result) {
+          return report(result.id).get();
+        });
     };
 
     /**
@@ -2067,7 +2100,7 @@ angular.module('predicsis.jsSDK')
      * @return {Promise} An updated source
      */
     this.update = function(sourceId, changes) {
-      return jobsHelper.wrapAsyncPromise(source(sourceId).patch({source: changes}));
+      return source(sourceId).patch({source: changes});
     };
 
     /**
