@@ -3015,7 +3015,6 @@ angular
  * @name predicsis.jsSDK.helpers.s3FileHelper
  * @require $injector
  * - Uploads
- * - $q
  */
 angular
   .module('predicsis.jsSDK.helpers')
@@ -3023,9 +3022,10 @@ angular
     'use strict';
 
     var Upload = $injector.get('Uploads');
-    var $q = $injector.get('$q');
     var files = [];
     var progressHandlers = [];
+    var endHandlers = [];
+    var errorHandlers = [];
     var requests = [];
 
     function findFileIndex(file) {
@@ -3039,9 +3039,19 @@ angular
 
     function progressHandler(fileIndex, evt) {
       if(progressHandlers[fileIndex]) {
-        progressHandlers[fileIndex].forEach(function(cb) {
-          cb(evt);
-        });
+        progressHandlers[fileIndex](evt);
+      }
+    }
+
+    function endHandler(fileIndex, evt) {
+      if(endHandlers[fileIndex]) {
+        endHandlers[fileIndex](evt);
+      }
+    }
+
+    function errorHandler(fileIndex, err) {
+      if(errorHandlers[fileIndex]) {
+        errorHandlers[fileIndex](err);
       }
     }
 
@@ -3060,10 +3070,17 @@ angular
 
     function addProgressListener(file, cb) {
       var fileIndex = findFileIndex(file);
-      if(!progressHandlers[fileIndex]) {
-        progressHandlers[fileIndex] = [];
-      }
-      progressHandlers[fileIndex].push(cb);
+      progressHandlers[fileIndex] = cb;
+    }
+
+    function addEndListener(file, cb) {
+      var fileIndex = findFileIndex(file);
+      endHandlers[fileIndex] = cb;
+    }
+
+    function addErrorListener(file, cb) {
+      var fileIndex = findFileIndex(file);
+      errorHandlers[fileIndex] = cb;
     }
 
     /**
@@ -3081,7 +3098,6 @@ angular
      */
     this.upload = function(file) {
       var fileIndex = findFileIndex(file);
-      var deferred = $q.defer();
       Upload.getCredentials('s3')
         .then(function(credential) {
           var key = credential.key.replace('${filename}', file.name);
@@ -3105,27 +3121,30 @@ angular
           xhr2.addEventListener('load', function() {
             clean(fileIndex);
             if(xhr2.status === 201) {
-              deferred.resolve({filename: file.name, key: key});
+              endHandler(fileIndex, {filename: file.name, key: key});
             } else {
-              deferred.reject({status: xhr2.status, err: xhr2.responseText});
+              errorHandler(fileIndex, {status: xhr2.status, err: xhr2.responseText});
             }
           });
-
           xhr2.addEventListener('error', function(err) {
             clean(fileIndex);
-            deferred.reject(err);
+            errorHandler(fileIndex, err);
           });
-
           xhr2.send(form);
         });
-        return deferred.promise;
     };
 
     this.on = function(eventName, file, cb) {
-      if(eventName !== 'progress' || !file) {
+      if((eventName !== 'progress' && eventName !== 'end' && eventName !== 'error') || !file) {
         throw 'Invalid event name or invalid file';
       }
-      addProgressListener(file, cb);
+      if(eventName === 'progress') {
+        addProgressListener(file, cb);
+      } else if (eventName === 'end') {
+        addEndListener(file, cb);
+      } else {
+        addErrorListener(file, cb);
+      }
     };
 
     this.list = function() {
