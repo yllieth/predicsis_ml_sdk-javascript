@@ -3063,8 +3063,8 @@ angular
 
     function abort(file) {
       var fileIndex = findFileIndex(file);
-      if(requests[filesIndex]) {
-        requests[filesIndex].abort();
+      if(requests[fileIndex]) {
+        requests[fileIndex].abort();
       }
     }
 
