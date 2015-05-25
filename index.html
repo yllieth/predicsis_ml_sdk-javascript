@@ -11,7 +11,7 @@
                  Declarative templates with data-binding, MVC, dependency injection and great
                  testability story all implemented with pure client-side JavaScript!">
   <meta name="fragment" content="!">
-  <title ng-bind-template="Documentation: {{partialTitle}}">Docs</title>
+  <title ng-bind-template="ML | SDK: Documentation: {{partialTitle}}">Docs</title>
   <script type="text/javascript">
     // dynamically add base tag as well as css and javascript files.
     // we can't add css/js the usual way, because some browsers (FF) eagerly prefetch resources
@@ -81,7 +81,7 @@
         <div class="container">
           
           
-            <a  href="/api"  class="brand">Documentation</a>
+            <a  href="/api"  class="brand">ML | SDK: Documentation</a>
           
           <ul class="nav">
             <li ng-repeat="(url, name) in sections" ng-class="{active: isActivePath(url)}">
@@ -212,6 +212,11 @@
         <div id="loading" ng-show="loading">Loading...</div>
 
         <div ng-hide="loading" ng-include src="currentPage.partialUrl" onload="afterPartialLoaded()" autoscroll class="content slide-reveal"></div>
+
+        <div id="disqus" class="disqus">
+          <h2>Discussion</h2>
+          <div id="disqus_thread" class="content-panel-content"></div>
+        </div>
 
       </div>
     </div>
