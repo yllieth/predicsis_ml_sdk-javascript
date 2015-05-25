@@ -10,7 +10,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$classifier_id $dataset_id $header $main_modality $modalities_set_id $name $q $separator api async awesome badge build changes children_dataset_ids class classifier_id colspan create created_at creation csv data_file datafile dataset dataset_id dataset_name datasets delete description destroy dictionaries_ids dictionary differents documentation escape examples existing fetch file filename filenames function generated_dictionaries_ids generation getchildren going header https identifier job_ids jobshelper jssdk learned learned_learning_dataset learning learning-dataset learning_dataset learning_dataset_with_model list main_modality method methods_all methods_create methods_delete methods_get methods_getchildren methods_split methods_update modalities_set_id model named nb_of_lines null original original_source_id paradox parameters params parent_dataset_id parent_dictionary patch permanently post predicsis preview ratio remove removed request requested required requires restangular s3 s3_url sampling scoreset scoring_dataset separator service set single size source source_ids split string subset subsets tabulation test tested tested_learning_dataset testing train true type update updated updated_at upload url user_id view"
+      "keywords": "$classifier_id $dataset_id $header $main_modality $modalities_set_id $name $q $separator api async awesome badge build changes children_dataset_ids class classifier_id colspan create created_at creation csv data_file datafile dataset dataset_id dataset_name datasets delete description destroy dictionary dictionary_ids differents documentation escape examples existing fetch file filename filenames function generated_dictionaries_ids generation getchildren going header https identifier job_ids jobshelper jssdk learned learned_learning_dataset learning learning-dataset learning_dataset learning_dataset_with_model list main_modality method methods_all methods_create methods_delete methods_get methods_getchildren methods_split methods_update modalities_set_id model named nb_of_lines null original original_source_id paradox parameters params parent_dataset_id parent_dictionary patch permanently post predicsis preview ratio remove removed request requested required requires restangular s3 s3_url sampling scoreset scoring_dataset separator service set single size source source_ids split string subset subsets tabulation test tested tested_learning_dataset testing train true type update updated updated_at upload url user_id view"
     },
     {
       "section": "api",
@@ -90,7 +90,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK",
       "shortDescription": "",
-      "keywords": "$q addlearningdataset addscoreset addscoringdataset api array async badge changes class classifier_id colspan create created_at datasetid delete dependencies description destroy dictionary_id documentation dualplay empty evaluation example fetch function helper identifier ids is_dictionary_verified isdictionaryverified ismodeldone jssdk learning_dataset_id list main_modality methods methods_addlearningdataset methods_addscoreset methods_addscoringdataset methods_all methods_create methods_delete methods_get methods_isdictionaryverified methods_ismodeldone methods_removedependencies methods_resetdictionary methods_update modalities_set_id official order output parameters params patch permanently post predicsis preparation_rules_set_id prior project projectid projectids projects projectshelper promise remove removedependencies report report_ids reports request resetdictionary resource restangular return scoreset_ids scoring_dataset_ids send service single stored string supervised target_variable_id test title train true unsupervised update updated updated_at user_id"
+      "keywords": "$q addlearningdataset addscoreset addscoringdataset api array async badge changes class classifier_id colspan create created_at dataset datasetid delete dependencies description designed destroy dictionary_id documentation dualplay empty evaluation example fetch field function helper identifier ids is_dictionary_verified isdictionaryverified ismodeldone jssdk learning_dataset_id list main_modality methods methods_addlearningdataset methods_addscoreset methods_addscoringdataset methods_all methods_create methods_delete methods_get methods_isdictionaryverified methods_ismodeldone methods_removedependencies methods_resetdictionary methods_update modalities_set_id official order output parameters params parent patch permanently post predicsis preparation_rules_set_id prior process project projectid projectids projects projectshelper promise remove removedependencies report report_ids reports request resetdictionary resource restangular return scoreset_ids scoring_dataset_ids send service single splitted store stored string subsets supervised target_variable_id test title train true unsupervised update updated updated_at user_id"
     },
     {
       "section": "api",
@@ -171,5 +171,10 @@ NG_DOCS={
   "startPage": "/api",
   "scripts": [
     "angular.min.js"
-  ]
+  ],
+  "discussions": {
+    "shortName": "predicsismlsdkjavascript",
+    "url": "https://predicsismlsdkjavascript.disqus.com",
+    "dev": false
+  }
 };

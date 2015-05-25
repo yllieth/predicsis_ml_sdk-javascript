@@ -49,13 +49,18 @@ module.exports = function(grunt) {
     ngdocs: {
       options: {
         dest: 'docs/',
-        title: 'Documentation',
+        title: 'ML | SDK: Documentation',
         //scripts: ['vendor/angular/angular.js'],
         styles: ['docs/ngdoc.css'],
         html5Mode: false,
         startPage: '/api',
         titleLink: '/api',
-        bestMatch: true
+        bestMatch: true,
+        discussions: {
+          shortName: 'predicsismlsdkjavascript',
+          url: 'https://predicsismlsdkjavascript.disqus.com',
+          dev: false
+        }
       },
       api: {
         src: ['lib/model/*.js', 'lib/helper/*.js']
