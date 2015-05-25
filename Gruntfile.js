@@ -21,6 +21,14 @@ module.exports = function(grunt) {
       }
     },
 
+    bump: {
+      options: {
+        filepaths: ['package.json', 'bower.json'],
+        commit: true,
+        tag: false
+      }
+    },
+
     // remove previous builds
     clean: {
       dist: ['dist'],
@@ -104,5 +112,7 @@ module.exports = function(grunt) {
       grunt.task.run(['ngdocs']);
     }
   });
+
+  grunt.registerTask('update', ['build', 'doc:deploy', 'bump:patch'])
 
 };
