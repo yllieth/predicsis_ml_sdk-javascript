@@ -949,7 +949,7 @@ angular
  * </pre>
  */
 angular
-  .module('predicsis.jsSDK.models.Models')
+  .module('predicsis.jsSDK.models')
   .service('Models', function($q, Restangular, jobsHelper) {
     'use strict';
     var self = this;
