@@ -163,7 +163,7 @@ angular
  * }
  * </pre>
  *
- * <h3>Splitted learning dataset -> learned part</h3>
+ * <h3>Splitted learning dataset -> learned part (see {@link predicsis.jsSDK.helpers.datasetHelper#methods_istrainpart datasetHelper.isTrainPart(Dataset dataset)})</h3>
  * <pre>
  * {
  *   ...
@@ -176,7 +176,7 @@ angular
  * }
  * </pre>
  *
- * <h3>Splitted learning dataset -> tested part</h3>
+ * <h3>Splitted learning dataset -> tested part (see {@link predicsis.jsSDK.helpers.datasetHelper#methods_istestpart datasetHelper.isTestPart(Dataset dataset)})</h3>
  * <pre>
  * {
  *   ...
@@ -216,7 +216,7 @@ angular
  * }
  * </pre>
  *
- * <h3>Scoreset</h3>
+ * <h3>Scoreset (see {@link predicsis.jsSDK.helpers.datasetHelper#methods_isScore datasetHelper.isScore(Dataset dataset)})</h3>
  * <pre>
  * {
  *   ...
@@ -226,6 +226,8 @@ angular
  *   ...
  * }
  * </pre>
+ *
+ * Please also note that there is no distinction between a learning dataset and a scoring dataset.
  */
 angular
   .module('predicsis.jsSDK.models')
@@ -2626,7 +2628,7 @@ angular
      * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
      */
     this.isChild = function(dataset) {
-      return Boolean(dataset.parant_dataset_id !== null);
+      return Boolean(dataset.parent_dataset_id !== null);
     };
 
     /**
@@ -2665,6 +2667,28 @@ angular
      */
     this.isFormatted = function(dataset) {
       return Boolean(dataset.header !== null) && Boolean(dataset.separator !== null)
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.datasetHelper
+     * @name isScore
+     * @description Tells if a dataset is the result of a score.
+     * A score result is identified by the following rules:
+     * <ul>
+     *   <li><code>dataset.source_ids.length === 0</code></li>
+     *   <li><code>dataset.main_modality !== null</code></li>
+     *   <li><code>dataset.classifier !== null</code></li>
+     *   <li><code>dataset.dataset_id !== null</code></li>
+     * </ul>
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isScore = function(dataset) {
+      return Boolean(dataset.source_ids.length === 0)
+        && Boolean(dataset.main_modality !== null)
+        && Boolean(dataset.classifier !== null)
+        && Boolean(dataset.dataset_id !== null);
     };
 
   });
