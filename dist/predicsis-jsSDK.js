@@ -17,7 +17,9 @@ angular
 
     this.setErrorHandler = function(handler) { errorHandler = handler; };
 
-    this.$get = function(Restangular, Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications, PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables, jobsHelper, modelHelper, projectsHelper) {
+    this.$get = function(Restangular,
+                         Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications, PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables,
+                         datasetHelper, jobsHelper, modelHelper, projectsHelper, s3FileHelper) {
       var self = this;
 
       Restangular.setBaseUrl(this.getBaseUrl());
@@ -55,9 +57,11 @@ angular
         UserSettings: UserSettings,
         Variables: Variables,
 
+        datasetHelper: datasetHelper,
         jobsHelper: jobsHelper,
         modelHelper: modelHelper,
         projectsHelper: projectsHelper,
+        s3FileHelper: s3FileHelper,
 
         _restangular: Restangular,
         setOauthToken: function(token) {
@@ -2574,6 +2578,93 @@ angular
      */
     this.update = function(dictionaryId, variableId,  changes) {
       return variable(dictionaryId, variableId).patch({variable: changes});
+    };
+
+  });
+
+/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.helpers.datasetHelper
+ * @description Give some utility method on a {@link predicsis.jsSDK.models.Datasets} object
+ */
+angular
+  .module('predicsis.jsSDK.helpers')
+  .service('datasetHelper', function() {
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.datasetHelper
+     * @name hasChildren
+     * @description Tells if a dataset has subsets
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.hasChildren = function(dataset) {
+      return Boolean(dataset.children_dataset_ids.length > 0);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.datasetHelper
+     * @name isParent
+     * @description Tells if a dataset is a parent dataset.
+     * <b>Note:</b> A parent may have any children, but its <kbd>parent_dataset_id</kbd> must be null
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isParent = function(dataset) {
+      return Boolean(dataset.parent_dataset_id === null);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.datasetHelper
+     * @name isChildren
+     * @description Tells if a dataset is a child dataset
+     * <b>Note:</b> A dataset is considered as a child if it has a parent. There is no orphan among datasets!
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isChild = function(dataset) {
+      return Boolean(dataset.parant_dataset_id !== null);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.datasetHelper
+     * @name isTrainPart
+     * @description Tells if a dataset is a train subset.
+     * <b>Note:</b> A dataset is considered as a train subset if its sampling is positive
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isTrainPart = function(dataset) {
+      return isChild(dataset) && dataset.sampling > 0;
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.datasetHelper
+     * @name isTestPart
+     * @description Tells if a dataset is a train subset.
+     * <b>Note:</b> A dataset is considered as a test subset if its sampling is negative
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isTestPart = function(dataset) {
+      return isChild(dataset) && dataset.sampling < 0;
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.datasetHelper
+     * @name isFormatted
+     * @description Tells if a dataset has both header and separator defined.
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isFormatted = function(dataset) {
+      return Boolean(dataset.header !== null) && Boolean(dataset.separator !== null)
     };
 
   });
