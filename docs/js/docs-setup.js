@@ -9,7 +9,8 @@ NG_DOCS={
       "shortName": "predicsis.jsSDK.helpers.datasetHelper",
       "type": "service",
       "moduleName": "predicsis.jsSDK.helpers",
-      "keywords": "api child children considered dataset datasethelper datasets defined function haschildren header helpers instance ischildren isformatted isparent istestpart istrainpart jssdk models negative null orphan parent positive predicsis sampling separator service subset subsets tells test train"
+      "shortDescription": "Give some utility method on a dataset object",
+      "keywords": "api child children considered dataset datasethelper datasets defined function haschildren header helpers instance ischil isformatted isparent istestpart istrainpart jssdk method models negative null object orphan parent positive predicsis sampling separator service subset subsets tells test train utility"
     },
     {
       "section": "api",
