@@ -3066,6 +3066,7 @@ angular
       if(requests[fileIndex]) {
         requests[fileIndex].abort();
       }
+      clean(fileIndex);
     }
 
     function addProgressListener(file, cb) {
