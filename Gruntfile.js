@@ -64,6 +64,10 @@ module.exports = function(grunt) {
         startPage: '/api',
         titleLink: '/api',
         bestMatch: true,
+        analytics: {
+          account: 'UA-63397194-1',
+          domainName: 'http://yllieth.github.io/predicsis_ml_sdk-javascript'
+        },
         discussions: {
           shortName: 'predicsismlsdkjavascript',
           url: 'https://predicsismlsdkjavascript.disqus.com',
