@@ -5,6 +5,14 @@ NG_DOCS={
   "pages": [
     {
       "section": "api",
+      "id": "predicsis.jsSDK.helpers.datasetHelper",
+      "shortName": "predicsis.jsSDK.helpers.datasetHelper",
+      "type": "service",
+      "moduleName": "predicsis.jsSDK.helpers",
+      "keywords": "api child children considered dataset datasethelper datasets defined function haschildren header helpers instance ischildren isformatted isparent istestpart istrainpart jssdk models negative null orphan parent positive predicsis sampling separator service subset subsets tells test train"
+    },
+    {
+      "section": "api",
       "id": "predicsis.jsSDK.helpers.jobsHelper",
       "shortName": "predicsis.jsSDK.helpers.jobsHelper",
       "type": "service",
@@ -33,7 +41,7 @@ NG_DOCS={
       "shortName": "predicsis.jsSDK.helpers.s3FileHelper",
       "type": "service",
       "moduleName": "predicsis.jsSDK.helpers",
-      "keywords": "$injector $q api err fail file function helpers html5 instance jssdk key predicsis promise resolved response responsetext s3 s3filehelper service status success upload uploads xhr2"
+      "keywords": "$injector api err fail file function helpers html5 instance jssdk key predicsis promise resolved response responsetext s3 s3filehelper service status success upload uploads xhr2"
     },
     {
       "section": "api",
