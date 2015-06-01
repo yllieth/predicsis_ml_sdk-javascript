@@ -4,7 +4,8 @@ angular.module('predicsis.jsSDK.helpers', []);
 angular
   .module('predicsis.jsSDK', ['predicsis.jsSDK.models', 'predicsis.jsSDK.helpers', 'restangular'])
   .provider('predicsisAPI', function () {
-    var errorHandler = function(response) { throw Error(response); }
+    'use strict';
+    var errorHandler = function(response) { throw Error(response); };
     var baseURL = 'https://api.predicsis.com';
     var oauthToken = 'no-token-defined';
 
@@ -18,13 +19,15 @@ angular
     this.setErrorHandler = function(handler) { errorHandler = handler; };
 
     this.$get = function(Restangular,
-                         Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications, PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables,
+                         Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications,
+                         PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables,
                          datasetHelper, jobsHelper, modelHelper, projectsHelper, s3FileHelper) {
       var self = this;
 
       Restangular.setBaseUrl(this.getBaseUrl());
       Restangular.setDefaultHeaders({ accept: 'application/json', Authorization: 'Bearer ' + this.getOauthToken() });
       Restangular.setErrorInterceptor(function(response) { errorHandler(response); });
+      jobsHelper.setErrorHandler(function(err) { errorHandler(err); });
       Restangular.addResponseInterceptor(function(data, operation, what, url, response) {
         //operation is one of 'getList', 'post', 'get', 'patch'
         if (['getList', 'post', 'get', 'patch'].indexOf(operation) > -1) {
@@ -2722,7 +2725,7 @@ angular
   .service('jobsHelper', function($q, Jobs) {
     'use strict';
     var self = this;
-
+    var errorHandler;
 
     /**
      * @ngdoc function
@@ -2818,8 +2821,35 @@ angular
         return self.listen(jobId)
           .then(function() {
             return asyncResult;
+          })
+          .catch(function(err) {
+            if(errorHandler) {
+              errorHandler(err);
+            }
+            throw err;
           });
       });
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.jobsHelper
+     * @name setErrorHandler
+     * @description set error handler (errors occuring in a job)
+     *
+     * Usage example:
+     * <pre>
+     * return jobsHelper
+     *   .setErrorHandler(function(error) {
+     *     // do something with error
+     *     // ...
+     *   });
+     * </pre>
+     *
+     * @param {Function} callback called when an error occurs during a Job
+     */
+    self.setErrorHandler = function(cb) {
+      errorHandler = cb;
     };
 });
 
