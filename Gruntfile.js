@@ -57,7 +57,7 @@ module.exports = function(grunt) {
     ngdocs: {
       options: {
         dest: 'docs/',
-        title: 'ML | SDK: Documentation',
+        title: 'jsSDK: Documentation',
         //scripts: ['vendor/angular/angular.js'],
         styles: ['docs/ngdoc.css'],
         html5Mode: false,
