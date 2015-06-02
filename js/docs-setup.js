@@ -18,7 +18,7 @@ NG_DOCS={
       "shortName": "predicsis.jsSDK.helpers.jobsHelper",
       "type": "service",
       "moduleName": "predicsis.jsSDK.helpers",
-      "keywords": "$q active alt api array async asynchronous check completed completely completly consider coul created current dataset example fulfilled function going hasn helpers http https job jobid jobs jobshelper jssdk list listen listened lot minute notes params pending png position post predicsis promise property pulling request requests resolved resolving resource response return returns schema second send service src standard succeeds termination time transform usage values wait waiting workflow wrapasyncpromise"
+      "keywords": "$q active alt api array async asynchronous callback called check completed completely completly consider coul created current dataset error example fulfilled function going handler hasn helpers http https job jobid jobs jobshelper jssdk list listen listened lot minute notes occuring occurs params pending png position post predicsis promise property pulling request requests resolved resolving resource response return returns schema second send service set seterrorhandler src standard succeeds termination time transform usage values wait waiting workflow wrapasyncpromise"
     },
     {
       "section": "api",
