@@ -2604,7 +2604,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.helpers')
-  .service('datasetHelper', function() {
+  .service('datasetHelper', function($q, $injector) {
 
     /**
      * @ngdoc function
@@ -2702,6 +2702,23 @@ angular
         && Boolean(dataset.main_modality !== null)
         && Boolean(dataset.classifier !== null)
         && Boolean(dataset.dataset_id !== null);
+    };
+
+    this.removeDependencies = function(dataset) {
+      var Sources = $injector.get('Sources');
+      var Datasets = $injector.get('Datasets');
+      var source_ids = dataset.source_id || [];
+      var children_ids = dataset.children_dataset_ids || [];
+      return $q.all([
+        $q.all(source_ids
+          .map(function(source_id) {
+            return Sources.delete(source_id);
+          })),
+        $q.all(children_ids
+          .map(function(child_id) {
+            return Datasets.delete(child_id);
+          }))
+      ]);
     };
 
   });
