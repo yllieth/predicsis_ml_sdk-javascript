@@ -2704,6 +2704,18 @@ angular
         && Boolean(dataset.dataset_id !== null);
     };
 
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.datasetHelper
+     * @name removeDependencies
+     * @description Remove dataset's children and sources
+     *
+     * <div><span class="badge delete">delete</span><code>/sources/:source_id<code></div>
+     * <div><span class="badge delete">delete</span><code>/datasets/:train_subset_id</code></div>
+     * <div><span class="badge delete">delete</span><code>/datasets/:test_subset_id</code></div>
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Promise} Removed dataset
+     */
     this.removeDependencies = function(dataset) {
       var Sources = $injector.get('Sources');
       var Datasets = $injector.get('Datasets');
