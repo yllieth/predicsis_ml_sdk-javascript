@@ -14,14 +14,6 @@ NG_DOCS={
     },
     {
       "section": "api",
-      "id": "predicsis.jsSDK.helpers.modelHelper",
-      "shortName": "predicsis.jsSDK.helpers.modelHelper",
-      "type": "service",
-      "moduleName": "predicsis.jsSDK.helpers",
-      "keywords": "$injector $q $rootscope api broadcast classifier complete create created dataset datasets doesn evaluation events find function generate helpers ids input instance job jssdk learn learning_dataset_id model modelhelper models note parameter parameters partition predicsis preparation preparationrules project projects property report reports requests rules service set start-creating-preparation-rules start-generating-reports start-learning start-retrieving-train-dataset start-updating-project store supervised target_variable_id termination test time train training univariate valid waits wraps"
-    },
-    {
-      "section": "api",
       "id": "predicsis.jsSDK.helpers.s3FileHelper",
       "shortName": "predicsis.jsSDK.helpers.s3FileHelper",
       "type": "service",
@@ -71,7 +63,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "",
-      "keywords": "$q api async badge changes class classification classifier colspan create createclassifier created_at delete description destroy documentation example false fetch function identifier ids job_ids jobs jssdk length level list maximum_a_posteriori method_create methods_all methods_create methods_delete methods_get methods_update model model_variables models null output parameters params patch permanently petal post predicsis preparation preparation_rules_set_id preparationrules preparationrulessetid remove removed request restangular rules sepal service shortcut simple single title true type types update updated updated_at user_id weight width"
+      "keywords": "$q api async badge broadcast changes class classification classifier colspan complete create createclassifier created created_at dataset datasets delete description destroy documentation doesn evaluation events example false fetch find function generate identifier ids input instance job job_ids jobs jssdk learn learning_dataset_id length level list maximum_a_posteriori method_create methods_all methods_create methods_delete methods_get methods_learn methods_update model model_variables models note null output parameter parameters params partition patch permanently petal post predicsis preparation preparation_rules_set_id preparationrules preparationrulessetid project projects property remove removed report reports request requests restangular rules sepal service set shortcut simple single start-creating-preparation-rules start-generating-reports start-learning start-retrieving-train-dataset start-updating-project store supervised target_variable_id termination test time title train training true type types univariate update updated updated_at user_id valid waits weight width wraps"
     },
     {
       "section": "api",

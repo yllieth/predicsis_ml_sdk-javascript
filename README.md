@@ -111,7 +111,7 @@ return api.Datasets.getChildren(project.learning_dataset_id).then(function(child
   });
 ```
 
-... or just use `api.modelHelper.learn(project)` !
+... or just use `api.Models.learn(project)` !
 
 See the [SDK documentation](http://yllieth.github.io/predicsis_ml_sdk-javascript) for more examples.
 
