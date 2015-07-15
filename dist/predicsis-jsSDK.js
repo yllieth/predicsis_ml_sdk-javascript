@@ -1166,6 +1166,7 @@ angular
  * @requires $q
  * @requires Restangular
  * @requires Jobs
+ * @requires $injector
  * @description
  * <table>
  *   <tr>
@@ -1254,7 +1255,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Models', function($q, Restangular, Jobs) {
+  .service('Models', function($q, $injector, Restangular, Jobs) {
     'use strict';
     var self = this;
 
@@ -1425,7 +1426,6 @@ angular
       var Reports = $injector.get('Reports');
       var Projects = $injector.get('Projects');
       var PreparationRules = $injector.get('PreparationRules');
-      var $q = $injector.get('$q');
       var $rootScope = $injector.get('$rootScope');
       var results = {};
 
@@ -1955,6 +1955,7 @@ angular
  * @ngdoc service
  * @name predicsis.jsSDK.models.Projects
  * @requires $q
+ * @requires $injector
  * @requires Restangular
  * @description
  * <table>
@@ -2064,7 +2065,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Projects', function($q, Restangular) {
+  .service('Projects', function($q, $injector, Restangular) {
     'use strict';
 
     function project(id) { return Restangular.one('projects', id); }
@@ -2179,7 +2180,7 @@ angular
       var update = {};
       update.scoring_dataset_ids = project.scoring_dataset_ids || [];
       update.scoring_dataset_ids.push(datasetId);
-      return Projects.update(project.id, update);
+      return this.update(project.id, update);
     };
 
     /**
@@ -2195,7 +2196,7 @@ angular
       var update = {};
       update.scoreset_ids = project.scoreset_ids || [];
       update.scoreset_ids.push(datasetId);
-      return Projects.update(project.id, update);
+      return this.update(project.id, update);
     };
 
     /**
@@ -2214,7 +2215,7 @@ angular
      * @return {Object} Promise of an updated project
      */
     this.resetDictionary = function(projectId) {
-      return Projects.update(projectId, {
+      return this.update(projectId, {
         dictionary_id: null,
         is_dictionary_verified: null,
         target_variable_id: null,
