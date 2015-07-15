@@ -56,83 +56,27 @@ Default values:
 
 You can start using our SDK assuming you already have a [user token](https://developer.predicsis.com/doc/v1/overview/oauth2/#get-authorization-from-a-user)
 
-> Start a learn
->   The following code is going to send the requests listed below:
->   - `GET /datasets`
->   - `GET /datasets/:trainDatasetId`
->   - `GET /datasets/:testDatasetId`
->   - `POST /preparation_rules_sets`
->   - `POST /models`
->   - `POST /reports`
->   - `POST /reports`
->   - `POST /reports`
->   - `PATCH /projects/:projectId`
+Once you're done, you can send API request easily:
 
-
-```javascript
-var preparationRulesSet, classifier
-
-return api.Datasets.getChildren(project.learning_dataset_id).then(function(children) {
-  // create the preparation rules set
-    return api.PreparationRules.create({
-      variable_id: project.target_variable_id,
-      dataset_id: children.train.id
-    });
-  })
-
-  // create the model from preparation rules set
-  .then(function(preparationRulesRet) {
-    preparationRulesSet = preparationRulesRet
-    return api.Models.createClassifier(preparationRulesRet.id);
-  })
-
-  // generate reports
-  .then(function(classifier) {
-    classifier = classifier
-    return $q.all([
-      api.Reports.createTrainClassifierEvaluationReport(project),
-      api.Reports.createTestClassifierEvaluationReport(project),
-      api.Reports.createUnivariateSupervisedReport(project)
-    ]);
-  })
-
-  //update project
-  .then(function(reports) {
-    return api.Projects.update(project.id, {
-      preparation_rules_set_id: preparation_rules_set.id,
-      classifier_id: classifier.id,
-      report_ids: reportIds
-    });
-  })
-
-  //return classifier
-  .then(function() {
-    return classifier;
-  });
-```
-
-... or just use `api.modelHelper.learn(project)` !
+- list projects: 
+    ```
+    predicsisAPI.Projects
+      .all()
+      .then(function(projectList) { console.log(projectList); })
+    ```
+- generate a dictionary from a dataset:
+    ```
+    predicsisAPI.Dictionaries
+      .create({dataset_id: '53c7dea470632d3417020000', name: 'My dictionary'})
+      .then(function(dictionary) { console.log(dictionary); });
+    ```
+- start a learn process:
+    ```
+    predicsisAPI.Models.learn(project)
+    ```
+- ...
 
 See the [SDK documentation](http://yllieth.github.io/predicsis_ml_sdk-javascript) for more examples.
-
-## Available services
-API resources     | Helpers
-------------------|---------
-Dataset           |
-Dictionary        |
-Jobs              |
-Modality          |
-Model             | Model helper
-Oauth token       |
-Oauth application |
-Preparation rules |
-Project           | Project helper
-Report            |
-Source            |
-Upload            | S3 file helper
-User              |
-User settings     |
-Variable          |
 
 ## Upload a file to S3
 

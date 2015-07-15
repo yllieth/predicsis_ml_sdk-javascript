@@ -18,16 +18,15 @@ angular
 
     this.setErrorHandler = function(handler) { errorHandler = handler; };
 
-    this.$get = function(Restangular,
+    this.$get = function(Restangular, s3FileHelper,
                          Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications,
-                         PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables,
-                         datasetHelper, jobsHelper, modelHelper, projectsHelper, s3FileHelper) {
+                         PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables) {
       var self = this;
 
       Restangular.setBaseUrl(this.getBaseUrl());
       Restangular.setDefaultHeaders({ accept: 'application/json', Authorization: 'Bearer ' + this.getOauthToken() });
       Restangular.setErrorInterceptor(function(response) { errorHandler(response); });
-      jobsHelper.setErrorHandler(function(err) {
+      Jobs.setErrorHandler(function(err) {
         err = {
           data: {
             message: err.message,
@@ -70,12 +69,7 @@ angular
         UserSettings: UserSettings,
         Variables: Variables,
 
-        datasetHelper: datasetHelper,
-        jobsHelper: jobsHelper,
-        modelHelper: modelHelper,
-        projectsHelper: projectsHelper,
         s3FileHelper: s3FileHelper,
-
         _restangular: Restangular,
         setOauthToken: function(token) {
           self.setOauthToken(token);
@@ -93,7 +87,7 @@ angular
  * @name predicsis.jsSDK.models.Datasets
  * @requires $q
  * @requires Restangular
- * @requires jobsHelper
+ * @requires Jobs
  * @description
  * <table>
  *   <tr>
@@ -131,6 +125,34 @@ angular
  *     <td><kbd>{@link predicsis.jsSDK.models.Datasets#methods_delete Datasets.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
+ *   <tr>
+ *     <td>Tells if a dataset has subsets</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Datasets#methods_hasChildren Jobs.hasChildren()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Tells if a dataset is a parent dataset</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Datasets#methods_isParent Jobs.isParent()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Tells if a dataset is a child dataset</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Datasets#methods_isChild Jobs.isChild()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Tells if a dataset is a train subset</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Datasets#methods_isTrainPart Jobs.isTrainPart()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Tells if a dataset is a test subset</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Datasets#methods_isTestPart Jobs.isTestPart()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Tells if a dataset has both header and separator defined</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Datasets#methods_isFormatted Jobs.isFormatted()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Tells if a dataset is the result of a score</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Datasets#methods_isScore Jobs.isScore()}</kbd></td>
+ *   </tr>
  *   <tfoot>
  *   <tr><td colspan="3">Official documentation is available at https://developer.predicsis.com/doc/v1/data_management/dataset/</td></tr>
  *   </tfoot>
@@ -140,111 +162,111 @@ angular
  *
  * <h3>Learning dataset (just after upload)</h3>
  * <pre>
- * {
- *   id: 'learning_dataset',
- *   created_at: '2014-12-14T15:09:08.112Z',
- *   updated_at: '2014-12-14T15:08:57.970Z',
- *   name: 'Learning dataset',
- *   header: null,
- *   separator: null,
- *   user_id: '541b06dc617070006d060000',
- *   source_ids: ['54904b136170700007330000'],
- *   parent_dataset_id: null,
- *   sampling: 100,
- *   nb_of_lines: 50002,
- *   children_dataset_ids: [],
- *   dictionary_ids: [],
- *   generated_dictionaries_ids: [],
- *   data_file: {
- *     id: '54904b09776f720001650000',
- *     filename: 'learning-dataset.csv',
- *     type: 'S3',
- *     size: 538296,
- *     url: S3_URL + '/download/file/from/s3/learning-dataset.csv'
- *   },
- *   main_modality: null,
- *   classifier_id: null,
- *   dataset_id: null,
- *   job_ids: ['54904b146170700007360000'],
- *   preview: [
- *     '...\t...\t...',
- *     '...\t...\t...',
- *     '...\t...\t...',
- *     '...\t...\t...',
- *     '...\t...\t...'
- *   ]
- * }
+ *   {
+ *     id: 'learning_dataset',
+ *     created_at: '2014-12-14T15:09:08.112Z',
+ *     updated_at: '2014-12-14T15:08:57.970Z',
+ *     name: 'Learning dataset',
+ *     header: null,
+ *     separator: null,
+ *     user_id: '541b06dc617070006d060000',
+ *     source_ids: ['54904b136170700007330000'],
+ *     parent_dataset_id: null,
+ *     sampling: 100,
+ *     nb_of_lines: 50002,
+ *     children_dataset_ids: [],
+ *     dictionary_ids: [],
+ *     generated_dictionaries_ids: [],
+ *     data_file: {
+ *       id: '54904b09776f720001650000',
+ *       filename: 'learning-dataset.csv',
+ *       type: 'S3',
+ *       size: 538296,
+ *       url: S3_URL + '/download/file/from/s3/learning-dataset.csv'
+ *     },
+ *     main_modality: null,
+ *     classifier_id: null,
+ *     dataset_id: null,
+ *     job_ids: ['54904b146170700007360000'],
+ *     preview: [
+ *       '...\t...\t...',
+ *       '...\t...\t...',
+ *       '...\t...\t...',
+ *       '...\t...\t...',
+ *       '...\t...\t...'
+ *     ]
+ *   }
  * </pre>
  *
- * <h3>Splitted learning dataset -> learned part (see {@link predicsis.jsSDK.helpers.datasetHelper#methods_istrainpart datasetHelper.isTrainPart(Dataset dataset)})</h3>
+ * <h3>Splitted learning dataset -> learned part (see {@link predicsis.jsSDK.models.Datasets#methods_istrainpart Datasets.isTrainPart(Dataset dataset)})</h3>
  * <pre>
- * {
- *   ...
- *   source_ids: [],
- *   parent_dataset_id: 'learning_dataset_with_model',
- *   sampling: 70,
- *   nb_of_lines: null,
- *   preview: null
- *   ...
- * }
+ *   {
+ *     ...
+ *     source_ids: [],
+ *     parent_dataset_id: 'learning_dataset_with_model',
+ *     sampling: 70,
+ *     nb_of_lines: null,
+ *     preview: null
+ *     ...
+ *   }
  * </pre>
  *
- * <h3>Splitted learning dataset -> tested part (see {@link predicsis.jsSDK.helpers.datasetHelper#methods_istestpart datasetHelper.isTestPart(Dataset dataset)})</h3>
+ * <h3>Splitted learning dataset -> tested part (see {@link predicsis.jsSDK.models.Datasets#methods_istestpart Datasets.isTestPart(Dataset dataset)})</h3>
  * <pre>
- * {
- *   ...
- *   source_ids: [],
- *   parent_dataset_id: 'learning_dataset_with_model',
- *   sampling: -70,
- *   nb_of_lines: null,
- *   preview: null
- *   ...
- * }
+ *   {
+ *     ...
+ *     source_ids: [],
+ *     parent_dataset_id: 'learning_dataset_with_model',
+ *     sampling: -70,
+ *     nb_of_lines: null,
+ *     preview: null
+ *     ...
+ *   }
  * </pre>
  *
  * <h3>After model generation</h3>
  * <pre>
- * {
- *   ...
- *   generated_dictionaries_ids: ['parent_dictionary'],
- *   children_dataset_ids: ['learned_learning_dataset', 'tested_learning_dataset'],
- *   job_ids: [
- *     '54904bfe6170700007930000',
- *     '54904bf961707000078c0000',
- *     '54904b146170700007360000',
- *     '54904ce06170700007d10000'
- *   ]
- *   ...
- * }
+ *   {
+ *     ...
+ *     generated_dictionaries_ids: ['parent_dictionary'],
+ *     children_dataset_ids: ['learned_learning_dataset', 'tested_learning_dataset'],
+ *     job_ids: [
+ *       '54904bfe6170700007930000',
+ *       '54904bf961707000078c0000',
+ *       '54904b146170700007360000',
+ *       '54904ce06170700007d10000'
+ *     ]
+ *     ...
+ *   }
  * </pre>
  *
  * <h3>Scoring dataset</h3>
  * <pre>
- * {
- *   ...
- *   source_ids: ['54904da06170700007df0000'],
- *   generated_dictionaries_ids: [],
- *   children_dataset_ids: [],
- *   ...
- * }
+ *   {
+ *     ...
+ *     source_ids: ['54904da06170700007df0000'],
+ *     generated_dictionaries_ids: [],
+ *     children_dataset_ids: [],
+ *     ...
+ *   }
  * </pre>
  *
- * <h3>Scoreset (see {@link predicsis.jsSDK.helpers.datasetHelper#methods_isScore datasetHelper.isScore(Dataset dataset)})</h3>
+ * <h3>Scoreset (see {@link predicsis.jsSDK.models.Datasets#methods_isScore Datasets.isScore(Dataset dataset)})</h3>
  * <pre>
- * {
- *   ...
- *   classifier_id: '5436431070632d15f4260000',
- *   dataset_id: 'scoring_dataset',
- *   modalities_set_id: '53fdfa7070632d0fc5030000',
- *   ...
- * }
+ *   {
+ *     ...
+ *     classifier_id: '5436431070632d15f4260000',
+ *     dataset_id: 'scoring_dataset',
+ *     modalities_set_id: '53fdfa7070632d0fc5030000',
+ *     ...
+ *   }
  * </pre>
  *
  * Please also note that there is no distinction between a learning dataset and a scoring dataset.
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Datasets', function($q, Restangular, jobsHelper) {
+  .service('Datasets', function($q, Restangular, Jobs) {
     'use strict';
     var self = this;
 
@@ -289,7 +311,7 @@ angular
      * @return {Promise} New dataset or new scoreset
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(datasets().post({dataset: params}))
+      return Jobs.wrapAsyncPromise(datasets().post({dataset: params}))
         .then(function(result) {
           return dataset(result.id).get();
         });
@@ -437,7 +459,7 @@ angular
         changes.separator = '\\t';
       }
 
-      return jobsHelper.wrapAsyncPromise(dataset(id).patch({dataset: changes}))
+      return Jobs.wrapAsyncPromise(dataset(id).patch({dataset: changes}))
         .then(function(result) {
           return dataset(result.id).get();
         });
@@ -455,6 +477,106 @@ angular
       return dataset(id).remove();
     };
 
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @name hasChildren
+     * @description Tells if a dataset has subsets
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.hasChildren = function(dataset) {
+      return Boolean(dataset.children_dataset_ids.length > 0);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @name isParent
+     * @description Tells if a dataset is a parent dataset.
+     * <b>Note:</b> A parent may have any children, but its <kbd>parent_dataset_id</kbd> must be null
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isParent = function(dataset) {
+      return Boolean(dataset.parent_dataset_id === null);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @name isChild
+     * @description Tells if a dataset is a child dataset
+     * <b>Note:</b> A dataset is considered as a child if it has a parent. There is no orphan among datasets!
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isChild = function(dataset) {
+      return Boolean(dataset.parent_dataset_id !== null);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @name isTrainPart
+     * @description Tells if a dataset is a train subset.
+     * <b>Note:</b> A dataset is considered as a train subset if its sampling is positive
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isTrainPart = function(dataset) {
+      return this.isChild(dataset) && dataset.sampling > 0;
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @name isTestPart
+     * @description Tells if a dataset is a test subset.
+     * <b>Note:</b> A dataset is considered as a test subset if its sampling is negative
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isTestPart = function(dataset) {
+      return this.isChild(dataset) && dataset.sampling < 0;
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @name isFormatted
+     * @description Tells if a dataset has both header and separator defined.
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isFormatted = function(dataset) {
+      return Boolean(dataset.header !== null) && Boolean(dataset.separator !== null)
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @name isScore
+     * @description Tells if a dataset is the result of a score.
+     * A score result is identified by the following rules:
+     * <ul>
+     *   <li><code>dataset.source_ids.length === 0</code></li>
+     *   <li><code>dataset.main_modality !== null</code></li>
+     *   <li><code>dataset.classifier !== null</code></li>
+     *   <li><code>dataset.dataset_id !== null</code></li>
+     * </ul>
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
+     */
+    this.isScore = function(dataset) {
+      return Boolean(dataset.source_ids.length === 0)
+        && Boolean(dataset.main_modality !== null)
+        && Boolean(dataset.classifier !== null)
+        && Boolean(dataset.dataset_id !== null);
+    };
+
   });
 
 /**
@@ -462,7 +584,7 @@ angular
  * @name predicsis.jsSDK.models.Dictionaries
  * @requires $q
  * @requires Restangular
- * @requires jobsHelper
+ * @requires Jobs
  * @description
  * <table>
  *   <tr>
@@ -524,7 +646,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Dictionaries', function($q, Restangular, jobsHelper) {
+  .service('Dictionaries', function($q, Restangular, Jobs) {
     'use strict';
 
     function dictionary(id) { return Restangular.one('dictionaries', id); }
@@ -575,7 +697,7 @@ angular
      * @return {Object} Promise of a new dictionary
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(dictionaries().post({dictionary: params}))
+      return Jobs.wrapAsyncPromise(dictionaries().post({dictionary: params}))
         .then(function(result) {
           return dictionary(result.id).get();
         });
@@ -629,7 +751,7 @@ angular
      * @return {Object} Promise of the updated dictionary
      */
     this.update = function(dictionaryId, changes) {
-      return jobsHelper.wrapAsyncPromise(dictionary(dictionaryId).patch({dictionary: changes}))
+      return Jobs.wrapAsyncPromise(dictionary(dictionaryId).patch({dictionary: changes}))
         .then(function(result) {
           return dictionary(result.id).get();
         });
@@ -655,6 +777,24 @@ angular
  * @requires $q
  * @requires Restangular
  * @description
+ * A lot of requests on PredicSis API are asynchronous. That means when you send a <kbd>POST /datasets</kbd>
+ * request (for example), you will get a 201 Created HTTP response. A new <kbd>dataset</kbd> has been created.
+ * <b>BUT</b> it hasn't been completely fulfilled, there is a pending job you must wait for its termination to
+ * consider the <kbd>dataset</kbd> really created.
+ *
+ * Each time the API returns a <kbd>job_ids</kbd> in a response, the request is asynchronous. This array
+ * contains all the jobs created before and the current one in the last position. You have to send a
+ * <kbd>GET /jobs/:jobId</kbd> request and check the <kbd>status</kbd> property. It could take 4 values:
+ * <ul>
+ *   <li>pending</li>
+ *   <li>processing</li>
+ *   <li>completed</li>
+ *   <li>failed</li>
+ * </ul>
+ *
+ * The following schema shows a job' standard workflow:
+ * <img src="https://github.com/PredicSis/kml-api-doc/blob/master/assets/img/job_status.png" alt="Job standard workflow" />
+ *
  * <table>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/jobs</kbd></td>
@@ -671,6 +811,18 @@ angular
  *     <td><kbd>{@link predicsis.jsSDK.models.Jobs#methods_delete Jobs.delete()}</kbd></td>
  *     <td></td>
  *   </tr>
+ *   <tr>
+ *     <td>Active pulling on a job waiting for its termination</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Jobs#methods_listen Jobs.listen()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Transform an async promise into the same promise resolving only when job is completed</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Jobs#methods_wrapAsyncPromise Jobs.wrapAsyncPromise()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Defines function called when a jobs fails</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Jobs#methods_setErrorHandler Jobs.setErrorHandler()}</kbd></td>
+ *   </tr>
  *   <tfoot>
  *   <tr><td colspan="3">Official documentation is available at https://developer.predicsis.com/doc/v1/job</td></tr>
  *   </tfoot>
@@ -678,18 +830,18 @@ angular
  *
  * Output example:
  * <pre>
- * {
- *   id: "53c7ded570632d3417050000",
- *   action: "Generate dictionary",
- *   status: "completed",
- *   error: null,
- *   warnings: null,
- *   created_at: "2014-05-02T15:42:51.687Z",
- *   started_at: "2014-05-02T15:42:52.687Z",
- *   finished_at: "2014-05-02T15:52:51.687Z",
- *   user_id: "5363b25c687964476d000000",
- *   runnable_id: "5363b7fc6879644ae7010000"
- * }
+ *   {
+ *     id: "53c7ded570632d3417050000",
+ *     action: "Generate dictionary",
+ *     status: "completed",
+ *     error: null,
+ *     warnings: null,
+ *     created_at: "2014-05-02T15:42:51.687Z",
+ *     started_at: "2014-05-02T15:42:52.687Z",
+ *     finished_at: "2014-05-02T15:52:51.687Z",
+ *     user_id: "5363b25c687964476d000000",
+ *     runnable_id: "5363b7fc6879644ae7010000"
+ *   }
  * </pre>
  *
  * <b>Important notes:</b>
@@ -700,6 +852,9 @@ angular
   .module('predicsis.jsSDK.models')
   .service('Jobs', function($q, Restangular) {
     'use strict';
+
+    var self = this;
+    var errorHandler;
 
     function job(id) { return Restangular.one('jobs', id); }
     function jobs() { return Restangular.all('jobs'); }
@@ -750,6 +905,132 @@ angular
       return job(jobId).remove();
     };
 
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @name listen
+     * @description Active pulling on a job waiting for its termination
+     *
+     * <b>Important notes:</b>
+     * <ul>
+     *   <li>You can <em>listen</em>only one job at a time</li>
+     *   <li>a <kbd>GET /jobs/:jobId</kbd> is going to be sent every 3 second the first minute, and every minute after</li>
+     * </ul>
+     *
+     * @param {String} jobId The id of the job api resource you want to wait termination
+     * @return {Promise} A promise resolved only when the job succeeds
+     */
+    this.listen = function(jobId) {
+
+      var deferred = $q.defer();
+      var isRequestPending = false;   //Lock limiting interval loop to one concurrent request
+      var requestCounter = 0;         //Counter to manage timeout step (3 seconds the 1st minute, one minute after)
+
+      //Store intervalId as a closure to be able to stop interval loop
+      var intervalId = window.setInterval(function() {
+        //Limit to one concurrent request
+        if(!isRequestPending) {
+
+          isRequestPending = true;
+          requestCounter++;
+
+          self.get(jobId).then(function(job) {
+            if (job.status === 'failed') {
+              //reject promise if status is failed (and stop interval loop)
+              clearInterval(intervalId);
+              var error = new Error(job.error.message);
+              error.status = job.error.status;
+              deferred.reject(error);
+
+            } else if (job.status === 'completed') {
+
+              //resolve promise if status is completed (and stop interval loop)
+              clearInterval(intervalId);
+              deferred.resolve(jobId);
+
+            } else {
+
+              //continue interval calls otherwise (wait timeout seconds before accepting new request)
+              var timeout = 60;   //Job is pulled each minute (except 1st minute)
+              //Job is pulled each 3 seconds during the 1st minute (for fast jobs)
+              if(requestCounter < 20) {
+                timeout = 3;
+              }
+              //Unlock request Lock after timeout seconds
+              window.setTimeout(function() {
+                isRequestPending = false;
+              }, timeout * 1000);
+            }
+          })
+            //catch request errors, reject promise and stop interval loop
+            .then(null, function(error) {
+              clearInterval(intervalId);
+              deferred.reject(error);
+            });
+        }
+      }, 1000);
+
+      return deferred.promise;
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @name wrapAsyncPromise
+     * @description Transform an async promise into the same promise resolving only when job is completed
+     *
+     * Usage example:
+     * <pre>
+     * return Jobs
+     *   .wrapAsyncPromise(datasets().post({dataset: params}))
+     *   .then(function(dataset) {
+     *     // do something with you completely created new dataset
+     *     // ...
+     *   });
+     * </pre>
+     *
+     * @param {Promise|Array} promise or list of jobs (the last one will be listened)
+     * @return {Promise} See above example
+     */
+    this.wrapAsyncPromise = function(promise) {
+      return promise.then(function(asyncResult) {
+        var jobId = (asyncResult.job_ids || []).slice(-1)[0];
+        return self.listen(jobId)
+          .then(function() {
+            return asyncResult;
+          })
+          .catch(function(err) {
+            if(errorHandler) {
+              errorHandler(err);
+            }
+            throw err;
+          });
+      });
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @name setErrorHandler
+     * @description set error handler (errors occuring in a job)
+     *
+     * Usage example:
+     * <pre>
+     * return Jobs
+     *   .setErrorHandler(function(error) {
+     *     // do something with error
+     *     // ...
+     *   });
+     * </pre>
+     *
+     * @param {Function} callback called when an error occurs during a Job
+     */
+    this.setErrorHandler = function(cb) {
+      errorHandler = cb;
+    };
+
   });
 
 /**
@@ -757,7 +1038,7 @@ angular
  * @name predicsis.jsSDK.models.Modalities
  * @requires $q
  * @requires Restangular
- * @requires jobsHelper
+ * @requires Jobs
  * @description
  * <table>
  *   <tr>
@@ -787,7 +1068,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Modalities', function($q, Restangular, jobsHelper) {
+  .service('Modalities', function($q, Restangular, Jobs) {
     'use strict';
 
     function modality(id) { return Restangular.one('modalities_sets', id); }
@@ -827,7 +1108,7 @@ angular
      * </pre>
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(modalities().post({modalities_set: params}))
+      return Jobs.wrapAsyncPromise(modalities().post({modalities_set: params}))
         .then(function(result) {
           return modality(result.id).get();
         });
@@ -884,7 +1165,8 @@ angular
  * @name predicsis.jsSDK.models.Models
  * @requires $q
  * @requires Restangular
- * @requires jobsHelper
+ * @requires Jobs
+ * @requires $injector
  * @description
  * <table>
  *   <tr>
@@ -916,6 +1198,10 @@ angular
  *     <td><span class="badge delete">delete</span> <kbd>/models/:id</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.models.Models#methods_delete Models.delete()}</kbd></td>
  *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Wraps all API requests for a learn</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Models#methods_learn Models.learn()}</kbd></td>
  *   </tr>
  *   <tfoot>
  *     <tr><td colspan="3">Official documentation is available at:
@@ -969,7 +1255,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Models', function($q, Restangular, jobsHelper) {
+  .service('Models', function($q, $injector, Restangular, Jobs) {
     'use strict';
     var self = this;
 
@@ -1017,7 +1303,7 @@ angular
      * @return {Promise} New model
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(models().post({model: params}))
+      return Jobs.wrapAsyncPromise(models().post({model: params}))
         .then(function(result) {
           return model(result.id).get();
         });
@@ -1070,7 +1356,7 @@ angular
      * @return {Promise} Updated model
      */
     this.update = function(id, changes) {
-      return jobsHelper.wrapAsyncPromise(model(id).patch({model: changes}))
+      return Jobs.wrapAsyncPromise(model(id).patch({model: changes}))
         .then(function(result) {
           return model(result.id).get();
         });
@@ -1086,6 +1372,129 @@ angular
      */
     this.delete = function(id) {
       return model(id).remove();
+    };
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name learn
+     * @methodOf predicsis.jsSDK.models.Models
+     * @description Learn a model
+     *
+     * This function wraps the following requests:
+     * <ul>
+     *   <li>GET /datasets</li>
+     *   <li>GET /datasets/:trainDatasetId</li>
+     *   <li>GET /datasets/:testDatasetId</li>
+     *   <li>POST /preparation_rules_sets</li>
+     *   <li>POST /models</li>
+     *   <li>POST /reports</li>
+     *   <li>POST /reports</li>
+     *   <li>POST /reports</li>
+     *   <li>PATCH /projects/:projectId</li>
+     * </ul>
+     *
+     * ... and each time, waits for job termination!
+     *
+     * To do so, what we really use are the following parameters:
+     * <ul>
+     *   <li><kbd>project.learning_dataset_id</kbd> to find the training partition of the input dataset</li>
+     *   <li><kbd>project.target_variable_id</kbd> to create a valid {@link predicsis.jsSDK.models.PreparationRules PreparationRules}</li>
+     *   <li><kbd>project.id</kbd> to store preparation rules set, classifier and reports ids.</li>
+     * </ul>
+     *
+     * Please also note that if your project doesn't have a <code>main_modality</code> parameter, only univariate
+     * supervised report will be created. If this property is here, we also generate classifier evaluation reports
+     * for train and test datasets.
+     *
+     * We also broadcast the following events:
+     * <ul>
+     *   <li>jsSDK.learn.start-retrieving-train-dataset</li>
+     *   <li>jsSDK.learn.start-creating-preparation-rules</li>
+     *   <li>jsSDK.learn.start-learning</li>
+     *   <li>jsSDK.learn.start-generating-reports</li>
+     *   <li>jsSDK.learn.start-updating-project</li>
+     * </ul>
+     *
+     * @param {Object} project Instance of a valid {@link predicsis.jsSDK.models.Projects Project}
+     * @return {Object} Instance of a complete {@link predicsis.jsSDK.models.Models Models}
+     */
+    this.learn = function(project) {
+      var Models = this;
+      var Datasets = $injector.get('Datasets');
+      var Reports = $injector.get('Reports');
+      var Projects = $injector.get('Projects');
+      var PreparationRules = $injector.get('PreparationRules');
+      var $rootScope = $injector.get('$rootScope');
+      var results = {};
+
+      $rootScope.$broadcast('jsSDK.learn.start-retrieving-train-dataset');
+
+      return Datasets.getChildren(project.learning_dataset_id)
+        // create preparation rules
+        .then(function(children) {
+          if(!children.train) {
+            throw 'Invalid project on POST preparation_rules, no valid train dataset found';
+          }
+
+          $rootScope.$broadcast('jsSDK.learn.start-creating-preparation-rules');
+
+          return PreparationRules.create({
+            variable_id: project.target_variable_id,
+            dataset_id: children.train.id
+          });
+        })
+
+        // create the model from preparation rules set
+        .then(function(preparationRulesRet) {
+          results.preparation_rules_set = preparationRulesRet;
+          $rootScope.$broadcast('jsSDK.learn.start-learning');
+          return Models.createClassifier(preparationRulesRet.id);
+        })
+
+        // generate reports
+        .then(function(classifier) {
+          results.classifier = classifier;
+          // classifier_id is required to generate reports,
+          // but the PATCH request will occurs after the learn process.
+          // this tweak allow project generation.
+          project.classifier_id = classifier.id;
+          $rootScope.$broadcast('jsSDK.learn.start-generating-reports');
+
+          var requestedReports = {
+            univariate_supervised_report: Reports.createUnivariateSupervisedReport(project)
+          };
+
+          if (project.main_modality !== null) {
+            requestedReports['train_classifier_evaluation_report'] = Reports.createTrainClassifierEvaluationReport(project);
+            requestedReports['test_classifier_evaluation_reports'] = Reports.createTestClassifierEvaluationReport(project);
+          }
+
+          return $q.all(requestedReports);
+        })
+
+        //update project
+        .then(function(reports) {
+          var reportIds = [];
+          reportIds[0] = reports.train_classifier_evaluation_report.id;
+          reportIds[1] = reports.test_classifier_evaluation_reports.id;
+          reportIds[2] = reports.univariate_supervised_report.id;
+          //reportIds[3] = reports.univariate_unsupervised_report.id;
+
+          $rootScope.$broadcast('jsSDK.learn.start-updating-project');
+
+          return Projects.update(project.id, {
+            preparation_rules_set_id: results.preparation_rules_set.id,
+            classifier_id: results.classifier.id,
+            report_ids: reportIds
+          });
+        })
+
+        //return classifier
+        .then(function() {
+          return results.classifier;
+        });
     };
 
   });
@@ -1394,7 +1803,7 @@ angular
  * @name predicsis.jsSDK.models.PreparationRules
  * @requires $q
  * @requires Restangular
- * @requires jobsHelper
+ * @requires Jobs
  * @description
  * <table>
  *   <tr>
@@ -1443,7 +1852,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('PreparationRules', function($q, Restangular, jobsHelper) {
+  .service('PreparationRules', function($q, Restangular, Jobs) {
     'use strict';
 
     function preparationRulesSet(id) { return Restangular.one('preparation_rules_sets', id); }
@@ -1469,7 +1878,7 @@ angular
      * @return {Promise} New preparation rules set
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(preparationRulesSets().post({preparation_rules_set: params}))
+      return Jobs.wrapAsyncPromise(preparationRulesSets().post({preparation_rules_set: params}))
         .then(function(result) {
           return preparationRulesSet(result.id).get();
         });
@@ -1522,7 +1931,7 @@ angular
      * @return {Promise} Updated preparation rules set
      */
     this.update = function(id, changes) {
-      return jobsHelper.wrapAsyncPromise(preparationRulesSet(id).patch({preparation_rules_set: changes}))
+      return Jobs.wrapAsyncPromise(preparationRulesSet(id).patch({preparation_rules_set: changes}))
         .then(function(result) {
           return preparationRulesSet(result.id).get();
         });
@@ -1546,6 +1955,7 @@ angular
  * @ngdoc service
  * @name predicsis.jsSDK.models.Projects
  * @requires $q
+ * @requires $injector
  * @requires Restangular
  * @description
  * <table>
@@ -1567,12 +1977,48 @@ angular
  *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.models.Projects#methods_update Projects.update()}</kbd></td>
- *     <td><span class="badge async">async</span></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Projects#methods_addLearningDataset addLearningDataset()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Projects#methods_addScoringDataset addScoringDataset()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Projects#methods_addScoreset addScoreset()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Projects#methods_resetDictionary resetDictionary()}</kbd></td>
+ *     <td></td>
  *   </tr>
  *   <tr>
  *     <td><span class="badge delete">delete</span> <kbd>/projects/:id</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.models.Projects#methods_delete Projects.delete()}</kbd></td>
  *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td>
+ *       <div><span class="badge delete">delete</span><code>/dictionaries/:project.dictionary_id</code></div>
+ *       <div><span class="badge delete">delete</span><code>/model/:project.classifier_id</code></div>
+ *     </td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Projects#methods_removeDependencies removeDependencies()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Checks if there is a model for the given project</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Projects#methods_isModelDone isModelDone()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td>Checks if the user checked its project's dictionary</td>
+ *     <td colspan="2"><kbd>{@link predicsis.jsSDK.models.Projects#methods_isDictionaryVerified isDictionaryVerified()}</kbd></td>
  *   </tr>
  *   <tfoot>
  *     <tr><td colspan="3">There is no official documentation for this resource.</td></tr>
@@ -1581,28 +2027,28 @@ angular
  *
  * Output example:
  * <pre>
- * {
- *   id: '54ca326561707000017b0200',
- *   created_at: '2015-01-29T13:15:17.224Z',
- *   updated_at: '2015-01-29T13:54:37.919Z',
- *   title: 'dualplay',
- *   main_modality: '1',
- *   dictionary_id: '54ca32a261707000017e0200',
- *   target_variable_id: '54ca32a1776f720001bc0900',
- *   classifier_id: '54ca332461707000018d0200',
- *   preparation_rules_set_id: '54ca331b61707000018a0200',
- *   modalities_set_id: '54ca33116170700001870200',
- *   learning_dataset_id: '54c60ca16170700001020000',
- *   scoring_dataset_ids: ['54c60ca16170700001020000'],
- *   scoreset_ids: ['54ca3b9761707000019b0200'],
- *   report_ids: [
- *     '54ca33396170700001930200',
- *     '54ca33396170700001960200',
- *     '54ca33386170700001900200'
- *   ],
- *   is_dictionary_verified: true,
- *   user_id: '541b06dc617070006d060000'
- * }
+ *   {
+ *     id: '54ca326561707000017b0200',
+ *     created_at: '2015-01-29T13:15:17.224Z',
+ *     updated_at: '2015-01-29T13:54:37.919Z',
+ *     title: 'dualplay',
+ *     main_modality: '1',
+ *     dictionary_id: '54ca32a261707000017e0200',
+ *     target_variable_id: '54ca32a1776f720001bc0900',
+ *     classifier_id: '54ca332461707000018d0200',
+ *     preparation_rules_set_id: '54ca331b61707000018a0200',
+ *     modalities_set_id: '54ca33116170700001870200',
+ *     learning_dataset_id: '54c60ca16170700001020000',
+ *     scoring_dataset_ids: ['54c60ca16170700001020000'],
+ *     scoreset_ids: ['54ca3b9761707000019b0200'],
+ *     report_ids: [
+ *       '54ca33396170700001930200',
+ *       '54ca33396170700001960200',
+ *       '54ca33386170700001900200'
+ *     ],
+ *     is_dictionary_verified: true,
+ *     user_id: '541b06dc617070006d060000'
+ *   }
  * </pre>
  *
  * <b><code>learning_dataset_id</code></b> : is the id of the parent dataset.
@@ -1616,21 +2062,10 @@ angular
  *   <li>univariate supervised report</li>
  *   <li>univariate unsupervised report</li>
  * </ol>
- *
- * See {@link predicsis.jsSDK.helpers.projectsHelper projects helper} to get the following methods:
- * <ul>
- *   <li><code>{@link predicsis.jsSDK.helpers.projectsHelper#methods_isModelDone isModelDone(Projects project)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.helpers.projectsHelper#methods_isDictionaryVerified isDictionaryVerified(Projects project)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.helpers.projectsHelper#methods_addLearningDataset addLearningDataset(Projects project, String datasetId)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.helpers.projectsHelper#methods_addScoringDataset addScoringDataset(Projects project, String datasetId)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.helpers.projectsHelper#methods_addScoreset addScoreset(Projects project, String datasetId)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.helpers.projectsHelper#methods_resetDictionary resetDictionary(String projectId)}</code></li>
- *   <li><code>{@link predicsis.jsSDK.helpers.projectsHelper#methods_removeDependencies removeDependencies(String projectId)}</code></li>
- * </ul>
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Projects', function($q, Restangular) {
+  .service('Projects', function($q, $injector, Restangular) {
     'use strict';
 
     function project(id) { return Restangular.one('projects', id); }
@@ -1700,12 +2135,12 @@ angular
      * @name delete
      * @methodOf predicsis.jsSDK.models.Projects
      * @description Permanently destroy a specified project
-     *  <b>Important:</b> {@link predicsis.jsSDK.helpers.ProjectsHelper#methods_removeDependencies Remove project's dependencies}
+     *  <b>Important:</b> {@link predicsis.jsSDK.models.Projects#methods_removeDependencies Remove project's dependencies}
      *  prior to delete the project itself !
      *
      * @example
      * <pre>
-     *   projectsHelper.removeDependencies(projectId)
+     *   Projects.removeDependencies(projectId)
      *     .then(function() { return Projects.delete(projectId); })
      *     .then(function() { ... } );
      * </pre>
@@ -1717,6 +2152,142 @@ angular
       return project(projectId).remove();
     };
 
+    // --- Altering methods --------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name addLearningDataset
+     * @description Simply adds an entry to <code>learning_dataset_id</code> project's property.
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will be used for learning
+     * @return {Object} Promise of an updated project
+     */
+    this.addLearningDataset = function(project, datasetId) {
+      return this.update(project.id, {learning_dataset_id: datasetId});
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name addScoringDataset
+     * @description Simply adds an entry to <code>scoring_dataset_ids</code> project's array.
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will be used for score
+     * @return {Object} Promise of an updated project
+     */
+    this.addScoringDataset = function(project, datasetId) {
+      var update = {};
+      update.scoring_dataset_ids = project.scoring_dataset_ids || [];
+      update.scoring_dataset_ids.push(datasetId);
+      return this.update(project.id, update);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name addScoreset
+     * @description Simply adds an entry to <code>scoreset_ids</code> project's array.
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will store score results
+     * @return {Object} Promise of an updated project
+     */
+    this.addScoreset = function(project, datasetId) {
+      var update = {};
+      update.scoreset_ids = project.scoreset_ids || [];
+      update.scoreset_ids.push(datasetId);
+      return this.update(project.id, update);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name resetDictionary
+     * @description Simply set to <code>null</code> the following project's properties:
+     * <ul>
+     *   <li><code>dictionary_id</code></li>
+     *   <li><code>is_dictionary_verified</code></li>
+     *   <li><code>target_variable_id</code></li>
+     *   <li><code>main_modality</code></li>
+     * </ul>
+     *
+     * @param {String} projectId Id of the project you want to update
+     * @return {Object} Promise of an updated project
+     */
+    this.resetDictionary = function(projectId) {
+      return this.update(projectId, {
+        dictionary_id: null,
+        is_dictionary_verified: null,
+        target_variable_id: null,
+        main_modality: null
+      });
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name removeDependencies
+     * @description Removes linked resources prior to being able to remove the project
+     * @param {String} projectId Id of the project you want to update
+     * @return {Object} Promise of an updated project
+     */
+    this.removeDependencies = function(projectId) {
+      var Dictionaries = $injector.get('Dictionaries');
+      var Models = $injector.get('Models');
+
+      return this.get(projectId)
+        .then(function(project) {
+          // Delete dictionary if exists
+          return (project.dictionary_id === null)
+            ? project
+            : Dictionaries.delete(project.dictionary_id).then(function() { return project; });
+        })
+        .then(function(project) {
+          // Delete dictionary if exists
+          return (project.classifier_id === null)
+            ? project
+            : Models.delete(project.classifier_id).then(
+              function() { return project; },
+              function(err) { if (err.status === 404) { return project; } else { throw err; }}//In case the api has already deleted it when it's dataset has been deleted
+            );
+        });
+    };
+
+    // --- Getter methods ----------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name isModelDone
+     * @description Checks if there is a model for the given project.
+     *
+     *  <b>Note:</b> A project can have only one Model. It means that you can go back to the first steps of the scenario
+     *  if your current project already has a model attached. If you want to change a parameter, you have to create a new
+     *  project.
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @return {boolean} <code>true</code> / <code>false</code>
+     */
+    this.isModelDone = function(project) {
+      return Boolean(project.classifier_id);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name isDictionaryVerified
+     * @description Checks if the user checked its project's dictionary.
+     *
+     *  A dictionary contains a description of each variable used (or unused) of the model. That's why scenario forces
+     *  the user to check generated dictionaries.
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @return {boolean} <code>true</code> / <code>false</code>
+     */
+    this.isDictionaryVerified = function(project) {
+      return Boolean(project.is_dictionary_verified);
+    };
+
   });
 
 /**
@@ -1724,7 +2295,7 @@ angular
  * @name predicsis.jsSDK.models.Reports
  * @requires $q
  * @requires Restangular
- * @requires jobsHelper
+ * @requires Jobs
  * @requires $injector
  * - Datasets
  * @description
@@ -1784,7 +2355,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Reports', function($q, $injector, Restangular, jobsHelper) {
+  .service('Reports', function($q, $injector, Restangular, Jobs) {
     'use strict';
     var self = this;
 
@@ -1926,7 +2497,7 @@ angular
      * @return {Object} Promise of a report
      */
     this.create = function(params) {
-      return jobsHelper.wrapAsyncPromise(reports().post({report: params}))
+      return Jobs.wrapAsyncPromise(reports().post({report: params}))
         .then(function(result) {
           return report(result.id).get();
         });
@@ -1980,7 +2551,7 @@ angular
      * @return {Object} Promise of the updated report
      */
     this.update = function(reportId, changes) {
-      return jobsHelper.wrapAsyncPromise(report(reportId).patch({report: changes}))
+      return Jobs.wrapAsyncPromise(report(reportId).patch({report: changes}))
         .then(function(result) {
           return report(result.id).get();
         });
@@ -2005,7 +2576,6 @@ angular
  * @name predicsis.jsSDK.models.Sources
  * @requires $q
  * @requires Restangular
- * @requires jobsHelper
  * @description Sources are a representation of an uploaded file on our storage. At time, all uploads are sent to Amazon S3.
  *
  * <table>
@@ -2060,7 +2630,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Sources', function($q, Restangular, jobsHelper) {
+  .service('Sources', function($q, Restangular) {
     'use strict';
 
     function source(id) { return Restangular.one('sources', id); }
@@ -2595,603 +3165,6 @@ angular
       return variable(dictionaryId, variableId).patch({variable: changes});
     };
 
-  });
-
-/**
- * @ngdoc service
- * @name predicsis.jsSDK.helpers.datasetHelper
- * @description Give some utility method on a {@link predicsis.jsSDK.models.Datasets dataset} object
- */
-angular
-  .module('predicsis.jsSDK.helpers')
-  .service('datasetHelper', function($q, $injector) {
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.datasetHelper
-     * @name hasChildren
-     * @description Tells if a dataset has subsets
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
-     */
-    this.hasChildren = function(dataset) {
-      return Boolean(dataset.children_dataset_ids.length > 0);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.datasetHelper
-     * @name isParent
-     * @description Tells if a dataset is a parent dataset.
-     * <b>Note:</b> A parent may have any children, but its <kbd>parent_dataset_id</kbd> must be null
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
-     */
-    this.isParent = function(dataset) {
-      return Boolean(dataset.parent_dataset_id === null);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.datasetHelper
-     * @name isChil
-     * @description Tells if a dataset is a child dataset
-     * <b>Note:</b> A dataset is considered as a child if it has a parent. There is no orphan among datasets!
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
-     */
-    this.isChild = function(dataset) {
-      return Boolean(dataset.parent_dataset_id !== null);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.datasetHelper
-     * @name isTrainPart
-     * @description Tells if a dataset is a train subset.
-     * <b>Note:</b> A dataset is considered as a train subset if its sampling is positive
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
-     */
-    this.isTrainPart = function(dataset) {
-      return this.isChild(dataset) && dataset.sampling > 0;
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.datasetHelper
-     * @name isTestPart
-     * @description Tells if a dataset is a train subset.
-     * <b>Note:</b> A dataset is considered as a test subset if its sampling is negative
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
-     */
-    this.isTestPart = function(dataset) {
-      return this.isChild(dataset) && dataset.sampling < 0;
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.datasetHelper
-     * @name isFormatted
-     * @description Tells if a dataset has both header and separator defined.
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
-     */
-    this.isFormatted = function(dataset) {
-      return Boolean(dataset.header !== null) && Boolean(dataset.separator !== null)
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.datasetHelper
-     * @name isScore
-     * @description Tells if a dataset is the result of a score.
-     * A score result is identified by the following rules:
-     * <ul>
-     *   <li><code>dataset.source_ids.length === 0</code></li>
-     *   <li><code>dataset.main_modality !== null</code></li>
-     *   <li><code>dataset.classifier !== null</code></li>
-     *   <li><code>dataset.dataset_id !== null</code></li>
-     * </ul>
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
-     */
-    this.isScore = function(dataset) {
-      return Boolean(dataset.source_ids.length === 0)
-        && Boolean(dataset.main_modality !== null)
-        && Boolean(dataset.classifier !== null)
-        && Boolean(dataset.dataset_id !== null);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.datasetHelper
-     * @name removeDependencies
-     * @description Remove dataset's children and sources
-     *
-     * <div><span class="badge delete">delete</span><code>/sources/:source_id<code></div>
-     * <div><span class="badge delete">delete</span><code>/datasets/:train_subset_id</code></div>
-     * <div><span class="badge delete">delete</span><code>/datasets/:test_subset_id</code></div>
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Promise} Removed dataset
-     */
-    this.removeDependencies = function(dataset) {
-      var Sources = $injector.get('Sources');
-      var Datasets = $injector.get('Datasets');
-      var source_ids = dataset.source_id || [];
-      var children_ids = dataset.children_dataset_ids || [];
-      return $q.all([
-        $q.all(source_ids
-          .map(function(source_id) {
-            return Sources.delete(source_id);
-          })),
-        $q.all(children_ids
-          .map(function(child_id) {
-            return Datasets.delete(child_id);
-          }))
-      ]);
-    };
-
-  });
-
-/**
- * @ngdoc service
- * @name predicsis.jsSDK.helpers.jobsHelper
- * @require $q
- * @require Jobs
- *
- * A lot of requests on PredicSis API are asynchronous. That means when you send a <kbd>POST /datasets</kbd>
- * request (for example), you will get a 201 Created HTTP response. A new <kbd>dataset</kbd> has been created.
- * <b>BUT</b> it hasn't been completly fulfilled, there is a pending job you must wait for its termination to
- * consider the <kbd>dataset</kbd> really created.
- *
- * Each time the API returns a <kbd>job_ids</kbd> in a response, the request is asynchronous. This array
- * contains all the jobs created before and the current one in the last position. You have to send a
- * <kbd>GET /jobs/:jobId</kbd> request and check the <kbd>status</kbd> property. It coul take 4 values:
- * <ul>
- *   <li>pending</li>
- *   <li>processing</li>
- *   <li>completed</li>
- *   <li>failed</li>
- * </ul>
- *
- * The following schema shows a job' standard workflow:
- * <img src="https://github.com/PredicSis/kml-api-doc/blob/master/assets/img/job_status.png" alt="Job standard workflow" />
- */
-angular
-  .module('predicsis.jsSDK.helpers')
-  .service('jobsHelper', function($q, Jobs) {
-    'use strict';
-    var self = this;
-    var errorHandler;
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.jobsHelper
-     * @name listen
-     * @description Active pulling on a job waiting for its termination
-     *
-     * <b>Important notes:</b>
-     * <ul>
-     *   <li>You can <em>listen</em>only one job at a time</li>
-     *   <li>a <kbd>GET /jobs/:jobId</kbd> is going to be sent every 3 second the first minute, and every minute after</li>
-     * </ul>
-     *
-     * @param {String} jobId The id of the job api resource you want to wait termination
-     * @return {Promise} A promise resolved only when the job succeeds
-     */
-    self.listen = function(jobId) {
-
-      var deferred = $q.defer();
-
-      //Lock limiting interval loop to one concurrent request
-      var isRequestPending = false;
-      //Counter to manage timeout step (3 seconds the 1st minute, one minute after)
-      var requestCounter = 0;
-      //Store intervalId as a closure to be able to stop interval loop
-      var intervalId = window.setInterval(function() {
-        //Limit to one concurrent request
-        if(!isRequestPending) {
-
-          isRequestPending = true;
-          requestCounter++;
-
-          Jobs.get(jobId).then(function(job) {
-              //reject promise if status is failed (and stop interval loop)
-              if (job.status === 'failed') {
-                clearInterval(intervalId);
-                var error = new Error(job.error.message);
-                error.status = job.error.status;
-                deferred.reject(error);
-              }
-              //resolve promise if status is completed (and stop interval loop)
-              else if (job.status === 'completed') {
-                clearInterval(intervalId);
-                deferred.resolve(jobId);
-              }
-              //continue interval calls otherwise (wait timeout seconds before accepting new request)
-              else {
-                //Job is pulled each minute (except 1st minute)
-                var timeout = 60;
-                //Job is pulled each 3 seconds during the 1st minute (for fast jobs)
-                if(requestCounter < 20) {
-                  timeout = 3;
-                }
-                //Unlock request Lock after timeout seconds
-                window.setTimeout(function() {
-                  isRequestPending = false;
-                }, timeout * 1000);
-              }
-            })
-            //catch request errors, reject promise and stop interval loop
-            .then(null, function(error) {
-              clearInterval(intervalId);
-              deferred.reject(error);
-            });
-        }
-      }, 1000);
-
-      return deferred.promise;
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.jobsHelper
-     * @name wrapAsyncPromise
-     * @description Transform an async promise into the same promise resolving only when job is completed
-     *
-     * Usage example:
-     * <pre>
-     * return jobsHelper
-     *   .wrapAsyncPromise(datasets().post({dataset: params}))
-     *   .then(function(dataset) {
-     *     // do something with you completely created new dataset
-     *     // ...
-     *   });
-     * </pre>
-     *
-     * @param {Promise|Array} promise or list of jobs (the last one will be listened)
-     * @return {Promise} See above example
-     */
-    self.wrapAsyncPromise = function(promise) {
-      return promise.then(function(asyncResult) {
-        var jobId = (asyncResult.job_ids || []).slice(-1)[0];
-        return self.listen(jobId)
-          .then(function() {
-            return asyncResult;
-          })
-          .catch(function(err) {
-            if(errorHandler) {
-              errorHandler(err);
-            }
-            throw err;
-          });
-      });
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.jobsHelper
-     * @name setErrorHandler
-     * @description set error handler (errors occuring in a job)
-     *
-     * Usage example:
-     * <pre>
-     * return jobsHelper
-     *   .setErrorHandler(function(error) {
-     *     // do something with error
-     *     // ...
-     *   });
-     * </pre>
-     *
-     * @param {Function} callback called when an error occurs during a Job
-     */
-    self.setErrorHandler = function(cb) {
-      errorHandler = cb;
-    };
-});
-
-/**
- * @ngdoc service
- * @name predicsis.jsSDK.helpers.modelHelper
- * @requires $injector
- * - {@link predicsis.jsSDK.models.Datasets Datasets}
- * - {@link predicsis.jsSDK.models.Models Models}
- * - {@link predicsis.jsSDK.models.Reports Reports}
- * - {@link predicsis.jsSDK.models.Projects Projects}
- * - {@link predicsis.jsSDK.models.PreparationRules PreparationRules}
- * - $q
- * - $rootScope
- */
-angular
-  .module('predicsis.jsSDK.helpers')
-  .service('modelHelper', function($injector) {
-    'use strict';
-
-    /**
-     * @ngdoc function
-     * @name learn
-     * @methodOf predicsis.jsSDK.helpers.modelHelper
-     * @description Learn a model
-     *
-     * This function wraps the following requests:
-     * <ul>
-     *   <li>GET /datasets</li>
-     *   <li>GET /datasets/:trainDatasetId</li>
-     *   <li>GET /datasets/:testDatasetId</li>
-     *   <li>POST /preparation_rules_sets</li>
-     *   <li>POST /models</li>
-     *   <li>POST /reports</li>
-     *   <li>POST /reports</li>
-     *   <li>POST /reports</li>
-     *   <li>PATCH /projects/:projectId</li>
-     * </ul>
-     *
-     * ... and each time, waits for job termination!
-     *
-     * To do so, what we really use are the following parameters:
-     * <ul>
-     *   <li><kbd>project.learning_dataset_id</kbd> to find the training partition of the input dataset</li>
-     *   <li><kbd>project.target_variable_id</kbd> to create a valid {@link predicsis.jsSDK.models.PreparationRules PreparationRules}</li>
-     *   <li><kbd>project.id</kbd> to store preparation rules set, classifier and reports ids.</li>
-     * </ul>
-     *
-     * Please also note that if your project doesn't have a <code>main_modality</code> parameter, only univariate
-     * supervised report will be created. If this property is here, we also generate classifier evaluation reports
-     * for train and test datasets.
-     *
-     * We also broadcast the following events:
-     * <ul>
-     *   <li>jsSDK.learn.start-retrieving-train-dataset</li>
-     *   <li>jsSDK.learn.start-creating-preparation-rules</li>
-     *   <li>jsSDK.learn.start-learning</li>
-     *   <li>jsSDK.learn.start-generating-reports</li>
-     *   <li>jsSDK.learn.start-updating-project</li>
-     * </ul>
-     *
-     * @param {Object} project Instance of a valid {@link predicsis.jsSDK.models.Projects Project}
-     * @return {Object} Instance of a complete {@link predicsis.jsSDK.models.Models Models}
-     */
-    this.learn = function(project) {
-      var Datasets = $injector.get('Datasets');
-      var Models = $injector.get('Models');
-      var Reports = $injector.get('Reports');
-      var Projects = $injector.get('Projects');
-      var PreparationRules = $injector.get('PreparationRules');
-      var $q = $injector.get('$q');
-      var $rootScope = $injector.get('$rootScope');
-      var results = {};
-
-      $rootScope.$broadcast('jsSDK.learn.start-retrieving-train-dataset');
-
-      return Datasets.getChildren(project.learning_dataset_id)
-        .then(function(children) {
-          if(!children.train) {
-            throw 'Invalid project on POST preparation_rules, no valid train dataset found';
-          }
-
-          $rootScope.$broadcast('jsSDK.learn.start-creating-preparation-rules');
-
-          return PreparationRules.create({
-            variable_id: project.target_variable_id,
-            dataset_id: children.train.id
-          });
-        })
-        // create the model from preparation rules set
-        .then(function(preparationRulesRet) {
-          results.preparation_rules_set = preparationRulesRet;
-          $rootScope.$broadcast('jsSDK.learn.start-learning');
-          return Models.createClassifier(preparationRulesRet.id);
-        })
-        // generate reports
-        .then(function(classifier) {
-          results.classifier = classifier;
-          // classifier_id is required to generate reports,
-          // but the PATCH request will occurs after the learn process.
-          // this tweak allow project generation.
-          project.classifier_id = classifier.id;
-          $rootScope.$broadcast('jsSDK.learn.start-generating-reports');
-
-          var requestedReports = {
-            univariate_supervised_report: Reports.createUnivariateSupervisedReport(project)
-          };
-
-          if (project.main_modality !== null) {
-            requestedReports['train_classifier_evaluation_report'] = Reports.createTrainClassifierEvaluationReport(project);
-            requestedReports['test_classifier_evaluation_reports'] = Reports.createTestClassifierEvaluationReport(project);
-          }
-
-          return $q.all(requestedReports);
-        })
-        //update project
-        .then(function(reports) {
-          var reportIds = [];
-          reportIds[0] = reports.train_classifier_evaluation_report.id;
-          reportIds[1] = reports.test_classifier_evaluation_reports.id;
-          reportIds[2] = reports.univariate_supervised_report.id;
-          //reportIds[3] = reports.univariate_unsupervised_report.id;
-
-          $rootScope.$broadcast('jsSDK.learn.start-updating-project');
-
-          return Projects.update(project.id, {
-            preparation_rules_set_id: results.preparation_rules_set.id,
-            classifier_id: results.classifier.id,
-            report_ids: reportIds
-          });
-        })
-        //return classifier
-        .then(function() {
-          return results.classifier;
-        });
-    };
-
-  });
-
-/**
- * @ngdoc service
- * @name predicsis.jsSDK.helpers.projectsHelper
- * @require $injector
- */
-angular
-  .module('predicsis.jsSDK.helpers')
-  .service('projectsHelper', function($injector) {
-    'use strict';
-
-    var Projects = $injector.get('Projects');
-
-    // --- Getter methods ----------------------------------------------------------------------------------------------
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.projectsHelper
-     * @name isModelDone
-     * @description Tells if there is a model for the given project.
-     *
-     *  <b>Note:</b> A project can have only one Model. It means that you can go back to the first steps of the scenario
-     *  if your current project already has a model attached. If you want to change a parameter, you have to create a new
-     *  project.
-     *
-     * @param {Object} project {@link API.model.Projects Projects model}
-     * @return {boolean} <code>true</code> / <code>false</code>
-     */
-    this.isModelDone = function(project) {
-      return Boolean(project.classifier_id);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.projectsHelper
-     * @name isDictionaryVerified
-     * @description Tells if the user checked its project's dictionary.
-     *
-     *  A dictionary contains a description of each variable used (or unused) of the model. That's why scenario forces
-     *  the user to check generated dictionaries.
-     *
-     * @param {Object} project {@link API.model.Projects Projects model}
-     * @return {boolean} <code>true</code> / <code>false</code>
-     */
-    this.isDictionaryVerified = function(project) {
-      return Boolean(project.is_dictionary_verified);
-    };
-
-    // --- Altering methods --------------------------------------------------------------------------------------------
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.projectsHelper
-     * @name addLearningDataset
-     * @description Simply adds an entry to <code>learning_dataset_id</code> project's property.
-     *
-     * <span class="badge patch">patch</span><code>/projects/:projectId</code>
-     *
-     * @param {Object} project {@link API.model.Projects Projects model}
-     * @param {String} datasetId Id of the dataset which will be used for learning
-     * @return {Object} Promise of an updated project
-     */
-    this.addLearningDataset = function(project, datasetId) {
-      return Projects.update(project.id, {learning_dataset_id: datasetId});
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.projectsHelper
-     * @name addScoringDataset
-     * @description Simply adds an entry to <code>scoring_dataset_ids</code> project's array.
-     *
-     * <span class="badge patch">patch</span><code>/projects/:projectId</code>
-     *
-     * @param {Object} project {@link API.model.Projects Projects model}
-     * @param {String} datasetId Id of the dataset which will be used for score
-     * @return {Object} Promise of an updated project
-     */
-    this.addScoringDataset = function(project, datasetId) {
-      var update = {};
-      update.scoring_dataset_ids = project.scoring_dataset_ids || [];
-      update.scoring_dataset_ids.push(datasetId);
-      return Projects.update(project.id, update);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.projectsHelper
-     * @name addScoreset
-     * @description Simply adds an entry to <code>scoreset_ids</code> project's array.
-     *
-     * <span class="badge patch">patch</span><code>/projects/:projectId</code>
-     *
-     * @param {Object} project {@link API.model.Projects Projects model}
-     * @param {String} datasetId Id of the dataset which will store score results
-     * @return {Object} Promise of an updated project
-     */
-    this.addScoreset = function(project, datasetId) {
-      var update = {};
-      update.scoreset_ids = project.scoreset_ids || [];
-      update.scoreset_ids.push(datasetId);
-      return Projects.update(project.id, update);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.projectsHelper
-     * @name resetDictionary
-     * @description Simply set to <code>null</code> the following project's properties:
-     * <ul>
-     *   <li><code>dictionary_id</code></li>
-     *   <li><code>is_dictionary_verified</code></li>
-     *   <li><code>target_variable_id</code></li>
-     *   <li><code>main_modality</code></li>
-     * </ul>
-     *
-     * <br/>
-     * <span class="badge patch">patch</span><code>/projects/:projectId</code>
-     *
-     * @param {String} projectId Id of the project you want to update
-     * @return {Object} Promise of an updated project
-     */
-    this.resetDictionary = function(projectId) {
-      return Projects.update(projectId, {
-        dictionary_id: null,
-        is_dictionary_verified: null,
-        target_variable_id: null,
-        main_modality: null
-      });
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.projectsHelper
-     * @name removeDependencies
-     * @description Removes linked resources prior to being able to remove the project
-     *
-     * <div><span class="badge get">get</span><code>/projects/:projectId</code></div>
-     * <div><span class="badge delete">delete</span><code>/dictionaries/:project.dictionary_id</code></div>
-     * <div><span class="badge delete">delete</span><code>/model/:project.classifier_id</code></div>
-     *
-     * @param {String} projectId Id of the project you want to update
-     * @return {Object} Promise of an updated project
-     */
-    this.removeDependencies = function(projectId) {
-      var Dictionaries = $injector.get('Dictionaries');
-      var Models = $injector.get('Models');
-
-      return Projects.get(projectId)
-        .then(function(project) {
-          // Delete dictionary if exists
-          return (project.dictionary_id === null)
-            ? project
-            : Dictionaries.delete(project.dictionary_id).then(function() { return project; });
-        })
-        .then(function(project) {
-          // Delete dictionary if exists
-          return (project.classifier_id === null)
-            ? project
-            : Models.delete(project.classifier_id).then(
-              function() { return project; },
-              function(err) { if (err.status === 404) { return project; } else { throw err; }}//In case the api has already deleted it when it's dataset has been deleted
-          );
-        });
-    };
   });
 
 /**
