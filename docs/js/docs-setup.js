@@ -14,14 +14,6 @@ NG_DOCS={
     },
     {
       "section": "api",
-      "id": "predicsis.jsSDK.helpers.jobsHelper",
-      "shortName": "predicsis.jsSDK.helpers.jobsHelper",
-      "type": "service",
-      "moduleName": "predicsis.jsSDK.helpers",
-      "keywords": "$q active alt api array async asynchronous callback called check completed completely completly consider coul created current dataset error example fulfilled function going handler hasn helpers http https job jobid jobs jobshelper jssdk list listen listened lot minute notes occuring occurs params pending png position post predicsis promise property pulling request requests resolved resolving resource response return returns schema second send service set seterrorhandler src standard succeeds termination time transform usage values wait waiting workflow wrapasyncpromise"
-    },
-    {
-      "section": "api",
       "id": "predicsis.jsSDK.helpers.modelHelper",
       "shortName": "predicsis.jsSDK.helpers.modelHelper",
       "type": "service",
@@ -51,7 +43,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "",
-      "keywords": "$classifier_id $dataset_id $header $main_modality $modalities_set_id $name $q $separator api async awesome badge build changes children_dataset_ids class classifier_id colspan create created_at creation csv data_file datafile dataset dataset_id dataset_name datasethelper datasets delete description destroy dictionary dictionary_ids differents distinction documentation escape examples existing fetch file filename filenames function generated_dictionaries_ids generation getchildren going header helpers https identifier isscore istestpart istrainpart job_ids jobshelper jssdk learned learned_learning_dataset learning learning-dataset learning_dataset learning_dataset_with_model list main_modality method methods_all methods_create methods_delete methods_get methods_getchildren methods_isscore methods_istestpart methods_istrainpart methods_split methods_update modalities_set_id model models named nb_of_lines note null original original_source_id paradox parameters params parent_dataset_id parent_dictionary patch permanently post predicsis preview ratio remove removed request requested required requires restangular s3 s3_url sampling scoreset scoring scoring_dataset separator service set single size source source_ids split string subset subsets tabulation test tested tested_learning_dataset testing train true type update updated updated_at upload url user_id view"
+      "keywords": "$classifier_id $dataset_id $header $main_modality $modalities_set_id $name $q $separator api async awesome badge build changes children_dataset_ids class classifier_id colspan create created_at creation csv data_file datafile dataset dataset_id dataset_name datasethelper datasets delete description destroy dictionary dictionary_ids differents distinction documentation escape examples existing fetch file filename filenames function generated_dictionaries_ids generation getchildren going header helpers https identifier isscore istestpart istrainpart job_ids jobs jssdk learned learned_learning_dataset learning learning-dataset learning_dataset learning_dataset_with_model list main_modality method methods_all methods_create methods_delete methods_get methods_getchildren methods_isscore methods_istestpart methods_istrainpart methods_split methods_update modalities_set_id model models named nb_of_lines note null original original_source_id paradox parameters params parent_dataset_id parent_dictionary patch permanently post predicsis preview ratio remove removed request requested required requires restangular s3 s3_url sampling scoreset scoring scoring_dataset separator service set single size source source_ids split string subset subsets tabulation test tested tested_learning_dataset testing train true type update updated updated_at upload url user_id view"
     },
     {
       "section": "api",
@@ -60,7 +52,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "",
-      "keywords": "$q api async asynchronous awesome badge changes characters class colspan core create created_at createfromdataset csv dataset dataset_id dataset_ids delegated delete description destroy dictionaries dictionary dictionary_ dictionary_iris dictionaryid documentation empty example existing fetch function generate generated generation going https identifier job_ids jobshelper jssdk list methods_all methods_create methods_createfromdataset methods_delete methods_get methods_update models null output parameters params patch permanently post predicsis promise remove request resource restangular send service single tool update updated updated_at user_id variable_ids"
+      "keywords": "$q api async asynchronous awesome badge changes characters class colspan core create created_at createfromdataset csv dataset dataset_id dataset_ids delegated delete description destroy dictionaries dictionary dictionary_ dictionary_iris dictionaryid documentation empty example existing fetch function generate generated generation going https identifier job_ids jobs jssdk list methods_all methods_create methods_createfromdataset methods_delete methods_get methods_update models null output parameters params patch permanently post predicsis promise remove request resource restangular send service single tool update updated updated_at user_id variable_ids"
     },
     {
       "section": "api",
@@ -68,8 +60,8 @@ NG_DOCS={
       "shortName": "predicsis.jsSDK.models.Jobs",
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
-      "shortDescription": "",
-      "keywords": "$q action api async badge class colspan completed created_at delete destroy dictionary documentation don empty error example fetch finished_at forget function generate going https identifier job jobid jobs jssdk list methods_all methods_delete methods_get models notes null output permanently predicsis promise remove restangular return runnable_id service single started_at status user_id warnings"
+      "shortDescription": "A lot of requests on PredicSis API are asynchronous. That means when you send a POST /datasets",
+      "keywords": "$q action active alt api array async asynchronous badge callback called check class colspan completed completely consider created created_at current dataset delete destroy dictionary documentation don empty error example fails fetch finished_at forget fulfilled function generate going handler hasn http https identifier job jobid jobs jssdk list listen listened lot methods_all methods_delete methods_get methods_listen methods_seterrorhandler methods_wrapasyncpromise minute models notes null occuring occurs output params pending permanently png position post predicsis promise property pulling remove request requests resolved resolving resource response restangular return returns runnable_id schema second send service set seterrorhandler single src standard started_at status succeeds termination time transform usage user_id values wait waiting warnings workflow wrapasyncpromise"
     },
     {
       "section": "api",
@@ -78,7 +70,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "",
-      "keywords": "$q api async badge class colspan create created_at creation dataset_id delete destroy documentation example explicitly fact fetch function generated https identifier ids job_ids jobshelper jssdk list methods_all methods_create methods_delete methods_get modalities models object parameters params permanently post predicsis remove removed request required resource restangular returned send service set sets single source user_id variable_id"
+      "keywords": "$q api async badge class colspan create created_at creation dataset_id delete destroy documentation example explicitly fact fetch function generated https identifier ids job_ids jobs jssdk list methods_all methods_create methods_delete methods_get modalities models object parameters params permanently post predicsis remove removed request required resource restangular returned send service set sets single source user_id variable_id"
     },
     {
       "section": "api",
@@ -87,7 +79,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "",
-      "keywords": "$q api async badge changes class classification classifier colspan create createclassifier created_at delete description destroy documentation example false fetch function identifier ids job_ids jobshelper jssdk length level list maximum_a_posteriori method_create methods_all methods_create methods_delete methods_get methods_update model model_variables models null output parameters params patch permanently petal post predicsis preparation preparation_rules_set_id preparationrules preparationrulessetid remove removed request restangular rules sepal service shortcut simple single title true type types update updated updated_at user_id weight width"
+      "keywords": "$q api async badge changes class classification classifier colspan create createclassifier created_at delete description destroy documentation example false fetch function identifier ids job_ids jobs jssdk length level list maximum_a_posteriori method_create methods_all methods_create methods_delete methods_get methods_update model model_variables models null output parameters params patch permanently petal post predicsis preparation preparation_rules_set_id preparationrules preparationrulessetid remove removed request restangular rules sepal service shortcut simple single title true type types update updated updated_at user_id weight width"
     },
     {
       "section": "api",
@@ -114,7 +106,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "",
-      "keywords": "$q api async badge changes class colspan create created_at dataset_id delete description destroy documentation example fetch function https identifier ids job_ids jobshelper jssdk list methods_all methods_create methods_delete methods_get methods_update models null output parameters params patch permanently post predicsis preparation preparationrules remove removed restangular rules service set sets single update updated updated_at user_id variable_id"
+      "keywords": "$q api async badge changes class colspan create created_at dataset_id delete description destroy documentation example fetch function https identifier ids job_ids jobs jssdk list methods_all methods_create methods_delete methods_get methods_update models null output parameters params patch permanently post predicsis preparation preparationrules remove removed restangular rules service set sets single update updated updated_at user_id variable_id"
     },
     {
       "section": "api",
@@ -132,7 +124,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "",
-      "keywords": "$injector $q api async badge changes class classifier classifier_evaluation classifier_id colspan create createtestclassifierevaluationreport createtrainclassifierevaluationreport createunivariatesupervisedreport dataset_id datasets delete description dictionary_id documentation evaluation example fetch function generate generated identifier ids jobshelper jssdk list main_modality methods_all methods_create methods_createtestclassifierevaluationreport methods_createtrainclassifierevaluationreport methods_createunivariatesupervisedreport methods_delete methods_get methods_update modalities_set_id models official parameters params patch post predicsis project promise remove report reportid reports request required resource restangular send service single subset supervised test title train type types univariate univariate_supervised univariate_unsupervised unsupervised update updated variable_id"
+      "keywords": "$injector $q api async badge changes class classifier classifier_evaluation classifier_id colspan create createtestclassifierevaluationreport createtrainclassifierevaluationreport createunivariatesupervisedreport dataset_id datasets delete description dictionary_id documentation evaluation example fetch function generate generated identifier ids jobs jssdk list main_modality methods_all methods_create methods_createtestclassifierevaluationreport methods_createtrainclassifierevaluationreport methods_createunivariatesupervisedreport methods_delete methods_get methods_update modalities_set_id models official parameters params patch post predicsis project promise remove report reportid reports request required resource restangular send service single subset supervised test title train type types univariate univariate_supervised univariate_unsupervised unsupervised update updated variable_id"
     },
     {
       "section": "api",
@@ -141,7 +133,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "Sources are a representation of an uploaded file on our storage. At time, all uploads are sent to Amazon S3.",
-      "keywords": "$q amazon amazonaws api async badge changes class colspan create created_at creation csv data_file database dataset dataset_ids delete description destroy documentation example fetch file filename function generated going hello https identifier jobshelper jssdk key kml-api list methods_all methods_create methods_delete methods_get methods_update models object output parameters params patch path permanently persist post predicsis public remove removed representation request required resource restangular s3 send service single size source sourceid sources storage time type update updated updated_at upload uploaded uploads url user_id"
+      "keywords": "$q amazon amazonaws api async badge changes class colspan create created_at creation csv data_file database dataset dataset_ids delete description destroy documentation example fetch file filename function generated going hello https identifier jssdk key kml-api list methods_all methods_create methods_delete methods_get methods_update models object output parameters params patch path permanently persist post predicsis public remove removed representation request required resource restangular s3 send service single size source sourceid sources storage time type update updated updated_at upload uploaded uploads url user_id"
     },
     {
       "section": "api",
