@@ -22,14 +22,6 @@ NG_DOCS={
     },
     {
       "section": "api",
-      "id": "predicsis.jsSDK.helpers.projectsHelper",
-      "shortName": "predicsis.jsSDK.helpers.projectsHelper",
-      "type": "service",
-      "moduleName": "predicsis.jsSDK.helpers",
-      "keywords": "$injector addlearningdataset adds addscoreset addscoringdataset api array attached badge change check checked class classifier_id create current dataset datasetid delete description dictionaries dictionary dictionary_id entry forces function generated helpers isdictionaryverified ismodeldone jssdk learning linked model parameter patch predicsis prior project projectid projects projectshelper promise properties property remove removedependencies removes resetdictionary resources scenario score service set simply steps store tells unused update updated user variable"
-    },
-    {
-      "section": "api",
       "id": "predicsis.jsSDK.helpers.s3FileHelper",
       "shortName": "predicsis.jsSDK.helpers.s3FileHelper",
       "type": "service",
@@ -115,7 +107,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "predicsis.jsSDK.models",
       "shortDescription": "",
-      "keywords": "$q addlearningdataset addscoreset addscoringdataset api array async badge changes class classifier_id colspan create created_at dataset datasetid delete dependencies description designed destroy dictionary_id documentation dualplay empty evaluation example fetch field function helper helpers identifier ids is_dictionary_verified isdictionaryverified ismodeldone jssdk learning_dataset_id list main_modality methods methods_addlearningdataset methods_addscoreset methods_addscoringdataset methods_all methods_create methods_delete methods_get methods_isdictionaryverified methods_ismodeldone methods_removedependencies methods_resetdictionary methods_update modalities_set_id models official order output parameters params parent patch permanently post predicsis preparation_rules_set_id prior process project projectid projectids projects projectshelper promise remove removedependencies report report_ids reports request resetdictionary resource restangular return scoreset_ids scoring_dataset_ids send service single splitted store stored string subsets supervised target_variable_id test title train true unsupervised update updated updated_at user_id"
+      "keywords": "$q addlearningdataset adds addscoreset addscoringdataset api array attached badge change changes check checked checks class classifier_id colspan create created_at current dataset datasetid delete dependencies description designed destroy dictionaries dictionary dictionary_id documentation dualplay empty entry evaluation example fetch field forces function generated identifier ids is_dictionary_verified isdictionaryverified ismodeldone jssdk learning learning_dataset_id linked list main_modality methods_addlearningdataset methods_addscoreset methods_addscoringdataset methods_all methods_create methods_delete methods_get methods_isdictionaryverified methods_ismodeldone methods_removedependencies methods_resetdictionary methods_update modalities_set_id model models official order output parameter parameters params parent patch permanently post predicsis preparation_rules_set_id prior process project projectid projectids projects promise properties property remove removedependencies removes report report_ids reports request resetdictionary resource resources restangular return scenario score scoreset_ids scoring_dataset_ids send service set simply single splitted steps store stored subsets supervised target_variable_id test title train true unsupervised unused update updated updated_at user user_id variable"
     },
     {
       "section": "api",
