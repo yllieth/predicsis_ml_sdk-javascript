@@ -5,15 +5,6 @@ NG_DOCS={
   "pages": [
     {
       "section": "api",
-      "id": "predicsis.jsSDK.helpers.datasetHelper",
-      "shortName": "predicsis.jsSDK.helpers.datasetHelper",
-      "type": "service",
-      "moduleName": "predicsis.jsSDK.helpers",
-      "shortDescription": "Give some utility method on a dataset object",
-      "keywords": "api badge child children class classifier considered dataset dataset_id datasethelper datasets defined delete function haschildren header helpers identified instance ischil isformatted isparent isscore istestpart istrainpart jssdk length main_modality method models negative null object orphan parent positive predicsis remove removed removedependencies result rules sampling score separator service source_ids sources subset subsets tells test train utility"
-    },
-    {
-      "section": "api",
       "id": "predicsis.jsSDK.helpers.s3FileHelper",
       "shortName": "predicsis.jsSDK.helpers.s3FileHelper",
       "type": "service",
