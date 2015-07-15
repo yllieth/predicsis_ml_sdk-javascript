@@ -1,4 +1,4 @@
-<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Projects.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Projects.js#L87" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Projects</code>
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Projects.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L112" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Projects</code>
 <div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK.models</code>
 </span>
 </div>
@@ -23,12 +23,48 @@
 <tr>
   <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
   <td><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_update">Projects.update()</a></kbd></td>
-  <td><span class="badge async">async</span></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_addlearningdataset">addLearningDataset()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_addscoringdataset">addScoringDataset()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_addscoreset">addScoreset()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge patch">patch</span> <kbd>/projects/:id</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_resetdictionary">resetDictionary()</a></kbd></td>
+  <td></td>
 </tr>
 <tr>
   <td><span class="badge delete">delete</span> <kbd>/projects/:id</kbd></td>
   <td><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_delete">Projects.delete()</a></kbd></td>
   <td></td>
+</tr>
+<tr>
+  <td>
+    <div><span class="badge delete">delete</span><code>/dictionaries/:project.dictionary_id</code></div>
+    <div><span class="badge delete">delete</span><code>/model/:project.classifier_id</code></div>
+  </td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_removedependencies">removeDependencies()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td>Checks if there is a model for the given project</td>
+  <td colspan="2"><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_ismodeldone">isModelDone()</a></kbd></td>
+</tr>
+<tr>
+  <td>Checks if the user checked its project&#39;s dictionary</td>
+  <td colspan="2"><kbd><a href="#/api/predicsis.jsSDK.models.Projects#methods_isdictionaryverified">isDictionaryVerified()</a></kbd></td>
 </tr>
 <tfoot>
   <tr><td colspan="3">There is no official documentation for this resource.</td></tr>
@@ -38,26 +74,26 @@
 <p>Output example:
 <pre class="prettyprint linenums">
 {
-id: '54ca326561707000017b0200',
-created_at: '2015-01-29T13:15:17.224Z',
-updated_at: '2015-01-29T13:54:37.919Z',
-title: 'dualplay',
-main_modality: '1',
-dictionary_id: '54ca32a261707000017e0200',
-target_variable_id: '54ca32a1776f720001bc0900',
-classifier_id: '54ca332461707000018d0200',
-preparation_rules_set_id: '54ca331b61707000018a0200',
-modalities_set_id: '54ca33116170700001870200',
-learning_dataset_id: '54c60ca16170700001020000',
-scoring_dataset_ids: ['54c60ca16170700001020000'],
-scoreset_ids: ['54ca3b9761707000019b0200'],
-report_ids: [
-  '54ca33396170700001930200',
-  '54ca33396170700001960200',
-  '54ca33386170700001900200'
-],
-is_dictionary_verified: true,
-user_id: '541b06dc617070006d060000'
+  id: '54ca326561707000017b0200',
+  created_at: '2015-01-29T13:15:17.224Z',
+  updated_at: '2015-01-29T13:54:37.919Z',
+  title: 'dualplay',
+  main_modality: '1',
+  dictionary_id: '54ca32a261707000017e0200',
+  target_variable_id: '54ca32a1776f720001bc0900',
+  classifier_id: '54ca332461707000018d0200',
+  preparation_rules_set_id: '54ca331b61707000018a0200',
+  modalities_set_id: '54ca33116170700001870200',
+  learning_dataset_id: '54c60ca16170700001020000',
+  scoring_dataset_ids: ['54c60ca16170700001020000'],
+  scoreset_ids: ['54ca3b9761707000019b0200'],
+  report_ids: [
+    '54ca33396170700001930200',
+    '54ca33396170700001960200',
+    '54ca33386170700001900200'
+  ],
+  is_dictionary_verified: true,
+  user_id: '541b06dc617070006d060000'
 }
 </pre>
 <p><b><code>learning_dataset_id</code></b> : is the id of the parent dataset.
@@ -69,18 +105,7 @@ resource is designed to store the parent dataset.</p>
 <li>classifier evaluation report for test part</li>
 <li>univariate supervised report</li>
 <li>univariate unsupervised report</li>
-</ol>
-
-<p>See <a href="#/api/predicsis.jsSDK.helpers.projectsHelper">projects helper</a> to get the following methods:</p>
-<ul>
-<li><code><a href="#/api/predicsis.jsSDK.helpers.projectsHelper#methods_ismodeldone">isModelDone(Projects project)</a></code></li>
-<li><code><a href="#/api/predicsis.jsSDK.helpers.projectsHelper#methods_isdictionaryverified">isDictionaryVerified(Projects project)</a></code></li>
-<li><code><a href="#/api/predicsis.jsSDK.helpers.projectsHelper#methods_addlearningdataset">addLearningDataset(Projects project, String datasetId)</a></code></li>
-<li><code><a href="#/api/predicsis.jsSDK.helpers.projectsHelper#methods_addscoringdataset">addScoringDataset(Projects project, String datasetId)</a></code></li>
-<li><code><a href="#/api/predicsis.jsSDK.helpers.projectsHelper#methods_addscoreset">addScoreset(Projects project, String datasetId)</a></code></li>
-<li><code><a href="#/api/predicsis.jsSDK.helpers.projectsHelper#methods_resetdictionary">resetDictionary(String projectId)</a></code></li>
-<li><code><a href="#/api/predicsis.jsSDK.helpers.projectsHelper#methods_removedependencies">removeDependencies(String projectId)</a></code></li>
-</ul></div></div>
+</ol></div></div>
 <h2 id="dependencies">Dependencies</h2>
 <ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/ng.$q">$q</a></code>
 </li>
@@ -88,40 +113,95 @@ resource is designed to store the parent dataset.</p>
 </li>
 </ul>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Projects.js#L117" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([projectIds])</h3>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L212" class="view-source icon-eye-open"> </a><h3 id="methods_addlearningdataset">addLearningDataset(project, datasetId)</h3>
+<div class="addlearningdataset"><div class="addlearningdataset-page"><p>Simply adds an entry to <code>learning_dataset_id</code> project&#39;s property.</p>
+</div><h5 id="methods_addlearningdataset_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="addlearningdataset-page"><p><a href="#/api/API.model.Projects">Projects model</a></p>
+</div></td></tr><tr><td>datasetId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="addlearningdataset-page"><p>Id of the dataset which will be used for learning</p>
+</div></td></tr></tbody></table><h5 id="methods_addlearningdataset_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="addlearningdataset-page"><p>Promise of an updated project</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L241" class="view-source icon-eye-open"> </a><h3 id="methods_addscoreset">addScoreset(project, datasetId)</h3>
+<div class="addscoreset"><div class="addscoreset-page"><p>Simply adds an entry to <code>scoreset_ids</code> project&#39;s array.</p>
+</div><h5 id="methods_addscoreset_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="addscoreset-page"><p><a href="#/api/API.model.Projects">Projects model</a></p>
+</div></td></tr><tr><td>datasetId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="addscoreset-page"><p>Id of the dataset which will store score results</p>
+</div></td></tr></tbody></table><h5 id="methods_addscoreset_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="addscoreset-page"><p>Promise of an updated project</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L225" class="view-source icon-eye-open"> </a><h3 id="methods_addscoringdataset">addScoringDataset(project, datasetId)</h3>
+<div class="addscoringdataset"><div class="addscoringdataset-page"><p>Simply adds an entry to <code>scoring_dataset_ids</code> project&#39;s array.</p>
+</div><h5 id="methods_addscoringdataset_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="addscoringdataset-page"><p><a href="#/api/API.model.Projects">Projects model</a></p>
+</div></td></tr><tr><td>datasetId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="addscoringdataset-page"><p>Id of the dataset which will be used for score</p>
+</div></td></tr></tbody></table><h5 id="methods_addscoringdataset_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="addscoringdataset-page"><p>Promise of an updated project</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L142" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([projectIds])</h3>
 <div class="all"><div class="all-page"><p>Get all (or a list of) projects</p>
 </div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[projectIds]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of project&#39;s id you want to fetch</p>
 </div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="all-page"><p>Promise of a projects list</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Projects.js#L105" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L130" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
 <div class="create"><div class="create-page"><p>Send POST request to the <code>project</code> API resource.</p>
 </div><h5 id="methods_create_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="create-page"><p>See above example.</p>
 </div></td></tr></tbody></table><h5 id="methods_create_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="create-page"><p>Promise of a new project</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Projects.js#L172" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(projectIds)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L197" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(projectIds)</h3>
 <div class="delete"><div class="delete-page"><p>Permanently destroy a specified project
-<b>Important:</b> <a href="#/api/predicsis.jsSDK.helpers.ProjectsHelper#methods_removedependencies">Remove project&#39;s dependencies</a>
+<b>Important:</b> <a href="#/api/predicsis.jsSDK.models.Projects#methods_removedependencies">Remove project&#39;s dependencies</a>
 prior to delete the project itself !</p>
 </div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>projectIds</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="delete-page"><p>Id of the project you want to remove</p>
 </div></td></tr></tbody></table><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="delete-page"><p>Promise of an empty project</p>
 </div></td></tr></table><h4 id="methods_delete_example">Example</h4>
 <div class="example"><div class="delete-page"><pre class="prettyprint linenums">
-projectsHelper.removeDependencies(projectId)
+Projects.removeDependencies(projectId)
   .then(function() { return Projects.delete(projectId); })
   .then(function() { ... } );
 </pre>
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Projects.js#L137" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(projectId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L162" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(projectId)</h3>
 <div class="get"><div class="get-page"><p>Get a single project by its id</p>
 </div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>projectId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Project identifier</p>
 </div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="get-page"><p>Promise of a project</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Projects.js#L150" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(projectId, changes)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L333" class="view-source icon-eye-open"> </a><h3 id="methods_isdictionaryverified">isDictionaryVerified(project)</h3>
+<div class="isdictionaryverified"><div class="isdictionaryverified-page"><p>Checks if the user checked its project&#39;s dictionary.</p>
+<p> A dictionary contains a description of each variable used (or unused) of the model. That&#39;s why scenario forces
+ the user to check generated dictionaries.</p>
+</div><h5 id="methods_isdictionaryverified_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="isdictionaryverified-page"><p><a href="#/api/API.model.Projects">Projects model</a></p>
+</div></td></tr></tbody></table><h5 id="methods_isdictionaryverified_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="isdictionaryverified-page"><p><code>true</code> / <code>false</code></p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L317" class="view-source icon-eye-open"> </a><h3 id="methods_ismodeldone">isModelDone(project)</h3>
+<div class="ismodeldone"><div class="ismodeldone-page"><p>Checks if there is a model for the given project.</p>
+<p> <b>Note:</b> A project can have only one Model. It means that you can go back to the first steps of the scenario
+ if your current project already has a model attached. If you want to change a parameter, you have to create a new
+ project.</p>
+</div><h5 id="methods_ismodeldone_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="ismodeldone-page"><p><a href="#/api/API.model.Projects">Projects model</a></p>
+</div></td></tr></tbody></table><h5 id="methods_ismodeldone_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="ismodeldone-page"><p><code>true</code> / <code>false</code></p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L280" class="view-source icon-eye-open"> </a><h3 id="methods_removedependencies">removeDependencies(projectId)</h3>
+<div class="removedependencies"><div class="removedependencies-page"><p>Removes linked resources prior to being able to remove the project</p>
+</div><h5 id="methods_removedependencies_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>projectId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="removedependencies-page"><p>Id of the project you want to update</p>
+</div></td></tr></tbody></table><h5 id="methods_removedependencies_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="removedependencies-page"><p>Promise of an updated project</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L263" class="view-source icon-eye-open"> </a><h3 id="methods_resetdictionary">resetDictionary(projectId)</h3>
+<div class="resetdictionary"><div class="resetdictionary-page"><p>Simply set to <code>null</code> the following project&#39;s properties:</p>
+<ul>
+  <li><code>dictionary_id</code></li>
+  <li><code>is_dictionary_verified</code></li>
+  <li><code>target_variable_id</code></li>
+  <li><code>main_modality</code></li>
+</ul></div><h5 id="methods_resetdictionary_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>projectId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="resetdictionary-page"><p>Id of the project you want to update</p>
+</div></td></tr></tbody></table><h5 id="methods_resetdictionary_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="resetdictionary-page"><p>Promise of an updated project</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Projects.js#L175" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(projectId, changes)</h3>
 <div class="update"><div class="update-page"><p>Update specified project</p>
 </div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>projectId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="update-page"><p>Id of the project you want to update</p>
 </div></td></tr><tr><td>changes</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="update-page"><p>see above description to know parameters you are able to update</p>

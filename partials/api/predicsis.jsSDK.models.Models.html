@@ -1,4 +1,4 @@
-<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Models.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Models.js#L89" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Models</code>
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Models.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Models.js#L93" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Models</code>
 <div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK.models</code>
 </span>
 </div>
@@ -34,6 +34,10 @@
   <td><span class="badge delete">delete</span> <kbd>/models/:id</kbd></td>
   <td><kbd><a href="#/api/predicsis.jsSDK.models.Models#methods_delete">Models.delete()</a></kbd></td>
   <td></td>
+</tr>
+<tr>
+  <td>Wraps all API requests for a learn</td>
+  <td colspan="2"><kbd><a href="#/api/predicsis.jsSDK.models.Models#methods_learn">Models.learn()</a></kbd></td>
 </tr>
 <tfoot>
   <tr><td colspan="3">Official documentation is available at:
@@ -90,17 +94,17 @@
 </li>
 <li><code ng:non-bindable=""><a href="#/api/Restangular">Restangular</a></code>
 </li>
-<li><code ng:non-bindable=""><a href="#/api/jobsHelper">jobsHelper</a></code>
+<li><code ng:non-bindable=""><a href="#/api/Jobs">Jobs</a></code>
 </li>
 </ul>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Models.js#L153" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([modelIds])</h3>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Models.js#L157" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([modelIds])</h3>
 <div class="all"><div class="all-page"><p>Get all (or a list of) models</p>
 </div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[modelIds]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of models ids you want to fetch</p>
 </div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="all-page"><p>A list of models</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Models.js#L138" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Models.js#L142" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
 <div class="create"><div class="create-page"><p>Create a model</p>
 <p> This request is able to create different types of models:</p>
  <ul>
@@ -116,26 +120,63 @@
 </div></td></tr></tbody></table><h5 id="methods_create_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="create-page"><p>New model</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Models.js#L110" class="view-source icon-eye-open"> </a><h3 id="methods_createclassifier">createClassifier(preparationRulesSetId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Models.js#L114" class="view-source icon-eye-open"> </a><h3 id="methods_createclassifier">createClassifier(preparationRulesSetId)</h3>
 <div class="createclassifier"><div class="createclassifier-page"><p>Create a new classifier.
 Simple shortcut for <code><a href="#/api/predicsis.jsSDK.models.Models#method_create">Models.create()</a> function.</p>
 </div><h5 id="methods_createclassifier_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>preparationRulesSetId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="createclassifier-page"><p>See <a href="#/api/predicsis.jsSDK.PreparationRules">preparation rules</a> documentation</p>
 </div></td></tr></tbody></table><h5 id="methods_createclassifier_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="createclassifier-page"><p>A new classifier</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Models.js#L206" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(id)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Models.js#L210" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(id)</h3>
 <div class="delete"><div class="delete-page"><p>Permanently destroy a specified model</p>
 </div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>id</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="delete-page"><p>Id of the model you want to remove</p>
 </div></td></tr></tbody></table><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="delete-page"><p>A removed model</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Models.js#L173" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(id)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Models.js#L177" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(id)</h3>
 <div class="get"><div class="get-page"><p>Get a single model by its id</p>
 </div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>id</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Model identifier</p>
 </div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="get-page"><p>A model</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/6972c81/lib/model/Models.js#L191" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(id, changes)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Models.js#L260" class="view-source icon-eye-open"> </a><h3 id="methods_learn">learn(project)</h3>
+<div class="learn"><div class="learn-page"><p>Learn a model</p>
+<p>This function wraps the following requests:</p>
+<ul>
+  <li>GET /datasets</li>
+  <li>GET /datasets/:trainDatasetId</li>
+  <li>GET /datasets/:testDatasetId</li>
+  <li>POST /preparation_rules_sets</li>
+  <li>POST /models</li>
+  <li>POST /reports</li>
+  <li>POST /reports</li>
+  <li>POST /reports</li>
+  <li>PATCH /projects/:projectId</li>
+</ul>
+
+<p>... and each time, waits for job termination!</p>
+<p>To do so, what we really use are the following parameters:</p>
+<ul>
+  <li><kbd>project.learning_dataset_id</kbd> to find the training partition of the input dataset</li>
+  <li><kbd>project.target_variable_id</kbd> to create a valid <a href="#/api/predicsis.jsSDK.models.PreparationRules">PreparationRules</a></li>
+  <li><kbd>project.id</kbd> to store preparation rules set, classifier and reports ids.</li>
+</ul>
+
+<p>Please also note that if your project doesn&#39;t have a <code>main_modality</code> parameter, only univariate
+supervised report will be created. If this property is here, we also generate classifier evaluation reports
+for train and test datasets.</p>
+<p>We also broadcast the following events:</p>
+<ul>
+  <li>jsSDK.learn.start-retrieving-train-dataset</li>
+  <li>jsSDK.learn.start-creating-preparation-rules</li>
+  <li>jsSDK.learn.start-learning</li>
+  <li>jsSDK.learn.start-generating-reports</li>
+  <li>jsSDK.learn.start-updating-project</li>
+</ul></div><h5 id="methods_learn_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>project</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="learn-page"><p>Instance of a valid <a href="#/api/predicsis.jsSDK.models.Projects">Project</a></p>
+</div></td></tr></tbody></table><h5 id="methods_learn_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="learn-page"><p>Instance of a complete <a href="#/api/predicsis.jsSDK.models.Models">Models</a></p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Models.js#L195" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(id, changes)</h3>
 <div class="update"><div class="update-page"><p>Update specified model
 You can update the following parameters:</p>
 <ul>
