@@ -88,6 +88,7 @@ angular
  * @requires $q
  * @requires Restangular
  * @requires Jobs
+ * @requires $injector: {@link predicsis.jsSDK.models.Sources Sources}
  * @description
  * <table>
  *   <tr>
@@ -266,7 +267,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Datasets', function($q, Restangular, Jobs) {
+  .service('Datasets', function($injector, $q, Restangular, Jobs) {
     'use strict';
     var self = this;
 
@@ -477,6 +478,35 @@ angular
       return dataset(id).remove();
     };
 
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @name removeDependencies
+     * @description Remove dataset's children and sources
+     *
+     * <div><span class="badge delete">delete</span><code>/sources/:source_id<code></div>
+     * <div><span class="badge delete">delete</span><code>/datasets/:train_subset_id</code></div>
+     * <div><span class="badge delete">delete</span><code>/datasets/:test_subset_id</code></div>
+     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
+     * @return {Promise} Removed dataset
+     */
+    this.removeDependencies = function(dataset) {
+      var Sources = $injector.get('Sources');
+      var source_ids = dataset.source_ids || [];
+      var children_ids = dataset.children_dataset_ids || [];
+
+      return $q.all([
+        $q.all(source_ids
+          .map(function(source_id) {
+            return Sources.delete(source_id);
+          })),
+        $q.all(children_ids
+          .map(function(child_id) {
+            return self.delete(child_id);
+          }))
+      ]);
+    };
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -575,36 +605,6 @@ angular
         && Boolean(dataset.main_modality !== null)
         && Boolean(dataset.classifier !== null)
         && Boolean(dataset.dataset_id !== null);
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.models.Datasets
-     * @name removeDependencies
-     * @description Remove dataset's children and sources
-     *
-     * <div><span class="badge delete">delete</span><code>/sources/:source_id<code></div>
-     * <div><span class="badge delete">delete</span><code>/datasets/:train_subset_id</code></div>
-     * <div><span class="badge delete">delete</span><code>/datasets/:test_subset_id</code></div>
-     * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
-     * @return {Promise} Removed dataset
-     */
-    this.removeDependencies = function(dataset) {
-      var Sources = $injector.get('Sources');
-      var Datasets = $injector.get('Datasets');
-      var source_ids = dataset.source_id || [];
-      var children_ids = dataset.children_dataset_ids || [];
-
-      return $q.all([
-        $q.all(source_ids
-          .map(function(source_id) {
-            return Sources.delete(source_id);
-          })),
-        $q.all(children_ids
-          .map(function(child_id) {
-            return Datasets.delete(child_id);
-          }))
-      ]);
     };
   });
 
