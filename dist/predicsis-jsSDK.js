@@ -3307,15 +3307,6 @@ angular
     var errorManager = $injector.get('errorManager');
     var datasetsById = {};
 
-    // Prevent window unload during upload
-    window.onbeforeunload = function (e) {
-      e = e || window.event || {};
-      if(Object.keys(datasetsById).length) {
-        e.returnValue = 'Datasets are currently uploading. If you close this window, upload would be cancelled';
-        return e.returnValue;
-      }
-    };
-
     function getKey(credential, filename) {
       return credential.key.replace('${filename}', filename);
     }
