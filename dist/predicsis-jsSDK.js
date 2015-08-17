@@ -18,9 +18,9 @@ angular
 
     this.setErrorHandler = function(handler) { errorHandler = handler; };
 
-    this.$get = function(Restangular, s3FileHelper,
+    this.$get = function(Restangular, uploadHelper,
                          Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications,
-                         PreparationRules, Projects, Reports, UserSettings, Sources, Uploads, Users, Variables) {
+                         PreparationRules, Projects, Reports, UserSettings, Sources, Users, Variables) {
       var self = this;
 
       Restangular.setBaseUrl(this.getBaseUrl());
@@ -64,12 +64,11 @@ angular
         Projects: Projects,
         Reports: Reports,
         Sources: Sources,
-        Uploads: Uploads,
         Users: Users,
         UserSettings: UserSettings,
         Variables: Variables,
 
-        s3FileHelper: s3FileHelper,
+        uploadHelper: uploadHelper,
         _restangular: Restangular,
         setOauthToken: function(token) {
           self.setOauthToken(token);
@@ -316,6 +315,19 @@ angular
         .then(function(result) {
           return dataset(result.id).get();
         });
+    };
+
+    this.createFromUpload = function(finishedUpload) {
+      var Sources = $injector.get('Sources');
+
+      return Sources.create({ name: finishedUpload.fileName, key: finishedUpload.key })
+        .then(function(source) {
+          return self.create({
+            name: finishedUpload.fileName,
+            source_ids: [source.id],
+            data_file: { filename: finishedUpload.fileName }
+          });
+        })
     };
 
     /**
@@ -605,102 +617,6 @@ angular
         && Boolean(dataset.main_modality !== null)
         && Boolean(dataset.classifier !== null)
         && Boolean(dataset.dataset_id !== null);
-    };
-
-    // EventEmitter emit events when datasets steps are done (include upload progression events)
-    // Common to every concurrent uploaded datasets
-    /**
-    * <ul>
-    *   <li><b>cancelled</b> <code>datasetId</code></li>
-    *   <li><b>started</b> <code>dataset (Object)</code></li>
-    *   <li><b>uploaded</b> <code>{filename: file.name, key: key, dataset: Object}</code></li>
-    *   <li><b>error</b> <code>{status: xhr2.status, err: xhr2.responseText, id: dataset.id}</code></li>
-    *   <li><b>progress</b> <code>dataset(Object)</code></li>
-    *   <li><b>end</b> <code>dataset(Object), uploadId</code></li>
-    *   end event's dataset will have a different id (from api), the event also provide the original id (uploadId)
-    * </ul>
-    */
-    this.creationEvts = new EventEmitter();
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.models.Datasets
-     * @name createFromFile
-     * @description create a dataset providing an HTML5 file instance
-     * Upload file -> create Source -> create Dataset
-     * @param {File} file (HTML5 file instance)
-     * @param {File} [name] dataset's name default to filename
-     * @return {EventEmitter} Same events as creationEvts but just for this dataset
-     * <ul>
-     *   <li><b>cancelled</b> <code>datasetId</code></li>
-     *   <li><b>started</b> <code>dataset (Object)</code></li>
-     *   <li><b>uploaded</b> <code>{filename: file.name, key: key, dataset: Object}</code></li>
-     *   <li><b>error</b> <code>{status: xhr2.status, err: xhr2.responseText, id: dataset.id}</code></li>
-     *   <li><b>progress</b> <code>dataset(Object)</code></li>
-     *   <li><b>end</b> <code>dataset(Object), uploadId</code></li>
-     *   end event's dataset will have a different id (from api), the event also provide the original id (uploadId)
-     * </ul>
-     */
-    this.createFromFile = function(file, name) {
-      var that = this;
-      var events = ['cancelled', 'started', 'progress', 'uploaded', 'error', 'end'];
-
-      name = name || file.name;
-      var s3FileHelper = $injector.get('s3FileHelper');
-      var api = $injector.get('api');
-      var emitter = s3FileHelper.upload(file, { name: name });
-      // Redirect events to that.creationEvts
-      events.forEach(function(event) {
-        emitter.on(event, that.creationEvts.emit.bind(that.creationEvts, event));
-      });
-
-      // Create dataset when upload end
-      emitter
-        .on('uploaded', function(params) {
-          var key = params.key;
-          var name = params.filename;
-          var uploadId = params.dataset.id;
-          return api.Sources.create({name: name, key: key})
-            .then(function(source) {
-              var dataset = {
-                name: name,
-                source_ids: [source.id],
-                data_file: { filename: name }
-              };
-              return that.create(dataset);
-            })
-            .then(function(dataset) {
-              emitter.emit('end', dataset, uploadId);
-            });
-        });
-       return emitter;
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.models.Datasets
-     * @name listAll
-     * @description list all datasets including "future ones" (uploading)
-     * @return {Array} list of datasets
-     */
-    this.listAll = function() {
-      var s3FileHelper = $injector.get('s3FileHelper');
-      return this.all()
-        .then(function(datasets) {
-          return s3FileHelper.list().concat(datasets);
-        });
-    };
-
-    /**
-     * @ngdoc function
-     * @methodOf predicsis.jsSDK.models.Datasets
-     * @name cancel
-     * @param {String} datasetId (id of the currently uploading dataset)
-     * @description cancel an upload (for future datasets)
-     */
-    this.cancel = function(datasetId) {
-      var s3FileHelper = $injector.get('s3FileHelper');
-      s3FileHelper.cancel(datasetId);
     };
   });
 
@@ -2720,6 +2636,11 @@ angular
  *     <td></td>
  *   </tr>
  *   <tr>
+ *     <td><span class="badge get">getCredentials</span> <kbd>/sources/credentials/:storageType</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Sources#methods_get Sources.getCredentials()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
  *     <td><span class="badge patch">patch</span> <kbd>/sources/:id</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.models.Sources#methods_update Sources.update()}</kbd></td>
  *     <td><span class="badge async">async</span></td>
@@ -2823,6 +2744,32 @@ angular
 
     /**
      * @ngdoc function
+     * @name getCredentials
+     * @methodOf predicsis.jsSDK.models.Sources
+     * @description Request credentials to our storage service
+     *  Credentials for S3 storage looks like:
+     *  <pre>
+     *  {
+     *    credentials: {
+     *      expires_at: "2014-06-23T08:07:19.000Z",
+     *      key: "uploads/5347b31750432d45a5020000/sources/1415101671848/${filename}",
+     *      aws_access_key_id: "predicsis_aws_access_key_id",
+     *      signature: "encoded_signature",
+     *      policy: "encoded_policy",
+     *      s3_endpoint: "http://dev.public.kml-api.s3-us-west-2.amazonaws.com"
+     *    }
+     *  }
+     *  </pre>
+     *
+     * @param {String} storageService Available services are : <ul><li><code>s3</code></li></ul>
+     * @return {Object} See above description
+     */
+    this.getCredentials = function(storageService) {
+      return sources().one('credentials', storageService).get();
+    };
+
+    /**
+     * @ngdoc function
      * @name update
      * @methodOf predicsis.jsSDK.models.Sources
      * @description Update specified source
@@ -2850,105 +2797,6 @@ angular
      */
     this.delete = function(sourceId) {
       return source(sourceId).remove();
-    };
-
-  });
-
-/**
- * @ngdoc service
- * @name predicsis.jsSDK.models.Uploads
- * @requires $q
- * @requires Restangular
- * @description
- * <table>
- *   <tr>
- *     <td><span class="badge get">get</span> <kbd>/sources/credentials/s3</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.models.Uploads#methods_getcredentials Upload.getCredentials()}</kbd></td>
- *     <td></td>
- *   </tr>
- *   <tr>
- *     <td><span class="badge post">post</span> <kbd>/sources/credentials/s3</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.models.Uploads#methods_sign Upload.sign(key)}</kbd></td>
- *     <td></td>
- *   </tr>
- *   <tfoot>
- *   <tr><td colspan="3">Official documentation is available at https://developer.predicsis.com/doc/v1/data_management/upload/</td></tr>
- *   </tfoot>
- * </table>
- *
- * Uploads are performed in 3 steps (this model only deals with the first one):
- * <ul>
- *   <li>Get credentials to our storage service and upload a file</li>
- *   <li>Create a source to persist upload in our database</li>
- *   <li>Create a dataset from this source</li>
- * </ul>
- */
-angular
-  .module('predicsis.jsSDK.models')
-  .service('Uploads', function(Restangular) {
-    'use strict';
-
-    function credentials(storageService) { return Restangular.all('sources').one('credentials', storageService); }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * @ngdoc function
-     * @name getCredentials
-     * @methodOf predicsis.jsSDK.models.Uploads
-     * @description Request credentials to our storage service
-     *  Credentials for S3 storage looks like:
-     *  <pre>
-     *  {
-     *    credentials: {
-     *      expires_at: "2014-06-23T08:07:19.000Z",
-     *      key: "uploads/5347b31750432d45a5020000/sources/1415101671848/${filename}",
-     *      aws_access_key_id: "predicsis_aws_access_key_id",
-     *      signature: "encoded_signature",
-     *      policy: "encoded_policy",
-     *      s3_endpoint: "http://dev.public.kml-api.s3-us-west-2.amazonaws.com"
-     *    }
-     *  }
-     *  </pre>
-     *
-     * @param {String} storageService Available services are : <ul><li><code>s3</code></li></ul>
-     * @return {Object} See above description
-     */
-    this.getCredentials = function(storageService) {
-      return credentials(storageService).get();
-    };
-
-    /**
-     * @ngdoc function
-     * @name sign
-     * @methodOf predicsis.jsSDK.models.Uploads
-     * @description Sign POST requests from fineuploader library
-     *  This route is required to use {@link http://docs.fineuploader.com/branch/master/endpoint_handlers/amazon-s3.html#required-server-side-tasks-all-browsers fineuploader library}.
-     *
-     *  <b>Important note</b>
-     *  This request returns a object like:
-     *  <pre>
-     *  {
-     *    credentials: {
-     *      expires_at: "2014-06-23T08:07:19.000Z",
-     *      key: "uploads/5347b31750432d45a5020000/sources/1415101671848/${filename}",
-     *      aws_access_key_id: "predicsis_aws_access_key_id",
-     *      signature: "encoded_signature",
-     *      policy: "encoded_policy",
-     *      s3_endpoint: "http://dev.public.kml-api.s3-us-west-2.amazonaws.com"
-     *    }
-     *  }
-     *  </pre>
-     *
-     *  ... but the library only needs (and expects) <kbd>policy</kbd> and <kbd>signature</kbd> properties. So I had to
-     *  change the source code of fineuploader lib to remove the header of the response. That's the main reason to commit
-     *  this source code in the project (under <kbd>app/vendor/s3.fineuploader-5.0.8/</kbd>).
-     *
-     * @param {String} key Path where the file is going to be uploaded
-     * @return {Object} A credentials object which must contains at least <kbd>policy</kbd> and <kbd>signature</kbd> properties.
-     */
-    this.sign = function(key) {
-      return credentials('s3', key).post({credentials: {key: key}});
     };
 
   });
@@ -3294,143 +3142,216 @@ angular
 
 /**
  * @ngdoc service
- * @name predicsis.jsSDK.helpers.s3FileHelper
- * @require $injector
- * - Uploads
+ * @name predicsis.jsSDK.helpers.uploadHelper
+ * @requires $rootScope
+ * @requires $injector
+ * - Sources
  */
 angular
   .module('predicsis.jsSDK.helpers')
-  .service('s3FileHelper', function($injector) {
+  .service('uploadHelper', function($rootScope, $injector) {
     'use strict';
 
-    var Upload = $injector.get('Uploads');
-    var errorManager = $injector.get('errorManager');
-    var datasetsById = {};
+    const http = { CREATED: 201 };
+
+    var concurrentUploads = {};
+    var Sources = $injector.get('Sources');
 
     function getKey(credential, filename) {
       return credential.key.replace('${filename}', filename);
     }
 
-    function createForm(credential, file) {
-      var key = getKey(credential, file.name);
-      return formFactory({
-        key: key,
+    function upload(uploadObject, xhr2, credential, file) {
+      var headers = {
+        key: getKey(credential, file.name),
         AWSAccessKeyId: credential.aws_access_key_id,
         'Content-Type': 'multipart/form-data',
-        success_action_status: 201,
+        success_action_status: http.CREATED,
         acl: 'private',
         policy: credential.policy,
         signature: credential.signature
-      }, {
-        file: file
+      };
+      var content = { file: file };
+      var form = formFactory(headers, content);
+
+      xhr2.open('POST', credential.s3_endpoint, true);
+
+      xhr2.upload.addEventListener('progress', function(event) {
+        uploadObject.progression = parseInt(event.loaded / event.total * 100);
+        uploadObject.isUploading = true;
+
+        $rootScope.$broadcast('jsSDK.upload.progress', uploadObject);
       });
+
+      xhr2.addEventListener('load', function() {
+        delete concurrentUploads[uploadObject.id];
+        uploadObject.isUploading = false;
+
+        if(xhr2.status === http.CREATED) {
+          $rootScope.$broadcast('jsSDK.upload.uploaded', uploadObject);
+        } else {
+          $rootScope.$broadcast('jsSDK.upload.error', { upload: uploadObject, request: xhr2 });
+        }
+      });
+
+      xhr2.addEventListener('error', function() {
+        uploadObject.isUploading = false;
+        $rootScope.$broadcast('jsSDK.upload.error', { upload: uploadObject, request: xhr2 });
+      });
+
+      xhr2.send(form);
     }
 
-    function generateId(file) {
-      return (file.name || '') + new Date().getTime();
-    }
     /**
      * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.s3FileHelper
+     * @methodOf predicsis.jsSDK.helpers.uploadHelper
      * @name upload
-     * @description upload a file to S3
+     * @description upload a file
+     * The upload method raises the following events during the upload process:
+     * <ul>
+     *   <li><kbd>jsSDK.upload.starting</kbd></li>
+     *   <li><kbd>jsSDK.upload.progress</kbd></li>
+     *   <li><kbd>jsSDK.upload.uploaded</kbd></li>
+     *   <li><kbd>jsSDK.upload.cancelled</kbd></li>
+     *   <li><kbd>jsSDK.upload.error</kbd></li>
+     *   <li><kbd></kbd></li>
+     * </ul>
+     *
+     * Each of these events is emitted with an <code>upload</code> object which contains details:
+     * <table>
+     *   <tr>
+     *     <td><kbd>id</kbd></td>
+     *     <td>Concatenation of a timestamp and uploaded file name</td>
+     *   </tr>
+     *   <tr>
+     *     <td><kbd>key</kbd></td>
+     *     <td>
+     *       Destination folder of uploaded file.
+     *       This value will be required to create the Source resource once the upload finished.
+     *       It's initialized to null and updated when the GET /sources/credentials/s3 request is resolved.
+     *     </td>
+     *   </tr>
+     *   <tr>
+     *     <td><kbd>fileName</kbd></td>
+     *     <td>Uploaded file's name given by FileAPI</td>
+     *   </tr>
+     *   <tr>
+     *     <td><kbd>fileSize</kbd></td>
+     *     <td>Uploaded file's size given by FileAPI</td>
+     *   </tr>
+     *   <tr>
+     *     <td><kbd>progression</kbd></td>
+     *     <td>A number ([0..100]) internally updated on each <kbd>progress</kbd> event</td>
+     *   </tr>
+     *   <tr>
+     *     <td><kbd>isUploading</kbd></td>
+     *     <td>A boolean indicating if the upload process is still running</td>
+     *   </tr>
+     *   <tr>
+     *     <td><kbd>created_at</kbd></td>
+     *     <td>A timestamp in ISO format like <kbd>2014-05-02T15:27:37.687Z</kbd></td>
+     *   </tr>
+     *   <tr>
+     *     <td><kbd>cancelUpload</kbd></td>
+     *     <td>A function which will stop the upload by aborting the request</td>
+     *   </tr>
+     * </table>
+     *
+     * About the <kbd>jsSDK.upload.starting</kbd> event. As it's fired before sending the
+     * "Get credential" request. So,
+     * - you may have a delay between <kbd>jsSDK.upload.starting</kbd> and the first <kbd>jsSDK.upload.progress</kbd> events.
+     * - the <kbd>key</kbd> parameter of the <kbd>uploadObject</kbd> object is not set
+     *
+     * The upload is performed through a XMLHttpRequest, and all details about endpoint, security,
+     * destination folder is handled by the API and its <code>Sources.getCredentials</code> request.
      *
      * @param {Object} file html5 File instance
-     * @return {EventEmitter}
-     * <ul>
-     *   <li><b>cancelled</b> <code>datasetId</code></li>
-     *   <li><b>started</b> <code>dataset (Object)</code></li>
-     *   <li><b>uploaded</b> <code>{filename: file.name, key: key, dataset: Object}</code></li>
-     *   <li><b>error</b> <code>{status: xhr2.status, err: xhr2.responseText, id: dataset.id}</code></li>
-     *   <li><b>progress</b> <code>dataset(Object)</code></li>
-     * </ul>
+     * @param {String=s3} storageService Name of PredicSis' storage service.
+     *                                   The API only accepts one of the following values: s3.
      */
-    this.upload = function(file, params) {
-      var name = params.name || file.name;
-      var emitter = new EventEmitter();
+    this.processFile = function(file, storageService) {
+      storageService = storageService || 's3';
+
       var xhr2 = new XMLHttpRequest();
-      var datasetId = generateId(file);
-      var dataset = datasetsById[datasetId] = {
-        id: datasetId,
-        name: name,
-        uploaded: 0,
+      var uploadId =  new Date().getTime() + '_' + (file.name || '');
+      var uploadObject = concurrentUploads[uploadId] = {
+        id: uploadId,
+        key: null,
+        fileName: file.name,
+        fileSize: file.size,
+        progression: 0,
         isUploading: true,
-        data_file: {
-          size: file.size,
-          filename: file.name
-        },
-        source_ids: [],
-        children_dataset_ids: [],
+        created_at: new Date().toISOString(),
         cancelUpload: function() {
           xhr2.abort();
-          delete datasetsById[datasetId];
-          emitter.emit('cancelled', datasetId);
+          delete concurrentUploads[uploadId];
+          $rootScope.$broadcast('jsSDK.upload.cancelled', uploadObject);
         }
       };
-      // Give a chance to potential subscribers to catch first event (started)
-      setTimeout(emitter.emit.bind(emitter, 'started', dataset), 0);
-      Upload.getCredentials('s3')
-        .then(function(credential) {
-          var form = createForm(credential, file);
-          xhr2.open('POST', credential.s3_endpoint, true);
-          xhr2.upload.addEventListener('progress', function(evt) {
-            dataset.uploaded = parseInt(evt.loaded / evt.total * 100);
-            // Asynchronous call to be sure to not be inside an angular digest cycle
-            // https://docs.angularjs.org/error/$rootScope/inprog?p0=$apply
-            setTimeout(emitter.emit.bind(emitter, 'progress', dataset), 0);
-          });
-          xhr2.addEventListener('load', function() {
-            delete datasetsById[datasetId];
-            if(xhr2.status === 201) {
-              emitter.emit('uploaded', {filename: file.name, key: getKey(credential, file.name), dataset: dataset});
-            } else {
-              emitter.emit('error', {status: xhr2.status, err: xhr2.responseText, id: dataset.id });
-              errorManager.handleApplicationError({
-                text: 'File upload failed',
-                type: 'alert',
-                code: 'APP-' + xhr2.status + '001',
-                action: 'Upload file'
-              });
-            }
-          });
-          xhr2.addEventListener('error', function(err) {
-            emitter.emit('error', {status: 0, err: err.target.status, id: dataset.id });
-            errorManager.handleApplicationError({
-              text: 'File upload failed',
-              type: 'alert',
-              code: 'APP-' + err.target.status + '002',
-              action: 'Upload file'
-            });
-          });
-          xhr2.send(form);
+
+      $rootScope.$broadcast('jsSDK.upload.starting', uploadObject);
+
+      Sources
+        .getCredentials(storageService)
+        .then(function(credentials) {
+          uploadObject.key = getKey(credentials, file.name);
+          upload(uploadObject, xhr2, credentials, file);
         });
-        return emitter
     };
 
     /**
      * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.s3FileHelper
-     * @name list
+     * @methodOf predicsis.jsSDK.helpers.uploadHelper
+     * @name all
      * @description list all currently uploaded datasets
-     *
-     * @return {Array}
+     * @return {Array} List of active upload objects. An active upload has the following properties:
+     * <ul>
+     *   <li>id</li>
+     *   <li>key</li>
+     *   <li>fileName</li>
+     *   <li>fileSize</li>
+     *   <li>progression</li>
+     *   <li>isUploading</li>
+     *   <li>created_at</li>
+     *   <li>cancelUpload</li>
+     * </ul>
      */
-    this.list = function() {
-      return Object.keys(datasetsById).map(function(key) {
-        return datasetsById[key];
+    this.all = function() {
+      return Object.keys(concurrentUploads).map(function(key) {
+        return concurrentUploads[key];
       });
     };
 
     /**
      * @ngdoc function
-     * @methodOf predicsis.jsSDK.helpers.s3FileHelper
-     * @name list
-     * @description list all currently uploaded datasets
-     *
-     * @param {String} datasetId Id of the dataset to stop upload
-     * @return {Array}
+     * @methodOf predicsis.jsSDK.helpers.uploadHelper
+     * @name get
+     * @description get an active upload
+     * @param {String} uploadId An upload identifier looks like <timestamp>_<filename>
+     * @return {Object} An upload object with the following properties:
+     * <ul>
+     *   <li>id</li>
+     *   <li>key</li>
+     *   <li>fileName</li>
+     *   <li>fileSize</li>
+     *   <li>progression</li>
+     *   <li>isUploading</li>
+     *   <li>created_at</li>
+     *   <li>cancelUpload</li>
+     * </ul>
      */
-    this.cancel = function(datasetId) {
-      datasetsById[datasetId].cancelUpload();
+    this.get = function(uploadId) {
+      return concurrentUploads[uploadId];
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.helpers.uploadHelper
+     * @name cancel
+     * @description Abort a single upload
+     * @param {String} uploadId Id of the upload to stop
+     */
+    this.cancel = function(uploadId) {
+      this.get(uploadId).cancelUpload();
     };
   });
