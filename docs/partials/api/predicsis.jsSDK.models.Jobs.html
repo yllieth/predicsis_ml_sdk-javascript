@@ -1,4 +1,4 @@
-<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Jobs.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Jobs.js#L78" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Jobs</code>
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Jobs.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Jobs.js#L78" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Jobs</code>
 <div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK.models</code>
 </span>
 </div>
@@ -79,35 +79,36 @@ A <kbd>GET /gobs/:jobId</kbd> is going to return a <kbd>200 OK</kbd> even if its
 </li>
 </ul>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Jobs.js#L99" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([jobIds])</h3>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Jobs.js#L99" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([jobIds])</h3>
 <div class="all"><div class="all-page"><p>Get all (or a list of) async job</p>
 </div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[jobIds]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of job id you want to fetch</p>
 </div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="all-page"><p>Promise of a job list</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Jobs.js#L131" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(jobId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Jobs.js#L131" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(jobId)</h3>
 <div class="delete"><div class="delete-page"><p>Permanently destroy a specified job</p>
 </div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>jobId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="delete-page"><p>Id of the job you want to remove</p>
 </div></td></tr></tbody></table><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="delete-page"><p>Promise of an empty job</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Jobs.js#L119" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(jobId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Jobs.js#L119" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(jobId)</h3>
 <div class="get"><div class="get-page"><p>Get a single job by its id</p>
 </div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>jobId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Job identifier</p>
 </div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="get-page"><p>Promise of a job</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Jobs.js#L152" class="view-source icon-eye-open"> </a><h3 id="methods_listen">listen(jobId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Jobs.js#L152" class="view-source icon-eye-open"> </a><h3 id="methods_listen">listen(jobId)</h3>
 <div class="listen"><div class="listen-page"><p>Active pulling on a job waiting for its termination</p>
 <p><b>Important notes:</b></p>
 <ul>
   <li>You can <em>listen</em>only one job at a time</li>
   <li>a <kbd>GET /jobs/:jobId</kbd> is going to be sent every 3 second the first minute, and every minute after</li>
-</ul></div><h5 id="methods_listen_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>jobId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="listen-page"><p>The id of the job api resource you want to wait termination</p>
+</ul>
+</div><h5 id="methods_listen_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>jobId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="listen-page"><p>The id of the job api resource you want to wait termination</p>
 </div></td></tr></tbody></table><h5 id="methods_listen_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="listen-page"><p>A promise resolved only when the job succeeds</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Jobs.js#L257" class="view-source icon-eye-open"> </a><h3 id="methods_seterrorhandler">setErrorHandler(callback)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Jobs.js#L257" class="view-source icon-eye-open"> </a><h3 id="methods_seterrorhandler">setErrorHandler(callback)</h3>
 <div class="seterrorhandler"><div class="seterrorhandler-page"><p>set error handler (errors occuring in a job)</p>
 <p>Usage example:
 <pre class="prettyprint linenums">
@@ -120,7 +121,7 @@ return Jobs
 </div><h5 id="methods_seterrorhandler_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">Function</a></td><td><div class="seterrorhandler-page"><p>called when an error occurs during a Job</p>
 </div></td></tr></tbody></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Jobs.js#L224" class="view-source icon-eye-open"> </a><h3 id="methods_wrapasyncpromise">wrapAsyncPromise(promise)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Jobs.js#L224" class="view-source icon-eye-open"> </a><h3 id="methods_wrapasyncpromise">wrapAsyncPromise(promise)</h3>
 <div class="wrapasyncpromise"><div class="wrapasyncpromise-page"><p>Transform an async promise into the same promise resolving only when job is completed</p>
 <p>Usage example:
 <pre class="prettyprint linenums">
