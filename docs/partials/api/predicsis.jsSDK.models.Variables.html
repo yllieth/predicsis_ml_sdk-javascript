@@ -1,4 +1,4 @@
-<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Variables.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Variables.js#L45" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Variables</code>
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Variables.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Variables.js#L45" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Variables</code>
 <div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK.models</code>
 </span>
 </div>
@@ -48,28 +48,29 @@ modalities_set_ids: []
 </li>
 </ul>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Variables.js#L64" class="view-source icon-eye-open"> </a><h3 id="methods_all">all(dictionaryId, [variablesIds])</h3>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Variables.js#L64" class="view-source icon-eye-open"> </a><h3 id="methods_all">all(dictionaryId, [variablesIds])</h3>
 <div class="all"><div class="all-page"><p>Get all (or a list of) variables of a specified dictionary</p>
 </div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dictionaryId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="all-page"><p>Id of the container dictionary</p>
 </div></td></tr><tr><td>[variablesIds]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of variables&#39; id you want to fetch</p>
 </div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="all-page"><p>Promise of a variables list</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Variables.js#L85" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(dictionaryId, variableId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Variables.js#L85" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(dictionaryId, variableId)</h3>
 <div class="get"><div class="get-page"><p>Get a single variable by its id</p>
 </div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dictionaryId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Id of the variable you want to fetch</p>
 </div></td></tr><tr><td>variableId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Id of the container dictionary</p>
 </div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="get-page"><p>Promise of a dictionary</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/761f880/lib/model/Variables.js#L106" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(dictionaryId, variableId, changes)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Variables.js#L106" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(dictionaryId, variableId, changes)</h3>
 <div class="update"><div class="update-page"><p>Update specified variable
 You can update the following parameters:</p>
 <ul>
   <li><code>{Boolean} use</code></li>
   <li><code>{String} description</code> (max. 256 characters)</li>
   <li><code>{String} type</code> only among the following list: <code>categorical</code>, <code>continuous</code></li>
-</ul></div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dictionaryId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="update-page"><p>Id of the variable you want to fetch</p>
+</ul>
+</div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dictionaryId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="update-page"><p>Id of the variable you want to fetch</p>
 </div></td></tr><tr><td>variableId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="update-page"><p>Id of the variable you want to update</p>
 </div></td></tr><tr><td>changes</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="update-page"><p>see above description to know parameters you are able to update</p>
 </div></td></tr></tbody></table><h5 id="methods_update_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="update-page"><p>Promise of the updated variable</p>
