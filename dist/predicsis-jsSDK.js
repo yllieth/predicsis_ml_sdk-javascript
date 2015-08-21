@@ -22,7 +22,6 @@ angular
     this.hasOauthToken = function() { return Boolean(oauthToken === undefined); };
     this.setOauthToken = function(token) {
       if (token !== false) {
-        console.log(token);
         requestHeaders.Authorization = 'Bearer ' + token;
         oauthToken = token;
       }
