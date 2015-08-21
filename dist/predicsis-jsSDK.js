@@ -5,18 +5,28 @@ angular
   .module('predicsis.jsSDK', ['predicsis.jsSDK.models', 'predicsis.jsSDK.helpers', 'restangular'])
   .provider('predicsisAPI', function () {
     'use strict';
+
     var errorHandler = function(response) { throw Error(response); };
     var baseURL = 'https://api.predicsis.com';
     var oauthToken = 'no-token-defined';
+    var requestHeaders = {
+      Accept: 'application/json'
+    };
+
+    this.setErrorHandler = function(handler) { errorHandler = handler; };
 
     this.setBaseUrl = function(url) { baseURL = url; };
     this.getBaseUrl = function() { return baseURL; };
 
-    this.setOauthToken = function(token) { oauthToken = token; };
     this.getOauthToken = function() { return oauthToken; };
     this.hasOauthToken = function() { return Boolean(oauthToken === undefined); };
-
-    this.setErrorHandler = function(handler) { errorHandler = handler; };
+    this.setOauthToken = function(token) {
+      if (token !== false) {
+        console.log(token);
+        requestHeaders.Authorization = 'Bearer ' + token;
+        oauthToken = token;
+      }
+    };
 
     this.$get = function(Restangular, uploadHelper,
                          Datafiles, Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications,
@@ -24,7 +34,7 @@ angular
       var self = this;
 
       Restangular.setBaseUrl(this.getBaseUrl());
-      Restangular.setDefaultHeaders({ accept: 'application/json', Authorization: 'Bearer ' + this.getOauthToken() });
+      Restangular.setDefaultHeaders(requestHeaders);
       Restangular.setErrorInterceptor(function(response) { errorHandler(response); });
       Jobs.setErrorHandler(function(err) {
         err = {
@@ -73,7 +83,7 @@ angular
         _restangular: Restangular,
         setOauthToken: function(token) {
           self.setOauthToken(token);
-          Restangular.setDefaultHeaders({ accept: 'application/json', Authorization: token });
+          Restangular.setDefaultHeaders(requestHeaders);
         },
         setErrorHandler: function(handler) {
           self.setErrorHandler(handler);
@@ -3297,8 +3307,7 @@ angular
   .service('uploadHelper', function($rootScope, $injector) {
     'use strict';
 
-    const http = { CREATED: 201 };
-
+    var HTTP = { CREATED: 201 };
     var concurrentUploads = {};
     var Sources = $injector.get('Sources');
 
@@ -3311,7 +3320,7 @@ angular
         key: getKey(credential, file.name),
         AWSAccessKeyId: credential.aws_access_key_id,
         'Content-Type': 'multipart/form-data',
-        success_action_status: http.CREATED,
+        success_action_status: HTTP.CREATED,
         acl: 'private',
         policy: credential.policy,
         signature: credential.signature
@@ -3332,7 +3341,7 @@ angular
         delete concurrentUploads[uploadObject.id];
         uploadObject.isUploading = false;
 
-        if(xhr2.status === http.CREATED) {
+        if(xhr2.status === HTTP.CREATED) {
           $rootScope.$broadcast('jsSDK.upload.uploaded', uploadObject);
         } else {
           $rootScope.$broadcast('jsSDK.upload.error', { upload: uploadObject, request: xhr2 });

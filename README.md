@@ -47,6 +47,8 @@ angular.module('YourAngularApplication', ['predicsis.jsSDK'])
   });
 ```
 
+> If you want to send API requests with no Authorization header, you must explicitly use `predicsisAPI.setOauthToken(false);`
+
 Default values:
 - api endpoint: `https://api.predicsis.com`
 - error handler: `throw Error(response);`
