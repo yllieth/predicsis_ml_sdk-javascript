@@ -1,3 +1,5 @@
+[![Bower version](https://badge.fury.io/gh/yllieth%2Fpredicsis_ml_sdk-javascript.svg)](http://badge.fury.io/gh/yllieth%2Fpredicsis_ml_sdk-javascript)
+
 # PredicSis ML SDK for Javascript.
 
 The official PredicSis ML SDK for Javascript (for pure frontend applications, without node).
@@ -15,7 +17,8 @@ bower install predicsis_ml_sdk-javascript --save-dev
 If you want to change PredicSis API host, add these lines to your `app.js` configuration file.
 
 ```javascript
-angular.module('YourAngularApplication', ['predicsis.jsSDK'])
+angular
+  .module('YourAngularApplication', ['predicsis.jsSDK'])
   .config(function(predicsisAPIProvider, config) {
     predicsisAPIProvider.setBaseUrl('https://predicsis_api_host');
     predicsisAPIProvider.setOauthToken('4V83j2BWgcPONK8Xw8P7953yPvnTzz784V83j2BWgcPONK8Xw8P7953yPvnTzz78');
@@ -31,7 +34,8 @@ You can also setup your personal access token within a _run_ context. This can b
 cookie or in localStorage.
 
 ```javascript
-angular.module('YourAngularApplication', ['predicsis.jsSDK'])
+angular
+  .module('YourAngularApplication', ['predicsis.jsSDK'])
   .config(function(predicsisAPIProvider) {
     predicsisAPIProvider.setBaseUrl('http://localhost:8003');
   })
