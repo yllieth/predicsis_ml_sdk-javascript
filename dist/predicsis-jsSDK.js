@@ -467,13 +467,17 @@ angular
      *
      * @param {String} fileName used to create the source and the dataset
      * @param {String} destFolder AWS key where the dataset has been uploaded
+     * @param {String} pathName name of the key used to provide destFolder
      * @return {Promise} Newly created dataset
      */
-    this.createFromUpload = function(fileName, destFolder) {
+    this.createFromUpload = function(fileName, destFolder, pathName) {
+      pathName = pathName || 'key';
 
       var Sources = $injector.get('Sources');
+      var source = { name: fileName, data_file: { filename: fileName } };
+      source[pathName] = destFolder;
 
-      return Sources.create({ path: destFolder, name: fileName, data_file: { filename: fileName } })
+      return Sources.create(source)
         .then(function(source) {
           return self.create({
             name: fileName,
@@ -2855,8 +2859,14 @@ angular
      *    key:  "path/to/my/file/on/s3/source.csv",
      *  }
      *  </pre>
+     *  <pre>
+     *  {
+     *    name: "Source of dataset.csv"
+     *    object:  "path/to/my/file/on/s3/source.csv",
+     *  }
+     *  </pre>
      *
-     *  Both <code>name</code> and <code>key</code> are required.
+     *  Both <code>name</code> and <code>key | object</code> are required.
      *
      * @param {Object} params See above example.
      * @return {Promise} New source
@@ -3420,6 +3430,7 @@ angular
       var uploadObject = concurrentUploads[uploadId] = {
         id: uploadId,
         path: null,
+        pathName: null,
         fileName: file.name,
         fileSize: file.size,
         progression: 0,
@@ -3437,7 +3448,13 @@ angular
       Sources
         .getCredentials(storageService)
         .then(function(credentials) {
-          uploadObject.path = credentials.path
+          if (credentials.type === 's3') {
+            uploadObject.path = credentials.key;
+            uploadObject.pathName = 'key';
+          } else if (credentials.type === 'swift') {
+            uploadObject.path = credentials.object;
+            uploadObject.pathName = 'object';
+          }
           upload(uploadObject, xhr2, credentials, file);
         });
     };
