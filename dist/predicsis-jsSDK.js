@@ -1666,7 +1666,7 @@ angular
 
       $rootScope.$broadcast('jsSDK.learn.start-retrieving-train-dataset');
 
-      return Datasets.getChildren(project.learning_dataset_id)
+      return Datasets.getChildren(project.learning_dataset_id, project.dictionary_id)
         // create preparation rules
         .then(function(children) {
           if(!children.train) {
@@ -2598,7 +2598,7 @@ angular
     var reports = function() { return Restangular.all('reports'); };
     function createClassifierEvaluationReport(project, type) {
       var Datasets = $injector.get('Datasets');
-      return Datasets.getChildren(project.learning_dataset_id)
+      return Datasets.getChildren(project.learning_dataset_id, project.dictionary_id)
         .then(function(children) {
           return self.create({
             type: 'classifier_evaluation',
