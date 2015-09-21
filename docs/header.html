@@ -1,0 +1,16 @@
+<header class="header">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand">PredicSis ML SDK</a>
+        <ul class="nav">
+          <li ng-repeat="(url, name) in sections" ng-class="{active: isActivePath(url)}">
+            <a ng-href="{{url}}"><i class="icon-book icon-white"></i> {{name}}</a>
+          </li>
+          <li><a href="http://yllieth.github.io/predicsis_ml_sdk-javascript/plato/index.html"><i class="icon-bar-chart icon-white"></i> Plato reports</a></li>
+        </ul>
+        <%= navContent %>
+      </div>
+    </div>
+  </div>
+</header>

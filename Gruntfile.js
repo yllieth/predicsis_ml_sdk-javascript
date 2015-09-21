@@ -32,7 +32,8 @@ module.exports = function(grunt) {
     // remove previous builds
     clean: {
       dist: ['dist'],
-      docs: ['docs/.git']
+      docs: ['docs/.git'],
+      plato: ['docs/plato']
     },
 
     // build all model files into a single js file
@@ -64,6 +65,7 @@ module.exports = function(grunt) {
         startPage: '/api',
         titleLink: '/api',
         bestMatch: true,
+        navTemplate: 'docs/header.html',
         analytics: {
           account: 'UA-63397194-1',
           domainName: 'http://yllieth.github.io/predicsis_ml_sdk-javascript'
@@ -76,6 +78,20 @@ module.exports = function(grunt) {
       },
       api: {
         src: ['lib/model/*.js', 'lib/helper/*.js']
+      }
+    },
+
+    // code maintainability reports
+    plato: {
+      lib: {
+        options: {
+          jshint: grunt.file.readJSON('.jshintrc'),
+          title: "PredicSis ML SDK - angularJS",
+          recurse: true
+        },
+        files: {
+          'docs/plato': ['lib/']
+        }
       }
     },
 
@@ -113,7 +129,7 @@ module.exports = function(grunt) {
     if (target === 'deploy') {
       grunt.task.run(['buildcontrol:github', 'clean:docs']);
     } else {
-      grunt.task.run(['ngdocs']);
+      grunt.task.run(['ngdocs', 'plato']);
     }
   });
 

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib\model\Dictionaries.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib\model\Dictionaries.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">80.96</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">126</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">17.28</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">0.41</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.models.Dictionaries
+ * @requires $q
+ * @requires Restangular
+ * @requires Jobs
+ * @description
+ * &lt;table&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/dictionaries&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Dictionaries#methods_create Dictionaries.create()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/dictionaries&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Dictionaries#methods_createFromDataset Dictionaries.createFromDataset()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/dictionaries&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Dictionaries#methods_all Dictionaries.all()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/dictionaries/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Dictionaries#methods_get Dictionaries.get()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge patch&quot;&gt;patch&lt;/span&gt; &lt;kbd&gt;/dictionaries/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Dictionaries#methods_update Dictionaries.update()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge delete&quot;&gt;delete&lt;/span&gt; &lt;kbd&gt;/dictionaries/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Dictionaries#methods_delete Dictionaries.delete()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tfoot&gt;
+ *   &lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;Official documentation is available at https://developer.predicsis.com/doc/v1/dictionary&lt;/td&gt;&lt;/tr&gt;
+ *   &lt;/tfoot&gt;
+ * &lt;/table&gt;
+ *
+ * Output example:
+ * &lt;pre&gt;
+ * {
+ *   id: &quot;5492e2b1617070000b1d0000&quot;,
+ *   created_at: &quot;2014-12-18T14:20:33.982Z&quot;,
+ *   updated_at: &quot;2014-12-18T14:20:22.872Z&quot;,
+ *   name: &quot;dictionary_iris.csv&quot;,
+ *   description: null,
+ *   user_id: &quot;541b06dc617070006d060000&quot;,
+ *   dataset_id: null,
+ *   dataset_ids: [],
+ *   variable_ids: [
+ *     &quot;5492e2a6776f720001000500&quot;,
+ *     &quot;5492e2a6776f720001010500&quot;,
+ *     &quot;5492e2a6776f720001020500&quot;,
+ *     &quot;5492e2a6776f720001030500&quot;,
+ *     &quot;5492e2a6776f720001040500&quot;
+ *   ],
+ *   job_ids: [&quot;5492e2b1617070000b1e0000&quot;]
+ * }
+ * &lt;/pre&gt;
+ */
+angular
+  .module(&#039;predicsis.jsSDK.models&#039;)
+  .service(&#039;Dictionaries&#039;, function($q, Restangular, Jobs) {
+    &#039;use strict&#039;;
+
+    function dictionary(id) { return Restangular.one(&#039;dictionaries&#039;, id); }
+    function dictionaries() { return Restangular.all(&#039;dictionaries&#039;); }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name createFromDataset
+     * @methodOf predicsis.jsSDK.models.Dictionaries
+     * @description Create a dictionary from an existing dataset.
+     * @param {Object} dataset We need a dataset to generate a dictionary, and especially the following information:
+     * - &lt;code&gt;dataset.name&lt;/code&gt; to name the dictionary like: &lt;code&gt;&quot;dictionary_#{name}&quot;&lt;/code&gt;
+     * - &lt;code&gt;dataset.id&lt;/code&gt;
+     * @return {Object} Promise of a new dictionary
+     */
+    this.createFromDataset = function(dataset) {
+      return this.create({
+        name: encodeURI(&#039;dictionary_&#039; + dataset.name.toLowerCase()),
+        dataset_id: dataset.id
+      });
+    };
+
+    //this.clone = function(dictionary) {
+    //
+    //};
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name create
+     * @methodOf predicsis.jsSDK.models.Dictionaries
+     * @description Send POST request to the &lt;code&gt;dictionary&lt;/code&gt; API resource.
+     *  This request is going to generate a dictionary regarding to a given dataset. This generation is delegated to
+     *  ML core tool. That&#039;s why this request is asynchronous.
+     *
+     *  You can give the following parameters to ask for dictionary generation:
+     *  &lt;pre&gt;
+     *  {
+     *    dataset_id: &quot;53c7dea470632d3417020000&quot;,
+     *    name:       &quot;Dictionary of my awesome dataset&quot;
+     *  }
+     *  &lt;/pre&gt;
+     *
+     * @param {Object} params See above example.
+     * @return {Object} Promise of a new dictionary
+     */
+    this.create = function(params) {
+      return Jobs.wrapAsyncPromise(dictionaries().post({dictionary: params}))
+        .then(function(result) {
+          return dictionary(result.id).get();
+        });
+    };
+
+    /**
+     * @ngdoc function
+     * @name all
+     * @methodOf predicsis.jsSDK.models.Dictionaries
+     * @description Get all (or a list of) generated dictionaries
+     * @param {Array} [dictionaryIds] List of dictionaries&#039;s id you want to fetch
+     * @return {Object} Promise of a dictionaries list
+     */
+    this.all = function(dictionaryIds) {
+      if(dictionaryIds === undefined) {
+        return dictionaries(dictionaryIds).getList();
+      } else {
+        dictionaryIds = dictionaryIds || [];
+
+        return $q.all(dictionaryIds.map(function(id) {
+          return dictionary(id).get();
+        }));
+      }
+    };
+
+    /**
+     * @ngdoc function
+     * @name get
+     * @methodOf predicsis.jsSDK.models.Dictionaries
+     * @description Get a single dictionary by its id
+     * @param {String} dictionaryId Dictionary identifier
+     * @return {Object} Promise of a dictionary
+     */
+    this.get = function(dictionaryId) {
+      return dictionary(dictionaryId).get();
+    };
+
+    /**
+     * @ngdoc function
+     * @name update
+     * @methodOf predicsis.jsSDK.models.Dictionaries
+     * @description Update specified dictionary
+     *  You can update the following parameters:
+     *  &lt;ul&gt;
+     *    &lt;li&gt;&lt;code&gt;{String} name&lt;/code&gt;&lt;/li&gt;
+     *    &lt;li&gt;&lt;code&gt;{String} description&lt;/code&gt; (max. 250 characters)&lt;/li&gt;
+     *  &lt;/ul&gt;
+     *
+     * @param {String} dictionaryId Id of the dictionary you want to update
+     * @param {Object} changes see above description to know parameters you are able to update
+     * @return {Object} Promise of the updated dictionary
+     */
+    this.update = function(dictionaryId, changes) {
+      return Jobs.wrapAsyncPromise(dictionary(dictionaryId).patch({dictionary: changes}))
+        .then(function(result) {
+          return dictionary(result.id).get();
+        });
+    };
+
+    /**
+     * @ngdoc function
+     * @name delete
+     * @methodOf predicsis.jsSDK.models.Dictionaries
+     * @description Permanently destroy a specified dictionary
+     * @param {String} dictionaryId Id of the dictionary you want to remove
+     * @return {Object} Promise of an empty dictionary
+     */
+    this.delete = function(dictionaryId) {
+      return dictionary(dictionaryId).remove();
+    };
+
+  });</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>
