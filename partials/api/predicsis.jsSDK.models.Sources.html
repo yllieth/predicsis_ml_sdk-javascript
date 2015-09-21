@@ -1,4 +1,4 @@
-<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Sources.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Sources.js#L63" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Sources</code>
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Sources.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Sources.js#L63" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Sources</code>
 <div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK.models</code>
 </span>
 </div>
@@ -67,13 +67,13 @@
 </li>
 </ul>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Sources.js#L107" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([sourceIds])</h3>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Sources.js#L113" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([sourceIds])</h3>
 <div class="all"><div class="all-page"><p>Get all (or a list of) generated sources</p>
 </div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[sourceIds]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of sources&#39; id you want to fetch</p>
 </div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="all-page"><p>A list of sources</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Sources.js#L95" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Sources.js#L101" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
 <div class="create"><div class="create-page"><p>Send POST request to the <code>source</code> API resource.</p>
 <p> This request is going to create and persist in database a source object regarding to a given uploaded file.
  So, you must upload a file first.</p>
@@ -84,24 +84,30 @@
    key:  "path/to/my/file/on/s3/source.csv",
  }
  </pre>
-<p> Both <code>name</code> and <code>key</code> are required.</p>
+ <pre class="prettyprint linenums">
+ {
+   name: "Source of dataset.csv"
+   object:  "path/to/my/file/on/s3/source.csv",
+ }
+ </pre>
+<p> Both <code>name</code> and <code>key | object</code> are required.</p>
 </div><h5 id="methods_create_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="create-page"><p>See above example.</p>
 </div></td></tr></tbody></table><h5 id="methods_create_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="create-page"><p>New source</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Sources.js#L184" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(sourceId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Sources.js#L190" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(sourceId)</h3>
 <div class="delete"><div class="delete-page"><p>Permanently destroy a specified source</p>
 </div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>sourceId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="delete-page"><p>Id of the source you want to remove</p>
 </div></td></tr></tbody></table><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="delete-page"><p>A removed source</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Sources.js#L127" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(sourceId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Sources.js#L133" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(sourceId)</h3>
 <div class="get"><div class="get-page"><p>Get a single source by its id</p>
 </div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>sourceId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Source identifier</p>
 </div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="get-page"><p>A single source</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Sources.js#L153" class="view-source icon-eye-open"> </a><h3 id="methods_getcredentials">getCredentials(storageService)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Sources.js#L159" class="view-source icon-eye-open"> </a><h3 id="methods_getcredentials">getCredentials(storageService)</h3>
 <div class="getcredentials"><div class="getcredentials-page"><p>Request credentials to our storage service
 Credentials for S3 storage looks like:
 <pre class="prettyprint linenums">
@@ -120,7 +126,7 @@ Credentials for S3 storage looks like:
 </div></td></tr></tbody></table><h5 id="methods_getcredentials_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="getcredentials-page"><p>See above description</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/model/Sources.js#L172" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(sourceId, changes)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Sources.js#L178" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(sourceId, changes)</h3>
 <div class="update"><div class="update-page"><p>Update specified source</p>
 <p> You can update the following parameters:
  <ul>

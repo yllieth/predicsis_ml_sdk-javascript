@@ -1,0 +1,92 @@
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Datafiles.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datafiles.js#L60" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Datafiles</code>
+<div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK.models</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="predicsis-jssdk-models-datafiles-page"><table>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/data_files</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Datafiles#methods_all">Datafiles.all()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/data_files/:id</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Datafiles#methods_get">Datafiles.get()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/data_files/:id/signed_url</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Datafiles#methods_getsignedurl">Datafiles.getSignedUrl()</a></kbd></td>
+  <td></td>
+</tr>
+<tr>
+  <td><span class="badge get">get</span> <kbd>/data_files/:id/signed_url</kbd></td>
+  <td><kbd><a href="#/api/predicsis.jsSDK.models.Datafiles#methods_download">Datafiles.download()</a></kbd></td>
+  <td></td>
+</tr>
+<tfoot>
+  <tr><td colspan="3">Official documentation is available at <a href="https://developer.predicsis.com/doc/v1/data_management/data_file/">https://developer.predicsis.com/doc/v1/data_management/data_file/</a></td></tr>
+</tfoot>
+</table>
+
+<p>Output example of a <kbd>data_file</kbd>:
+<pre class="prettyprint linenums">
+{
+data_file: {
+  id: "54edf76c6170700001870000",
+  filename: "hello.csv",
+  type: "S3",
+  size: 24,
+  signed_url: {
+    links: {
+      self: "https://api.predicsis.com/data_files/53c7e7b668796493d3010000/signed_url"
+    }
+ }
+}
+}
+</pre>
+<p>Output example of a <kbd>signed_url</kbd>:
+<pre class="prettyprint linenums">
+{
+data_file: {
+  signed_url: "http://prod.kml-api.s3-us-west-2.amazonaws.com/uploads/5347b31750432d45a5020000/sources/1415101671848/source.csv"
+}
+}
+</pre>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/ng.$q">$q</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="#/api/Restangular">Restangular</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datafiles.js#L78" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([dataFileIds])</h3>
+<div class="all"><div class="all-page"><p>Get all (or a list of) data files</p>
+</div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[dataFileIds]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of data files&#39; ids you want to fetch</p>
+</div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="all-page"><p>A list of data_files</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datafiles.js#L127" class="view-source icon-eye-open"> </a><h3 id="methods_download">download(datasetId)</h3>
+<div class="download"><div class="download-page"><p>Convenience method to concretely download the file</p>
+</div><h5 id="methods_download_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>datasetId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="download-page"><p>dataset identifier</p>
+</div></td></tr></tbody></table><h5 id="methods_download_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="download-page"><p>Once the signed url is resolved, we&#39;re using <code>window.location.assign</code> to download
+the file without changing page.</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datafiles.js#L98" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(dataFileId)</h3>
+<div class="get"><div class="get-page"><p>Get a single data_file by its id</p>
+</div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataFileId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>data_file identifier</p>
+</div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="get-page"><p>A single data_file</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datafiles.js#L110" class="view-source icon-eye-open"> </a><h3 id="methods_getsignedurl">getSignedUrl(datasetId)</h3>
+<div class="getsignedurl"><div class="getsignedurl-page"><p>Get a signed_url of a data_file</p>
+</div><h5 id="methods_getsignedurl_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>datasetId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getsignedurl-page"><p>dataset identifier</p>
+</div></td></tr></tbody></table><h5 id="methods_getsignedurl_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="getsignedurl-page"><p>A signed url you can download raw file with</p>
+</div></td></tr></table></div>
+</li>
+</ul>
+</div>
+</div>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib\model\Jobs.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib\model\Jobs.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">76.72</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">184</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">23.48</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">0.68</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.models.Jobs
+ * @requires $q
+ * @requires Restangular
+ * @description
+ * A lot of requests on PredicSis API are asynchronous. That means when you send a &lt;kbd&gt;POST /datasets&lt;/kbd&gt;
+ * request (for example), you will get a 201 Created HTTP response. A new &lt;kbd&gt;dataset&lt;/kbd&gt; has been created.
+ * &lt;b&gt;BUT&lt;/b&gt; it hasn&#039;t been completely fulfilled, there is a pending job you must wait for its termination to
+ * consider the &lt;kbd&gt;dataset&lt;/kbd&gt; really created.
+ *
+ * Each time the API returns a &lt;kbd&gt;job_ids&lt;/kbd&gt; in a response, the request is asynchronous. This array
+ * contains all the jobs created before and the current one in the last position. You have to send a
+ * &lt;kbd&gt;GET /jobs/:jobId&lt;/kbd&gt; request and check the &lt;kbd&gt;status&lt;/kbd&gt; property. It could take 4 values:
+ * &lt;ul&gt;
+ *   &lt;li&gt;pending&lt;/li&gt;
+ *   &lt;li&gt;processing&lt;/li&gt;
+ *   &lt;li&gt;completed&lt;/li&gt;
+ *   &lt;li&gt;failed&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * The following schema shows a job&#039; standard workflow:
+ * &lt;img src=&quot;https://github.com/PredicSis/kml-api-doc/blob/master/assets/img/job_status.png&quot; alt=&quot;Job standard workflow&quot; /&gt;
+ *
+ * &lt;table&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/jobs&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Jobs#methods_all Jobs.all()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/jobs/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Jobs#methods_get Jobs.get()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge delete&quot;&gt;delete&lt;/span&gt; &lt;kbd&gt;/jobs/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Jobs#methods_delete Jobs.delete()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;Active pulling on a job waiting for its termination&lt;/td&gt;
+ *     &lt;td colspan=&quot;2&quot;&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Jobs#methods_listen Jobs.listen()}&lt;/kbd&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;Transform an async promise into the same promise resolving only when job is completed&lt;/td&gt;
+ *     &lt;td colspan=&quot;2&quot;&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Jobs#methods_wrapAsyncPromise Jobs.wrapAsyncPromise()}&lt;/kbd&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;Defines function called when a jobs fails&lt;/td&gt;
+ *     &lt;td colspan=&quot;2&quot;&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Jobs#methods_setErrorHandler Jobs.setErrorHandler()}&lt;/kbd&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tfoot&gt;
+ *   &lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;Official documentation is available at https://developer.predicsis.com/doc/v1/job&lt;/td&gt;&lt;/tr&gt;
+ *   &lt;/tfoot&gt;
+ * &lt;/table&gt;
+ *
+ * Output example:
+ * &lt;pre&gt;
+ *   {
+ *     id: &quot;53c7ded570632d3417050000&quot;,
+ *     action: &quot;Generate dictionary&quot;,
+ *     status: &quot;completed&quot;,
+ *     error: null,
+ *     warnings: null,
+ *     created_at: &quot;2014-05-02T15:42:51.687Z&quot;,
+ *     started_at: &quot;2014-05-02T15:42:52.687Z&quot;,
+ *     finished_at: &quot;2014-05-02T15:52:51.687Z&quot;,
+ *     user_id: &quot;5363b25c687964476d000000&quot;,
+ *     runnable_id: &quot;5363b7fc6879644ae7010000&quot;
+ *   }
+ * &lt;/pre&gt;
+ *
+ * &lt;b&gt;Important notes:&lt;/b&gt;
+ * A &lt;kbd&gt;GET /gobs/:jobId&lt;/kbd&gt; is going to return a &lt;kbd&gt;200 OK&lt;/kbd&gt; even if its &lt;kbd&gt;error&lt;/kbd&gt; or
+ * &lt;kbd&gt;warning&lt;/kbd&gt; aren&#039;t null! So don&#039;t forget to take a look on it!
+ */
+angular
+  .module(&#039;predicsis.jsSDK.models&#039;)
+  .service(&#039;Jobs&#039;, function($q, Restangular) {
+    &#039;use strict&#039;;
+
+    var self = this;
+    var errorHandler;
+
+    function job(id) { return Restangular.one(&#039;jobs&#039;, id); }
+    function jobs() { return Restangular.all(&#039;jobs&#039;); }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name all
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @description Get all (or a list of) async job
+     * @param {Array} [jobIds] List of job id you want to fetch
+     * @return {Object} Promise of a job list
+     */
+    this.all = function(jobIds) {
+      if(jobIds === undefined) {
+        return jobs(jobIds).getList();
+      } else {
+        jobIds = jobIds || [];
+
+        return $q.all(jobIds.map(function(id) {
+          return job(id).get();
+        }));
+      }
+    };
+
+    /**
+     * @ngdoc function
+     * @name get
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @description Get a single job by its id
+     * @param {String} jobId Job identifier
+     * @return {Object} Promise of a job
+     */
+    this.get = function(jobId) {
+      return job(jobId).get();
+    };
+
+    /**
+     * @ngdoc function
+     * @name delete
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @description Permanently destroy a specified job
+     * @param {String} jobId Id of the job you want to remove
+     * @return {Object} Promise of an empty job
+     */
+    this.delete = function(jobId) {
+      return job(jobId).remove();
+    };
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @name listen
+     * @description Active pulling on a job waiting for its termination
+     *
+     * &lt;b&gt;Important notes:&lt;/b&gt;
+     * &lt;ul&gt;
+     *   &lt;li&gt;You can &lt;em&gt;listen&lt;/em&gt;only one job at a time&lt;/li&gt;
+     *   &lt;li&gt;a &lt;kbd&gt;GET /jobs/:jobId&lt;/kbd&gt; is going to be sent every 3 second the first minute, and every minute after&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param {String} jobId The id of the job api resource you want to wait termination
+     * @return {Promise} A promise resolved only when the job succeeds
+     */
+    this.listen = function(jobId) {
+
+      var deferred = $q.defer();
+      var isRequestPending = false;   //Lock limiting interval loop to one concurrent request
+      var requestCounter = 0;         //Counter to manage timeout step (3 seconds the 1st minute, one minute after)
+
+      //Store intervalId as a closure to be able to stop interval loop
+      var intervalId = window.setInterval(function() {
+        //Limit to one concurrent request
+        if(!isRequestPending) {
+
+          isRequestPending = true;
+          requestCounter++;
+
+          self.get(jobId).then(function(job) {
+            if (job.status === &#039;failed&#039;) {
+              //reject promise if status is failed (and stop interval loop)
+              clearInterval(intervalId);
+              var error = new Error(job.error.message);
+              error.status = job.error.status;
+              deferred.reject(error);
+
+            } else if (job.status === &#039;completed&#039;) {
+
+              //resolve promise if status is completed (and stop interval loop)
+              clearInterval(intervalId);
+              deferred.resolve(jobId);
+
+            } else {
+
+              //continue interval calls otherwise (wait timeout seconds before accepting new request)
+              var timeout = 60;   //Job is pulled each minute (except 1st minute)
+              //Job is pulled each 3 seconds during the 1st minute (for fast jobs)
+              if(requestCounter &lt; 20) {
+                timeout = 3;
+              }
+              //Unlock request Lock after timeout seconds
+              window.setTimeout(function() {
+                isRequestPending = false;
+              }, timeout * 1000);
+            }
+          })
+            //catch request errors, reject promise and stop interval loop
+            .then(null, function(error) {
+              clearInterval(intervalId);
+              deferred.reject(error);
+            });
+        }
+      }, 1000);
+
+      return deferred.promise;
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @name wrapAsyncPromise
+     * @description Transform an async promise into the same promise resolving only when job is completed
+     *
+     * Usage example:
+     * &lt;pre&gt;
+     * return Jobs
+     *   .wrapAsyncPromise(datasets().post({dataset: params}))
+     *   .then(function(dataset) {
+     *     // do something with you completely created new dataset
+     *     // ...
+     *   });
+     * &lt;/pre&gt;
+     *
+     * @param {Promise|Array} promise or list of jobs (the last one will be listened)
+     * @return {Promise} See above example
+     */
+    this.wrapAsyncPromise = function(promise) {
+      return promise.then(function(asyncResult) {
+        var jobId = (asyncResult.job_ids || []).slice(-1)[0];
+        return self.listen(jobId)
+          .then(function() {
+            return asyncResult;
+          })
+          .catch(function(err) {
+            if(errorHandler) {
+              errorHandler(err);
+            }
+            throw err;
+          });
+      });
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @name setErrorHandler
+     * @description set error handler (errors occuring in a job)
+     *
+     * Usage example:
+     * &lt;pre&gt;
+     * return Jobs
+     *   .setErrorHandler(function(error) {
+     *     // do something with error
+     *     // ...
+     *   });
+     * &lt;/pre&gt;
+     *
+     * @param {Function} callback called when an error occurs during a Job
+     */
+    this.setErrorHandler = function(cb) {
+      errorHandler = cb;
+    };
+
+  });</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

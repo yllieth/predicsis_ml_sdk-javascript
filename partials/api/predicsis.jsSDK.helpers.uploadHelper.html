@@ -1,4 +1,4 @@
-<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/helper/uploadHelper.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/helper/uploadHelper.js#L8" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">uploadHelper</code>
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/helper/uploadHelper.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/helper/uploadHelper.js#L8" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">uploadHelper</code>
 <div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK.helpers</code>
 </span>
 </div>
@@ -13,7 +13,7 @@
 </div></li>
 </ul>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/helper/uploadHelper.js#L178" class="view-source icon-eye-open"> </a><h3 id="methods_all">all()</h3>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/helper/uploadHelper.js#L172" class="view-source icon-eye-open"> </a><h3 id="methods_all">all()</h3>
 <div class="all"><div class="all-page"><p>list all currently uploaded datasets</p>
 </div><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of active upload objects. An active upload has the following properties:</p>
 <ul>
@@ -27,12 +27,12 @@
   <li>cancelUpload</li>
 </ul></div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/helper/uploadHelper.js#L213" class="view-source icon-eye-open"> </a><h3 id="methods_cancel">cancel(uploadId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/helper/uploadHelper.js#L207" class="view-source icon-eye-open"> </a><h3 id="methods_cancel">cancel(uploadId)</h3>
 <div class="cancel"><div class="cancel-page"><p>Abort a single upload</p>
 </div><h5 id="methods_cancel_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>uploadId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="cancel-page"><p>Id of the upload to stop</p>
 </div></td></tr></tbody></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/helper/uploadHelper.js#L202" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(uploadId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/helper/uploadHelper.js#L196" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(uploadId)</h3>
 <div class="get"><div class="get-page"><p>get an active upload</p>
 </div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>uploadId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>An upload identifier looks like <timestamp>_<filename></p>
 </div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="get-page"><p>An upload object with the following properties:</p>
@@ -47,7 +47,7 @@
   <li>cancelUpload</li>
 </ul></div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/e41f592/lib/helper/uploadHelper.js#L131" class="view-source icon-eye-open"> </a><h3 id="methods_upload">upload(file, storageService)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/helper/uploadHelper.js#L118" class="view-source icon-eye-open"> </a><h3 id="methods_upload">upload(file, storageService)</h3>
 <div class="upload"><div class="upload-page"><p>upload a file
 The upload method raises the following events during the upload process:</p>
 <ul>
@@ -109,7 +109,7 @@ The upload method raises the following events during the upload process:</p>
 destination folder is handled by the API and its <code>Sources.getCredentials</code> request.</p>
 </div><h5 id="methods_upload_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>file</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="upload-page"><p>html5 File instance</p>
 </div></td></tr><tr><td>storageService</td><td><a href="" class="label type-hint type-hint-string">String=s3</a></td><td><div class="upload-page"><p>Name of PredicSis&#39; storage service.
-The API only accepts one of the following values: s3.</p>
+The API only accepts one of the following values: s3, swift.</p>
 </div></td></tr></tbody></table></div>
 </li>
 </ul>

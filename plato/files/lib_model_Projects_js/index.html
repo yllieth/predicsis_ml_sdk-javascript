@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib\model\Projects.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib\model\Projects.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">78.83</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">226</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">27.03</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">0.81</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.models.Projects
+ * @requires $q
+ * @requires $injector
+ * @requires Restangular
+ * @description
+ * &lt;table&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/projects&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_create Projects.create()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/projects&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_all Projects.all()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/projects/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_get Projects.get()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge patch&quot;&gt;patch&lt;/span&gt; &lt;kbd&gt;/projects/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_update Projects.update()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge patch&quot;&gt;patch&lt;/span&gt; &lt;kbd&gt;/projects/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_addLearningDataset addLearningDataset()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge patch&quot;&gt;patch&lt;/span&gt; &lt;kbd&gt;/projects/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_addScoringDataset addScoringDataset()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge patch&quot;&gt;patch&lt;/span&gt; &lt;kbd&gt;/projects/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_addScoreset addScoreset()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge patch&quot;&gt;patch&lt;/span&gt; &lt;kbd&gt;/projects/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_resetDictionary resetDictionary()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge delete&quot;&gt;delete&lt;/span&gt; &lt;kbd&gt;/projects/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_delete Projects.delete()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;
+ *       &lt;div&gt;&lt;span class=&quot;badge delete&quot;&gt;delete&lt;/span&gt;&lt;code&gt;/dictionaries/:project.dictionary_id&lt;/code&gt;&lt;/div&gt;
+ *       &lt;div&gt;&lt;span class=&quot;badge delete&quot;&gt;delete&lt;/span&gt;&lt;code&gt;/model/:project.classifier_id&lt;/code&gt;&lt;/div&gt;
+ *     &lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_removeDependencies removeDependencies()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;Checks if there is a model for the given project&lt;/td&gt;
+ *     &lt;td colspan=&quot;2&quot;&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_isModelDone isModelDone()}&lt;/kbd&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;Checks if the user checked its project&#039;s dictionary&lt;/td&gt;
+ *     &lt;td colspan=&quot;2&quot;&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Projects#methods_isDictionaryVerified isDictionaryVerified()}&lt;/kbd&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tfoot&gt;
+ *     &lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;There is no official documentation for this resource.&lt;/td&gt;&lt;/tr&gt;
+ *   &lt;/tfoot&gt;
+ * &lt;/table&gt;
+ *
+ * Output example:
+ * &lt;pre&gt;
+ *   {
+ *     id: &#039;54ca326561707000017b0200&#039;,
+ *     created_at: &#039;2015-01-29T13:15:17.224Z&#039;,
+ *     updated_at: &#039;2015-01-29T13:54:37.919Z&#039;,
+ *     title: &#039;dualplay&#039;,
+ *     main_modality: &#039;1&#039;,
+ *     dictionary_id: &#039;54ca32a261707000017e0200&#039;,
+ *     target_variable_id: &#039;54ca32a1776f720001bc0900&#039;,
+ *     classifier_id: &#039;54ca332461707000018d0200&#039;,
+ *     preparation_rules_set_id: &#039;54ca331b61707000018a0200&#039;,
+ *     modalities_set_id: &#039;54ca33116170700001870200&#039;,
+ *     learning_dataset_id: &#039;54c60ca16170700001020000&#039;,
+ *     scoring_dataset_ids: [&#039;54c60ca16170700001020000&#039;],
+ *     scoreset_ids: [&#039;54ca3b9761707000019b0200&#039;],
+ *     report_ids: [
+ *       &#039;54ca33396170700001930200&#039;,
+ *       &#039;54ca33396170700001960200&#039;,
+ *       &#039;54ca33386170700001900200&#039;
+ *     ],
+ *     is_dictionary_verified: true,
+ *     user_id: &#039;541b06dc617070006d060000&#039;
+ *   }
+ * &lt;/pre&gt;
+ *
+ * &lt;b&gt;&lt;code&gt;learning_dataset_id&lt;/code&gt;&lt;/b&gt; : is the id of the parent dataset.
+ * During the process this parent dataset will be splitted into 2 subsets (train and test). This field in project
+ * resource is designed to store the parent dataset.
+ *
+ * &lt;b&gt;&lt;code&gt;reports_ids&lt;/code&gt;&lt;/b&gt; : is an array of ids where reports should always be stored in the same order:
+ * &lt;ol&gt;
+ *   &lt;li&gt;classifier evaluation report for train part&lt;/li&gt;
+ *   &lt;li&gt;classifier evaluation report for test part&lt;/li&gt;
+ *   &lt;li&gt;univariate supervised report&lt;/li&gt;
+ *   &lt;li&gt;univariate unsupervised report&lt;/li&gt;
+ * &lt;/ol&gt;
+ */
+angular
+  .module(&#039;predicsis.jsSDK.models&#039;)
+  .service(&#039;Projects&#039;, function($q, $injector, Restangular) {
+    &#039;use strict&#039;;
+
+    function project(id) { return Restangular.one(&#039;projects&#039;, id); }
+    function projects() { return Restangular.all(&#039;projects&#039;); }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name create
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @description Send POST request to the &lt;code&gt;project&lt;/code&gt; API resource.
+     * @param {Object} params See above example.
+     * @return {Object} Promise of a new project
+     */
+    this.create = function(params) {
+      return projects().post({project: params});
+    };
+
+    /**
+     * @ngdoc function
+     * @name all
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @description Get all (or a list of) projects
+     * @param {Array} [projectIds] List of project&#039;s id you want to fetch
+     * @return {Object} Promise of a projects list
+     */
+    this.all = function(projectIds) {
+      if(projectIds === undefined) {
+        return projects(projectIds).getList();
+      } else {
+        projectIds = projectIds || [];
+
+        return $q.all(projectIds.map(function(id) {
+          return project(id).get();
+        }));
+      }
+    };
+
+    /**
+     * @ngdoc function
+     * @name get
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @description Get a single project by its id
+     * @param {String} projectId Project identifier
+     * @return {Object} Promise of a project
+     */
+    this.get = function(projectId) {
+      return project(projectId).get();
+    };
+
+    /**
+     * @ngdoc function
+     * @name update
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @description Update specified project
+     * @param {String} projectId Id of the project you want to update
+     * @param {Object} changes see above description to know parameters you are able to update
+     * @return {Object} Promise of the updated project
+     */
+    this.update = function(projectId, changes) {
+      return project(projectId).patch({project: changes});
+    };
+
+    /**
+     * @ngdoc function
+     * @name delete
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @description Permanently destroy a specified project
+     *  &lt;b&gt;Important:&lt;/b&gt; {@link predicsis.jsSDK.models.Projects#methods_removeDependencies Remove project&#039;s dependencies}
+     *  prior to delete the project itself !
+     *
+     * @example
+     * &lt;pre&gt;
+     *   Projects.removeDependencies(projectId)
+     *     .then(function() { return Projects.delete(projectId); })
+     *     .then(function() { ... } );
+     * &lt;/pre&gt;
+     *
+     * @param {String} projectIds Id of the project you want to remove
+     * @return {Object} Promise of an empty project
+     */
+    this.delete = function(projectId) {
+      return project(projectId).remove();
+    };
+
+    // --- Altering methods --------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name addLearningDataset
+     * @description Simply adds an entry to &lt;code&gt;learning_dataset_id&lt;/code&gt; project&#039;s property.
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will be used for learning
+     * @return {Object} Promise of an updated project
+     */
+    this.addLearningDataset = function(project, datasetId) {
+      return this.update(project.id, {learning_dataset_id: datasetId});
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name addScoringDataset
+     * @description Simply adds an entry to &lt;code&gt;scoring_dataset_ids&lt;/code&gt; project&#039;s array.
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will be used for score
+     * @return {Object} Promise of an updated project
+     */
+    this.addScoringDataset = function(project, datasetId) {
+      var update = {};
+      update.scoring_dataset_ids = project.scoring_dataset_ids || [];
+      update.scoring_dataset_ids.push(datasetId);
+      return this.update(project.id, update);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name addScoreset
+     * @description Simply adds an entry to &lt;code&gt;scoreset_ids&lt;/code&gt; project&#039;s array.
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @param {String} datasetId Id of the dataset which will store score results
+     * @return {Object} Promise of an updated project
+     */
+    this.addScoreset = function(project, datasetId) {
+      var update = {};
+      update.scoreset_ids = project.scoreset_ids || [];
+      update.scoreset_ids.push(datasetId);
+      return this.update(project.id, update);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name resetDictionary
+     * @description Simply set to &lt;code&gt;null&lt;/code&gt; the following project&#039;s properties:
+     * &lt;ul&gt;
+     *   &lt;li&gt;&lt;code&gt;dictionary_id&lt;/code&gt;&lt;/li&gt;
+     *   &lt;li&gt;&lt;code&gt;is_dictionary_verified&lt;/code&gt;&lt;/li&gt;
+     *   &lt;li&gt;&lt;code&gt;target_variable_id&lt;/code&gt;&lt;/li&gt;
+     *   &lt;li&gt;&lt;code&gt;main_modality&lt;/code&gt;&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param {String} projectId Id of the project you want to update
+     * @return {Object} Promise of an updated project
+     */
+    this.resetDictionary = function(projectId) {
+      return this.update(projectId, {
+        dictionary_id: null,
+        is_dictionary_verified: null,
+        target_variable_id: null,
+        main_modality: null
+      });
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name removeDependencies
+     * @description Removes linked resources prior to being able to remove the project
+     * @param {String} projectId Id of the project you want to update
+     * @return {Object} Promise of an updated project
+     */
+    this.removeDependencies = function(projectId) {
+      var Dictionaries = $injector.get(&#039;Dictionaries&#039;);
+      var Models = $injector.get(&#039;Models&#039;);
+
+      return this.get(projectId)
+        .then(function(project) {
+          // Delete dictionary if exists
+          return (project.dictionary_id === null)
+            ? project
+            : Dictionaries.delete(project.dictionary_id).then(function() { return project; });
+        })
+        .then(function(project) {
+          // Delete dictionary if exists
+          return (project.classifier_id === null)
+            ? project
+            : Models.delete(project.classifier_id).then(
+              function() { return project; },
+              function(err) { if (err.status === 404) { return project; } else { throw err; }}//In case the api has already deleted it when it&#039;s dataset has been deleted
+            );
+        });
+    };
+
+    // --- Getter methods ----------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name isModelDone
+     * @description Checks if there is a model for the given project.
+     *
+     *  &lt;b&gt;Note:&lt;/b&gt; A project can have only one Model. It means that you can go back to the first steps of the scenario
+     *  if your current project already has a model attached. If you want to change a parameter, you have to create a new
+     *  project.
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @return {boolean} &lt;code&gt;true&lt;/code&gt; / &lt;code&gt;false&lt;/code&gt;
+     */
+    this.isModelDone = function(project) {
+      return Boolean(project.classifier_id);
+    };
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Projects
+     * @name isDictionaryVerified
+     * @description Checks if the user checked its project&#039;s dictionary.
+     *
+     *  A dictionary contains a description of each variable used (or unused) of the model. That&#039;s why scenario forces
+     *  the user to check generated dictionaries.
+     *
+     * @param {Object} project {@link API.model.Projects Projects model}
+     * @return {boolean} &lt;code&gt;true&lt;/code&gt; / &lt;code&gt;false&lt;/code&gt;
+     */
+    this.isDictionaryVerified = function(project) {
+      return Boolean(project.is_dictionary_verified);
+    };
+
+  });</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

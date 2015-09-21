@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib\model\Modalities.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib\model\Modalities.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">81.82</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">93</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">13.94</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">0.26</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.models.Modalities
+ * @requires $q
+ * @requires Restangular
+ * @requires Jobs
+ * @description
+ * &lt;table&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/modalities_sets&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Modalities#methods_create Modalities.create()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/modalities_sets&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Modalities#methods_all Modalities.all()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/modalities_sets/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Modalities#methods_get Modalities.get()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge delete&quot;&gt;delete&lt;/span&gt; &lt;kbd&gt;/modalities_sets/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Modalities#methods_delete Modalities.delete()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tfoot&gt;
+ *     &lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;Official documentation is available at https://developer.predicsis.com/doc/v1/dictionary/modalities/&lt;/td&gt;&lt;/tr&gt;
+ *   &lt;/tfoot&gt;
+ * &lt;/table&gt;
+ */
+angular
+  .module(&#039;predicsis.jsSDK.models&#039;)
+  .service(&#039;Modalities&#039;, function($q, Restangular, Jobs) {
+    &#039;use strict&#039;;
+
+    function modality(id) { return Restangular.one(&#039;modalities_sets&#039;, id); }
+    function modalities() { return Restangular.all(&#039;modalities_sets&#039;); }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name create
+     * @methodOf predicsis.jsSDK.models.Modalities
+     * @description Send POST request to the &lt;code&gt;modalities_sets&lt;/code&gt; API resource.
+     *
+     *  You can / must give the following parameters to ask for a modalities set creation:
+     *  &lt;pre&gt;
+     *  {
+     *    variable_id: &quot;5329601c1757f446e6000002&quot;
+     *    dataset_id:  &quot;53c7dea470632d3417020000&quot;,
+     *  }
+     *  &lt;/pre&gt;
+     *
+     *  Both &lt;code&gt;variable_id&lt;/code&gt; and &lt;code&gt;dataset_id&lt;/code&gt; are required.
+     *
+     * @param {Object} params See above example.
+     * @return {Promise} Returned modalities set does not contain modalities themselves.
+     * If you want them, you must explicitly {@link predicsis.jsSDK.models.Modalities#methods_get get} them.
+     * In fact, you will get an object like:
+     * &lt;pre&gt;
+     *   {
+     *     id&quot;: &quot;53fdfa7070632d0fc5030000&quot;,
+     *     created_at: &quot;2014-05-02T17:13:56.687Z&quot;,
+     *     user_id: &quot;5363b25c687964476d000000&quot;,
+     *     dataset_id: &quot;53c7dea470632d3417020000&quot;,
+     *     variable_id: &quot;5329601c1757f446e6000002&quot;,
+     *     job_ids: [ &quot;53c8c88970632d3b9a030001&quot; ]
+     *   }
+     * &lt;/pre&gt;
+     */
+    this.create = function(params) {
+      return Jobs.wrapAsyncPromise(modalities().post({modalities_set: params}))
+        .then(function(result) {
+          return modality(result.id).get();
+        });
+    };
+
+    /**
+     * @ngdoc function
+     * @name all
+     * @methodOf predicsis.jsSDK.models.Modalities
+     * @description Get all (or a list of) generated modalities sets
+     * @param {Array} [modalitiesSetIds] List of modalities sets ids you want to fetch
+     * @return {Promise} A list of modalities sets
+     */
+    this.all = function(modalitiesSetIds) {
+      if(modalitiesSetIds === undefined) {
+        return modalities().getList();
+      } else {
+        modalitiesSetIds = modalitiesSetIds || [];
+
+        return $q.all(modalitiesSetIds.map(function(id) {
+          return modality(id).get();
+        }));
+      }
+    };
+
+    /**
+     * @ngdoc function
+     * @name get
+     * @methodOf predicsis.jsSDK.models.Modalities
+     * @description Get a single modalities set by its id
+     * @param {String} id Modalities set identifier
+     * @return {Promise} A modalities set
+     */
+    this.get = function(id) {
+      return modality(id).get();
+    };
+
+    /**
+     * @ngdoc function
+     * @name delete
+     * @methodOf predicsis.jsSDK.models.Modalities
+     * @description Permanently destroy a specified source
+     * @param {String} id Id of the source you want to remove
+     * @return {Promise} A removed source
+     */
+    this.delete = function(id) {
+      return modality(id).remove();
+    };
+
+  });</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

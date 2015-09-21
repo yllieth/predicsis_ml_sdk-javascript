@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - model/Reports.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>model/Reports.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">79.09</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">217</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">18.38</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">0.63</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.models.Reports
+ * @requires $q
+ * @requires Restangular
+ * @requires Jobs
+ * @requires $injector
+ * - Datasets
+ * @description
+ * &lt;table&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/reports&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Reports#methods_createTrainClassifierEvaluationReport Reports.createTrainClassifierEvaluationReport()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/reports&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Reports#methods_createTestClassifierEvaluationReport Reports.createTestClassifierEvaluationReport()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/reports&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Reports#methods_createUnivariateSupervisedReport Reports.createUnivariateSupervisedReport()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/reports&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Reports#methods_create Reports.create()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/reports&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Reports#methods_all Reports.all()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/reports/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Reports#methods_get Reports.get()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge patch&quot;&gt;patch&lt;/span&gt; &lt;kbd&gt;/reports/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Reports#methods_update Reports.update()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge delete&quot;&gt;delete&lt;/span&gt; &lt;kbd&gt;/reports/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Reports#methods_delete Reports.delete()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tfoot&gt;
+ *     &lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;
+ *       Official documentation is available at:
+ *       &lt;ul&gt;
+ *         &lt;li&gt;https://developer.predicsis.com/doc/v1/reports/&lt;/li&gt;
+ *         &lt;li&gt;https://developer.predicsis.com/doc/v1/reports/classifier_evaluation/&lt;/li&gt;
+ *         &lt;li&gt;https://developer.predicsis.com/doc/v1/reports/univariate_supervised/&lt;/li&gt;
+ *         &lt;li&gt;https://developer.predicsis.com/doc/v1/reports/univariate_unsupervised/&lt;/li&gt;
+ *       &lt;/ul&gt;
+ *       &lt;/td&gt;&lt;/tr&gt;
+ *   &lt;/tfoot&gt;
+ * &lt;/table&gt;
+ */
+angular
+  .module(&#039;predicsis.jsSDK.models&#039;)
+  .service(&#039;Reports&#039;, function($q, $injector, Restangular, Jobs) {
+    &#039;use strict&#039;;
+    var self = this;
+
+    var report = function(id) { return Restangular.one(&#039;reports&#039;, id); };
+    var reports = function() { return Restangular.all(&#039;reports&#039;); };
+    function createClassifierEvaluationReport(project, type) {
+      var Datasets = $injector.get(&#039;Datasets&#039;);
+      return Datasets.getChildren(project.learning_dataset_id, project.dictionary_id)
+        .then(function(children) {
+          return self.create({
+            type: &#039;classifier_evaluation&#039;,
+            dataset_id: children[type].id,
+            classifier_id: project.classifier_id,
+            modalities_set_id: project.modalities_set_id,
+            main_modality: project.main_modality
+          });
+        });
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name createTrainClassifierEvaluationReport
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @description Generate a classifier evaluation report for train subset
+     *
+     *  Parameters required to create such a report:
+     *  &lt;pre&gt;
+     *  {
+     *    type:              &quot;classifier_evaluation&quot;,
+     *    dataset_id:        &quot;53c7dea470632d3417020000&quot;,
+     *    classifier_id:     &quot;5436431070632d15f4260000&quot;,
+     *    modalities_set_id: &quot;53fdfa7070632d0fc5030000&quot;,
+     *    main_modality:     &quot;1&quot;
+     *  }
+     *  &lt;/pre&gt;
+     *
+     * @param {Object} project Required to have all required ids
+     * @return {Object} Promise of a report
+     */
+    this.createTrainClassifierEvaluationReport = function(project) {
+      return createClassifierEvaluationReport(project, &#039;train&#039;);
+    };
+
+    /**
+     * @ngdoc function
+     * @name createTestClassifierEvaluationReport
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @description Generate a classifier evaluation report for test subset
+     *
+     *  Parameters required to create such a report:
+     *  &lt;pre&gt;
+     *  {
+     *    type:              &quot;classifier_evaluation&quot;,
+     *    dataset_id:        &quot;53c7dea470632d3417020000&quot;,
+     *    classifier_id:     &quot;5436431070632d15f4260000&quot;,
+     *    modalities_set_id: &quot;53fdfa7070632d0fc5030000&quot;,
+     *    main_modality:     &quot;1&quot;
+     *  }
+     *  &lt;/pre&gt;
+     *
+     * @param {Object} project Required to have all required ids
+     * @return {Object} Promise of a report
+     */
+    this.createTestClassifierEvaluationReport = function(project) {
+      return createClassifierEvaluationReport(project, &#039;test&#039;);
+    };
+
+    /**
+     * @ngdoc function
+     * @name createUnivariateSupervisedReport
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @description Generate an univariate supervised report.
+     *
+     *  Parameters required to create such a report:
+     *  &lt;pre&gt;
+     *  {
+     *    type:          &quot;univariate_supervised&quot;,
+     *    variable_id:   &quot;5329601c1757f446e6000002&quot;,
+     *    dataset_id:    &quot;53c7dea470632d3417020000&quot;,
+     *    dictionary_id: &quot;5363b7fc6879644ae7010000&quot;
+     *  }
+     *  &lt;/pre&gt;
+     *
+     * @param {Object} project Required to have all required ids
+     * @return {Object} Promise of a report
+     */
+    this.createUnivariateSupervisedReport = function(project) {
+      return self.create({
+        type: &#039;univariate_supervised&#039;,
+        dataset_id: project.learning_dataset_id,
+        dictionary_id: project.dictionary_id,
+        variable_id: project.target_variable_id
+      });
+    };
+
+    /**
+     * @ngdoc function
+     * @name create
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @description Send POST request to the &lt;code&gt;report&lt;/code&gt; API resource.
+     *
+     *  This request is able to generate different types of report:
+     *  &lt;ul&gt;
+     *    &lt;li&gt;classifier evaluation:
+     *    &lt;pre&gt;
+     *    {
+     *      type:              &quot;classifier_evaluation&quot;,
+     *      dataset_id:        &quot;53c7dea470632d3417020000&quot;,
+     *      classifier_id:     &quot;5436431070632d15f4260000&quot;,
+     *      modalities_set_id: &quot;53fdfa7070632d0fc5030000&quot;,
+     *      main_modality:     &quot;1&quot;
+     *    }
+     *    &lt;/pre&gt;
+     *    &lt;/li&gt;
+     *    &lt;li&gt;univariate supervised:
+     *    &lt;pre&gt;
+     *    {
+     *      type:          &quot;univariate_supervised&quot;,
+     *      variable_id:   &quot;5329601c1757f446e6000002&quot;,
+     *      dataset_id:    &quot;53c7dea470632d3417020000&quot;,
+     *      dictionary_id: &quot;5363b7fc6879644ae7010000&quot;
+     *    }
+     *    &lt;/pre&gt;
+     *    &lt;/li&gt;
+     *    &lt;li&gt;univariate unsupervised:
+     *    &lt;pre&gt;
+     *    {
+     *      type:          &quot;univariate_unsupervised&quot;,
+     *      dictionary_id: &quot;5363b7fc6879644ae7010000&quot;,
+     *      dataset_id:    &quot;53c7dea470632d3417020000&quot;
+     *    }
+     *    &lt;/pre&gt;
+     *    &lt;/li&gt;
+     *  &lt;/ul&gt;
+     *
+     * @param {Object} params See above example regarding of the type of report you want to generate.
+     * @return {Object} Promise of a report
+     */
+    this.create = function(params) {
+      return Jobs.wrapAsyncPromise(reports().post({report: params}))
+        .then(function(result) {
+          return report(result.id).get();
+        });
+    };
+
+    /**
+     * @ngdoc function
+     * @name all
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @description Get all (or a list of) generated reports
+     * @param {Array} [reportIds] List of report&#039;s id you want to fetch
+     * @return {Object} Promise of a report list
+     */
+    this.all = function(reportIds) {
+      if(reportIds === undefined) {
+        return reports(reportIds).getList();
+      } else {
+        reportIds = reportIds || [];  // allow empty reportIds
+
+        return $q.all(reportIds.map(function(id) {
+          return report(id).get();
+        }));
+      }
+    };
+
+    /**
+     * @ngdoc function
+     * @name get
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @description Get a single report by its id
+     * @param {String} reportId Report identifier
+     * @return {Object} Promise of a report
+     */
+    this.get = function(reportId) {
+      return report(reportId).get();
+    };
+
+    /**
+     * @ngdoc function
+     * @name update
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @description Update specified report
+     *
+     *  You can update the following parameters:
+     *  &lt;ul&gt;
+     *    &lt;li&gt;&lt;code&gt;{String} title&lt;/code&gt;&lt;/li&gt;
+     *  &lt;/ul&gt;
+     *
+     * @param {String} reportId Id of the report you want to update
+     * @param {Object} changes see above description to know parameters you are able to update
+     * @return {Object} Promise of the updated report
+     */
+    this.update = function(reportId, changes) {
+      return Jobs.wrapAsyncPromise(report(reportId).patch({report: changes}))
+        .then(function(result) {
+          return report(result.id).get();
+        });
+    };
+
+    /**
+     * @ngdoc function
+     * @name delete
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @description Remove specified report
+     * @param {String} ReportId report identifier
+     * @return {Object} Promise of a report
+     */
+    this.delete = function(reportId) {
+      return report(reportId).remove();
+    };
+
+  });</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

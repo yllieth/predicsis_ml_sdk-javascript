@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib\model\Sources.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib\model\Sources.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">81.10</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">132</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">14.91</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">0.29</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.models.Sources
+ * @requires $q
+ * @requires Restangular
+ * @description Sources are a representation of an uploaded file on our storage. At time, all uploads are sent to Amazon S3.
+ *
+ * &lt;table&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge post&quot;&gt;post&lt;/span&gt; &lt;kbd&gt;/sources&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Sources#methods_create Sources.create()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/sources&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Sources#methods_all Sources.all()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/sources/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Sources#methods_get Sources.get()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;getCredentials&lt;/span&gt; &lt;kbd&gt;/sources/credentials/:storageType&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Sources#methods_get Sources.getCredentials()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge patch&quot;&gt;patch&lt;/span&gt; &lt;kbd&gt;/sources/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Sources#methods_update Sources.update()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge async&quot;&gt;async&lt;/span&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tr&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge delete&quot;&gt;delete&lt;/span&gt; &lt;kbd&gt;/sources/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Sources#methods_delete Sources.delete()}&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;/td&gt;
+ *   &lt;/tr&gt;
+ *   &lt;tfoot&gt;
+ *     &lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;Official documentation is available at https://developer.predicsis.com/doc/v1/data_management/source/&lt;/td&gt;&lt;/tr&gt;
+ *   &lt;/tfoot&gt;
+ * &lt;/table&gt;
+ *
+ * Output example:
+ * &lt;pre&gt;
+ * {
+ *   id: &quot;54edf76c6170700001860000&quot;,
+ *   created_at: &quot;2015-02-25T16:25:16.889Z&quot;,
+ *   updated_at: &quot;2015-02-25T16:25:16.889Z&quot;,
+ *   name: &quot;hello.csv&quot;,
+ *   user_id: &quot;541b06dc617070006d060000&quot;,
+ *   dataset_ids: [],
+ *   data_file: {
+ *     id: &quot;54edf76c6170700001870000&quot;,
+ *     filename: &quot;hello.csv&quot;,
+ *     type: &quot;S3&quot;,
+ *     size: 24,
+ *     url: &quot;https://s3-us-west-2.amazonaws.com/stag.public.kml-api/uploads/541b06dc617070006d060000/sources/1424881474630/hello.csv?AWSAccessKeyId=AKIAIAVVU5KANH5LYROQ&amp;Expires=1425411327&amp;Signature=svmZQCMzgdqzFrbme%2Fy04RzszU0%3D&amp;x-amz-acl=private&quot;
+ *   }
+ * }
+ * &lt;/pre&gt;
+ */
+angular
+  .module(&#039;predicsis.jsSDK.models&#039;)
+  .service(&#039;Sources&#039;, function($q, Restangular) {
+    &#039;use strict&#039;;
+
+    function source(id) { return Restangular.one(&#039;sources&#039;, id); }
+    function sources() { return Restangular.all(&#039;sources&#039;); }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @ngdoc function
+     * @name create
+     * @methodOf predicsis.jsSDK.models.Sources
+     * @description Send POST request to the &lt;code&gt;source&lt;/code&gt; API resource.
+     *
+     *  This request is going to create and persist in database a source object regarding to a given uploaded file.
+     *  So, you must upload a file first.
+     *
+     *  You can / must give the following parameters to ask for a source creation:
+     *  &lt;pre&gt;
+     *  {
+     *    name: &quot;Source of dataset.csv&quot;
+     *    key:  &quot;path/to/my/file/on/s3/source.csv&quot;,
+     *  }
+     *  &lt;/pre&gt;
+     *  &lt;pre&gt;
+     *  {
+     *    name: &quot;Source of dataset.csv&quot;
+     *    object:  &quot;path/to/my/file/on/s3/source.csv&quot;,
+     *  }
+     *  &lt;/pre&gt;
+     *
+     *  Both &lt;code&gt;name&lt;/code&gt; and &lt;code&gt;key | object&lt;/code&gt; are required.
+     *
+     * @param {Object} params See above example.
+     * @return {Promise} New source
+     */
+    this.create = function(params) {
+      return sources().post({source: params});
+    };
+
+    /**
+     * @ngdoc function
+     * @name all
+     * @methodOf predicsis.jsSDK.models.Sources
+     * @description Get all (or a list of) generated sources
+     * @param {Array} [sourceIds] List of sources&#039; id you want to fetch
+     * @return {Promise} A list of sources
+     */
+    this.all = function(sourceIds) {
+      if(sourceIds === undefined) {
+        return sources().getList();
+      } else {
+        sourceIds = sourceIds || [];
+
+        return $q.all(sourceIds.map(function(id) {
+          return source(id).get();
+        }));
+      }
+    };
+
+    /**
+     * @ngdoc function
+     * @name get
+     * @methodOf predicsis.jsSDK.models.Sources
+     * @description Get a single source by its id
+     * @param {String} sourceId Source identifier
+     * @return {Promise} A single source
+     */
+    this.get = function(sourceId) {
+      return source(sourceId).get();
+    };
+
+    /**
+     * @ngdoc function
+     * @name getCredentials
+     * @methodOf predicsis.jsSDK.models.Sources
+     * @description Request credentials to our storage service
+     *  Credentials for S3 storage looks like:
+     *  &lt;pre&gt;
+     *  {
+     *    credentials: {
+     *      expires_at: &quot;2014-06-23T08:07:19.000Z&quot;,
+     *      key: &quot;uploads/5347b31750432d45a5020000/sources/1415101671848/${filename}&quot;,
+     *      aws_access_key_id: &quot;predicsis_aws_access_key_id&quot;,
+     *      signature: &quot;encoded_signature&quot;,
+     *      policy: &quot;encoded_policy&quot;,
+     *      s3_endpoint: &quot;http://dev.public.kml-api.s3-us-west-2.amazonaws.com&quot;
+     *    }
+     *  }
+     *  &lt;/pre&gt;
+     *
+     * @param {String} storageService Available services are : &lt;ul&gt;&lt;li&gt;&lt;code&gt;s3&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;
+     * @return {Object} See above description
+     */
+    this.getCredentials = function(storageService) {
+      return sources().one(&#039;credentials&#039;, storageService).get();
+    };
+
+    /**
+     * @ngdoc function
+     * @name update
+     * @methodOf predicsis.jsSDK.models.Sources
+     * @description Update specified source
+     *
+     *  You can update the following parameters:
+     *  &lt;ul&gt;
+     *    &lt;li&gt;&lt;code&gt;{String} name&lt;/code&gt;&lt;/li&gt;
+     *  &lt;/ul&gt;
+     *
+     * @param {String} sourceId Id of the source you want to update
+     * @param {Object} changes see above description to know parameters you are able to update
+     * @return {Promise} An updated source
+     */
+    this.update = function(sourceId, changes) {
+      return source(sourceId).patch({source: changes});
+    };
+
+    /**
+     * @ngdoc function
+     * @name delete
+     * @methodOf predicsis.jsSDK.models.Sources
+     * @description Permanently destroy a specified source
+     * @param {String} sourceId Id of the source you want to remove
+     * @return {Promise} A removed source
+     */
+    this.delete = function(sourceId) {
+      return source(sourceId).remove();
+    };
+
+  });</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>
