@@ -93,7 +93,7 @@ angular
 
 /**
  * @ngdoc service
- * @name predicsis.jsSDK.models.Datafile
+ * @name predicsis.jsSDK.models.Datafiles
  * @requires $q
  * @requires Restangular
  * @description
@@ -111,7 +111,7 @@ angular
  *   </tr>
  *   <tr>
  *     <td><span class="badge get">get</span> <kbd>/data_files/:id/signed_url</kbd></td>
- *     <td><kbd>{@link predicsis.jsSDK.models.Datafiles#methods_get_signed_url Datafiles.getSignedUrl()}</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Datafiles#methods_getsignedurl Datafiles.getSignedUrl()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
@@ -2610,6 +2610,19 @@ angular
         });
     }
 
+    function createUnivariateSupervisedReport(project) {
+      var Datasets = $injector.get('Datasets');
+      return Datasets.getChildren(project.learning_dataset_id, project.dictionary_id)
+        .then(function(children) {
+          return self.create({
+            type: 'univariate_supervised',
+            dataset_id: children.train.id,
+            dictionary_id: project.dictionary_id,
+            variable_id: project.target_variable_id
+          });
+        });
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -2680,12 +2693,7 @@ angular
      * @return {Object} Promise of a report
      */
     this.createUnivariateSupervisedReport = function(project) {
-      return self.create({
-        type: 'univariate_supervised',
-        dataset_id: project.learning_dataset_id,
-        dictionary_id: project.dictionary_id,
-        variable_id: project.target_variable_id
-      });
+      return createUnivariateSupervisedReport(project);
     };
 
     /**
