@@ -2610,19 +2610,6 @@ angular
         });
     }
 
-    function createUnivariateSupervisedReport(project) {
-      var Datasets = $injector.get('Datasets');
-      return Datasets.getChildren(project.learning_dataset_id, project.dictionary_id)
-        .then(function(children) {
-          return self.create({
-            type: 'univariate_supervised',
-            dataset_id: children.train.id,
-            dictionary_id: project.dictionary_id,
-            variable_id: project.target_variable_id
-          });
-        });
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -2693,7 +2680,16 @@ angular
      * @return {Object} Promise of a report
      */
     this.createUnivariateSupervisedReport = function(project) {
-      return createUnivariateSupervisedReport(project);
+      var Datasets = $injector.get('Datasets');
+      return Datasets.getChildren(project.learning_dataset_id, project.dictionary_id)
+        .then(function(children) {
+          return self.create({
+            type: 'univariate_supervised',
+            dataset_id: children.train.id,
+            dictionary_id: project.dictionary_id,
+            variable_id: project.target_variable_id
+          });
+        });
     };
 
     /**
