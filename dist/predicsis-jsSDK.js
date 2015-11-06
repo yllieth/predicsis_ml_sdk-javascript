@@ -513,6 +513,10 @@ angular
      *   <li><code>30%</code> of your original dataset for <b>testing</b></li>
      * </ul><br/>
      * @return {Promise} Subsets
+     * {
+     *   train: {id: "..."},
+     *   test: {id: "..."}
+     * }
      */
     this.split = function(id, name, filename, sampling) {
       filename = filename || name;
@@ -520,7 +524,7 @@ angular
 
       var learn = {
         parent_dataset_id: id,
-        name: 'learned_' +  name,
+        name: 'learned_' + name,
         data_file: {filename: 'learned_' + filename},
         sampling: sampling
       };
@@ -532,7 +536,10 @@ angular
         sampling: -sampling
       };
 
-      return $q.all([this.create(learn), this.create(test)]);
+      return $q.all({
+        train: this.create(learn),
+        test: this.create(test)
+      });
     };
 
     /**
