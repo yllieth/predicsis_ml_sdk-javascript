@@ -308,6 +308,7 @@ angular
  * <pre>
  *   {
  *     id: 'learning_dataset',
+ *     type: 'upload_dataset',
  *     created_at: '2014-12-14T15:09:08.112Z',
  *     updated_at: '2014-12-14T15:08:57.970Z',
  *     name: 'Learning dataset',
@@ -341,6 +342,7 @@ angular
  *   {
  *     ...
  *     source_ids: [],
+ *     type: 'subset',
  *     parent_dataset_id: 'learning_dataset_with_model',
  *     sampling: 70,
  *     nb_of_lines: null,
@@ -354,6 +356,7 @@ angular
  *   {
  *     ...
  *     source_ids: [],
+ *     type: 'subset',
  *     parent_dataset_id: 'learning_dataset_with_model',
  *     sampling: -70,
  *     nb_of_lines: null,
@@ -393,6 +396,7 @@ angular
  * <pre>
  *   {
  *     ...
+ *     type: 'scoreset'
  *     classifier_id: '5436431070632d15f4260000',
  *     dataset_id: 'scoring_dataset',
  *     modalities_set_id: '53fdfa7070632d0fc5030000',
@@ -426,7 +430,8 @@ angular
      *    source_ids: ['original_source_id'],
      *    header:     true,
      *    separator:  '\t',
-     *    data_file:  { filename: 'source.csv' }
+     *    data_file:  { filename: 'source.csv' },
+     *    type:       'upload_dataset'
      *  }
      *  </pre>
      *
@@ -442,7 +447,8 @@ angular
      *    main_modality:     $main_modality$,
      *    separator:         $separator$,
      *    header:            $header$,
-     *    data_file:         { filename: $name$ }
+     *    data_file:         { filename: $name$ },
+     *    type:              'scoreset'
      *  }
      *  </pre>
      *
@@ -481,6 +487,7 @@ angular
       return Sources.create(source)
         .then(function(source) {
           return self.create({
+            type: 'upload_dataset',
             name: fileName,
             source_ids: [source.id],
             data_file: { filename: fileName }
@@ -523,6 +530,7 @@ angular
       sampling = sampling || DEFAULT_SAMPLING;
 
       var learn = {
+        type: 'subset',
         parent_dataset_id: id,
         name: 'learned_' + name,
         data_file: {filename: 'learned_' + filename},
@@ -530,6 +538,7 @@ angular
       };
 
       var test = {
+        type: 'subset',
         parent_dataset_id: id,
         name: 'tested_' + name,
         data_file: {filename: 'tested_' + filename},
@@ -612,7 +621,7 @@ angular
         })
         .then(function(childrenCandidates) {
           return childrenCandidates.reduce(function(memo, child) {
-            if (child.parent_dataset_id === datasetId) {
+            if (child.dataset_id === datasetId) {
               if (self.isTrainPart(child, DEFAULT_SAMPLING)) {
                 memo.train = child;
               } else if (self.isTestPart(child, -DEFAULT_SAMPLING)) {
@@ -716,7 +725,7 @@ angular
      * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
      */
     this.hasChildren = function(dataset) {
-      return Boolean(dataset.children_dataset_ids.length > 0);
+      return Boolean(dataset.children_dataset_ids && dataset.children_dataset_ids.length > 0);
     };
 
     /**
@@ -729,7 +738,7 @@ angular
      * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
      */
     this.isParent = function(dataset) {
-      return Boolean(dataset.parent_dataset_id === null);
+      return Boolean(dataset.type === 'upload_dataset');
     };
 
     /**
@@ -737,12 +746,11 @@ angular
      * @methodOf predicsis.jsSDK.models.Datasets
      * @name isChild
      * @description Tells if a dataset is a child dataset
-     * <b>Note:</b> A dataset is considered as a child if it has a parent. There is no orphan among datasets!
      * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
      * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
      */
     this.isChild = function(dataset) {
-      return Boolean(dataset.parent_dataset_id !== null);
+      return Boolean(dataset.type === 'subset');
     };
 
     /**
@@ -810,14 +818,12 @@ angular
      *   <li><code>dataset.classifier !== null</code></li>
      *   <li><code>dataset.dataset_id !== null</code></li>
      * </ul>
+     * Since the API implements a type attribute, this check is really simpler
      * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
      * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
      */
     this.isScore = function(dataset) {
-      return Boolean(dataset.source_ids.length === 0)
-        && Boolean(dataset.main_modality !== null)
-        && Boolean(dataset.classifier !== null)
-        && Boolean(dataset.dataset_id !== null);
+      return Boolean(dataset.type === 'scoreset');
     };
   });
 
