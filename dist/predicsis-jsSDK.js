@@ -308,7 +308,7 @@ angular
  * <pre>
  *   {
  *     id: 'learning_dataset',
- *     type: 'upload_dataset',
+ *     type: 'uploaded_dataset',
  *     created_at: '2014-12-14T15:09:08.112Z',
  *     updated_at: '2014-12-14T15:08:57.970Z',
  *     name: 'Learning dataset',
@@ -431,7 +431,7 @@ angular
      *    header:     true,
      *    separator:  '\t',
      *    data_file:  { filename: 'source.csv' },
-     *    type:       'upload_dataset'
+     *    type:       'uploaded_dataset'
      *  }
      *  </pre>
      *
@@ -487,7 +487,7 @@ angular
       return Sources.create(source)
         .then(function(source) {
           return self.create({
-            type: 'upload_dataset',
+            type: 'uploaded_dataset',
             name: fileName,
             source_ids: [source.id],
             data_file: { filename: fileName }
@@ -738,7 +738,7 @@ angular
      * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
      */
     this.isParent = function(dataset) {
-      return Boolean(dataset.type === 'upload_dataset');
+      return Boolean(dataset.type === 'uploaded_dataset');
     };
 
     /**
