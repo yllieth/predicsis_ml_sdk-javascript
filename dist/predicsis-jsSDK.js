@@ -316,7 +316,7 @@ angular
  *     separator: null,
  *     user_id: '541b06dc617070006d060000',
  *     source_ids: ['54904b136170700007330000'],
- *     parent_dataset_id: null,
+ *     dataset_id: null,
  *     sampling: 100,
  *     nb_of_lines: 50002,
  *     children_dataset_ids: [],
@@ -343,7 +343,7 @@ angular
  *     ...
  *     source_ids: [],
  *     type: 'subset',
- *     parent_dataset_id: 'learning_dataset_with_model',
+ *     dataset_id: 'learning_dataset_with_model',
  *     sampling: 70,
  *     nb_of_lines: null,
  *     preview: null
@@ -357,7 +357,7 @@ angular
  *     ...
  *     source_ids: [],
  *     type: 'subset',
- *     parent_dataset_id: 'learning_dataset_with_model',
+ *     dataset_id: 'learning_dataset_with_model',
  *     sampling: -70,
  *     nb_of_lines: null,
  *     preview: null
@@ -531,7 +531,7 @@ angular
 
       var learn = {
         type: 'subset',
-        parent_dataset_id: id,
+        dataset_id: id,
         name: 'learned_' + name,
         data_file: {filename: 'learned_' + filename},
         sampling: sampling
@@ -539,7 +539,7 @@ angular
 
       var test = {
         type: 'subset',
-        parent_dataset_id: id,
+        dataset_id: id,
         name: 'tested_' + name,
         data_file: {filename: 'tested_' + filename},
         sampling: -sampling
@@ -733,7 +733,7 @@ angular
      * @methodOf predicsis.jsSDK.models.Datasets
      * @name isParent
      * @description Tells if a dataset is a parent dataset.
-     * <b>Note:</b> A parent may have any children, but its <kbd>parent_dataset_id</kbd> must be null
+     * <b>Note:</b> A parent may have any children, but its <kbd>dataset_id</kbd> must be null
      * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
      * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
      */
