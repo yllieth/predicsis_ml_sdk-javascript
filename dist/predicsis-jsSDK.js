@@ -733,12 +733,11 @@ angular
      * @methodOf predicsis.jsSDK.models.Datasets
      * @name isParent
      * @description Tells if a dataset is a parent dataset.
-     * <b>Note:</b> A parent may have any children, but its <kbd>dataset_id</kbd> must be null
      * @param {Object} dataset Instance of {@link predicsis.jsSDK.models.Datasets dataset}
      * @return {Boolean} <kbd>true</kbd> / <kbd>false</kbd>
      */
     this.isParent = function(dataset) {
-      return Boolean(dataset.type === 'uploaded_dataset');
+      return Boolean(dataset.type === 'uploaded_dataset') || this.isScore(dataset);
     };
 
     /**
