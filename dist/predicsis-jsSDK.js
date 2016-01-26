@@ -29,12 +29,16 @@ angular
 
     this.$get = function(Restangular, uploadHelper,
                          Datafiles, Datasets, Dictionaries, Jobs, Modalities, Models, OauthTokens, OauthApplications,
-                         PreparationRules, Projects, Reports, UserSettings, Sources, Users, Variables) {
+                         PreparationRules, Projects, Reports, UserSettings, Sources, Users, Variables, Uploads) {
       var self = this;
 
       Restangular.setBaseUrl(this.getBaseUrl());
       Restangular.setDefaultHeaders(requestHeaders);
-      Restangular.setErrorInterceptor(function(response) { errorHandler(response); });
+      Restangular.setErrorInterceptor(function(response) {
+        if (response.config.headers === undefined || response.config.headers['X-CLIENT-NOTIFY-ERROR'] !== false) {
+          errorHandler(response);
+        }
+      });
       Jobs.setErrorHandler(function(err) {
         // Normalize with restangular errors
         errorHandler({ data: { errors: err.errors, warnings: err.warnings }, config: { url: err.url, method: 'GET', action: err.action } });
@@ -70,6 +74,7 @@ angular
         Users: Users,
         UserSettings: UserSettings,
         Variables: Variables,
+        Uploads: Uploads,
 
         uploadHelper: uploadHelper,
         _restangular: Restangular,
@@ -470,14 +475,21 @@ angular
      * @param {String} pathName name of the key used to provide destFolder ('key' for S3, 'object' for swift)
      * @return {Promise} Newly created dataset
      */
-    this.createFromUpload = function(fileName, destFolder, pathName) {
-      pathName = pathName || 'key';
+    this.createFromUpload = function(fileName, destFolder, type) {
+      type = type || 's3';
 
       var Sources = $injector.get('Sources');
       var source = { name: fileName, data_file: { filename: fileName } };
-      source[pathName] = destFolder;
+      var dataStore = { type: type };
+      if (type === 's3') {
+        dataStore.key = destFolder;
+      } else if (type === 'swift') {
+        dataStore.object = destFolder;
+      } else {
+        throw 'Invalid source dataStore type : ' + type;
+      }
 
-      return Sources.create(source)
+      return Sources.create(source, dataStore)
         .then(function(source) {
           return self.create({
             type: 'uploaded_dataset',
@@ -2918,8 +2930,8 @@ angular
      * @param {Object} params See above example.
      * @return {Promise} New source
      */
-    this.create = function(params) {
-      return sources().post({source: params});
+    this.create = function(source, dataStore) {
+      return sources().post({source: source, data_store: dataStore });
     };
 
     /**
@@ -2956,32 +2968,6 @@ angular
 
     /**
      * @ngdoc function
-     * @name getCredentials
-     * @methodOf predicsis.jsSDK.models.Sources
-     * @description Request credentials to our storage service
-     *  Credentials for S3 storage looks like:
-     *  <pre>
-     *  {
-     *    credentials: {
-     *      expires_at: "2014-06-23T08:07:19.000Z",
-     *      key: "uploads/5347b31750432d45a5020000/sources/1415101671848/${filename}",
-     *      aws_access_key_id: "predicsis_aws_access_key_id",
-     *      signature: "encoded_signature",
-     *      policy: "encoded_policy",
-     *      s3_endpoint: "http://dev.public.kml-api.s3-us-west-2.amazonaws.com"
-     *    }
-     *  }
-     *  </pre>
-     *
-     * @param {String} storageService Available services are : <ul><li><code>s3</code></li></ul>
-     * @return {Object} See above description
-     */
-    this.getCredentials = function(storageService) {
-      return sources().one('credentials', storageService).get();
-    };
-
-    /**
-     * @ngdoc function
      * @name update
      * @methodOf predicsis.jsSDK.models.Sources
      * @description Update specified source
@@ -3009,6 +2995,95 @@ angular
      */
     this.delete = function(sourceId) {
       return source(sourceId).remove();
+    };
+
+  });
+
+/**
+ * @ngdoc service
+ * @name predicsis.jsSDK.models.Uploads
+ * @requires Restangular
+ * @description
+ * <table>
+ *   <tr>
+ *     <td><span class="badge post">post</span> <kbd>/uploads</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Uploads#methods_initiate Uploads.initiate()}</kbd></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge get">get</span> <kbd>/uploads/:id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Uploads#methods_getPartUrl Uploads.getPartUrl()}</kbd></td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td><span class="badge patch">patch</span> <kbd>/uploads/:id</kbd></td>
+ *     <td><kbd>{@link predicsis.jsSDK.models.Uploads#methods_complete Uploads.complete()}</kbd></td>
+ *   </tr>
+ * </table>
+ *
+ * Output example:
+ * <pre>
+ *   {
+ *    "type": "s3",
+ *    "id": "NTVkYzg4NmY0ZDYxNjM5MGQ4MDAwMDAwcjJjODMub0JBQTZ2UVRCWGNUcjZmMlFQ=,
+ *    "bucket": "bucketName",
+ *    "key": "uploads/55dc886f4d616390d8000000/sources/1453395950000/source.txt"
+ *   }
+ * </pre>
+ * <pre>
+ *   {
+ *    "type": "s3",
+ *    "id": "NTVkYzg4NmY0ZDYxNjM5MGQ4MDAwMDAwcjJjODMub0JBQTZ2UVRCWGNUcjZmMlFQ=",
+ *    "part_url": "https://bucketName.s3-us-west-2.amazonaws.com/uploads/55dc886f4d616390d8000000/sources/1453456937000/source.txt?partNumber=1&uploadId=ZGYksTwrSxCpVrIhyb_EYrs1KmeLlPPB5DpjtIPLHdmfTAKiYachywEiq.roLFRp7PaFlJFy_ESG42CyWVRhMpJiJAbbPlBH6rjRbIGtMfvxR7WR.mpdpWYCsyVpaF_U&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJ2BNZXXTAR2ZTDIA%2F20160122%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20160122T100359Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=mffdd8979b970dfd28224142ecef5c9f5bcb2600510e64bfdd7463e17e0df793",
+ *    "bucket": "bucketName",
+ *    "key": "uploads/55dc886f4d616390d8000000/sources/1453456937000/source.txt"
+ *   }
+ * </pre>
+ */
+angular
+  .module('predicsis.jsSDK.models')
+  .service('Uploads', function(Restangular) {
+    'use strict';
+
+    function upload(id) { return Restangular.one('uploads', id); }
+    function uploads() { return Restangular.all('uploads'); }
+
+    /**
+     * @ngdoc function
+     * @name initiate
+     * @methodOf predicsis.jsSDK.models.Uploads
+     * @description initiate a multipart upload
+     *
+     * This initialize a multipart upload
+     *
+     * @return {Promise} New upload
+     */
+    this.initiate = function() {
+      return uploads().post({});
+    };
+
+    /**
+     * @ngdoc function
+     * @name get
+     * @methodOf predicsis.jsSDK.models.Uploads
+     * @description Get a presigned url to upload a part
+     * @param {String} id Model identifier
+     * @param {Number} partNumber
+     * @param {String} path
+     * @return {Promise} An object containing a part_url field (PUT part presigned url)
+     */
+    this.getPartUrl = function(id, partNumber, path) {
+      return upload(id).get({ part_number: partNumber, path: path }, {'X-CLIENT-NOTIFY-ERROR': false});
+    };
+
+    /**
+     * @ngdoc function
+     * @name complete
+     * @methodOf predicsis.jsSDK.models.Uploads
+     * @description Complete a multipart upload
+     * @return {Promise} resolve when upload is completed
+     */
+    this.complete = function(id, path) {
+      return upload(id).patch({ path: path }, {}, {'X-CLIENT-NOTIFY-ERROR': false});
     };
 
   });
@@ -3357,56 +3432,178 @@ angular
  * @name predicsis.jsSDK.helpers.uploadHelper
  * @requires $rootScope
  * @requires $injector
- * - Sources
+ * - Uploads
  */
 angular
   .module('predicsis.jsSDK.helpers')
   .service('uploadHelper', function($rootScope, $injector) {
     'use strict';
 
-    var HTTP = { CREATED: 201, OK: 200 };
-    var concurrentUploads = {};
-    var Sources = $injector.get('Sources');
+    var tasks = swissknife.tasks;
+    var collection = swissknife.collection;
+    var HTTP = { CREATED: 201, OK: 200, NOT_FOUND: 404, BAD_REQUEST: 400, FORBIDDEN: 403 };
+    var Uploads = $injector.get('Uploads');
 
-    function upload(uploadObject, xhr2, credential, file) {
-
-      var endpoint = credential.signed_url;
-      var body = file, method = 'PUT';
-
-      xhr2.open(method, endpoint, true);
-
-      xhr2.upload.addEventListener('progress', function(event) {
-        uploadObject.progression = parseInt(event.loaded / event.total * 100);
-        uploadObject.isUploading = true;
-
-        $rootScope.$broadcast('jsSDK.upload.progress', uploadObject);
-      });
-
-      xhr2.addEventListener('load', function() {
-        delete concurrentUploads[uploadObject.id];
-        uploadObject.isUploading = false;
-
-        if(xhr2.status === HTTP.CREATED || xhr2.status === HTTP.OK) {
-          $rootScope.$broadcast('jsSDK.upload.uploaded', uploadObject);
-        } else {
-          $rootScope.$broadcast('jsSDK.upload.error', { upload: uploadObject, request: xhr2 });
+    function EventEmitter() {
+      var listeners = {};
+      this.on = function(event, cb) {
+        listeners[event] = (listeners[event] || []).concat([cb]);
+        return this;
+      };
+      this.off = function(event, cb) {
+        listeners[event] = (listeners[event] || [])
+          .filter(function(listener) { return listener !== cb; });
+        return this;
+      };
+      this.emit = function(event, data) {
+        if (listeners[event]) {
+          listeners[event].forEach(function(cb) { return cb(data); });
         }
-      });
-
-      xhr2.addEventListener('error', function() {
-        delete concurrentUploads[uploadObject.id];
-        uploadObject.isUploading = false;
-        $rootScope.$broadcast('jsSDK.upload.error', { upload: uploadObject, request: xhr2 });
-      });
-
-      xhr2.send(body);
+        return this;
+      };
+      this.addEventListener = this.on;
+      this.removeEventListener = this.off;
     }
 
+    function chunks(file, options) {
+      var CHUNK_SIZE = options.chunkSize;
+      var offset = options.fileOffset || 0;
+      var done = false;
+      var index = 0;
+      var result = {};
+      result[Symbol.iterator] = function() {
+        return {
+          next: function() {
+            if (done) {
+              return { done: true };
+            }
+            var chunk = file.slice(offset, offset + CHUNK_SIZE);
+            done = chunk.size < CHUNK_SIZE;
+            offset += CHUNK_SIZE;
+            index++;
+            return { done: false, value: { chunk: chunk, index:  index } };
+          }
+        };
+      };
+      return result;
+    }
+
+    function uploadChunk(chunk, index, id, path) {
+      var events = new EventEmitter();
+      var cancel = function() {};
+      var isCancelled = false;
+      var promise = tasks.retry({
+        task: tasks.chain([
+          function getUploadUrl() {
+            return Uploads.getPartUrl(id, index, path);
+          },
+          function upload(authorization) {
+            var result = rehttp.request({ url: authorization.part_url, method: 'PUT', body: chunk });
+            cancel = function() { result.cancel(); };
+            result.events.on('uploadProgress', function(progress) { events.emit('progress', progress); });
+            return result;
+          },
+          function checkUploadStatus(res) {
+            if (res.status !== HTTP.OK) {
+              throw res;
+            }
+            return res;
+          }
+        ]),
+        isRetryable: function(err) {
+          // AWS S3 could return 400 after network issues => retyable
+          if ([HTTP.NOT_FOUND, HTTP.FORBIDDEN].indexOf(err.status) > -1) {
+            return false;
+          }
+          return isCancelled ? false : true;
+        },
+        delay: function(cpt) { return cpt * 10000; },
+        maxRetry: 5
+      });
+      return Object.assign(promise, { events: events, cancel: function() { isCancelled = true; cancel(); } });
+    }
+
+    function upload(file, options) {
+      var chunkSize = options.chunkSize;
+      var uploadId = options.uploadId;
+      var uploadPath = options.uploadPath;
+      var fileOffset = options.fileOffset || 0;
+      var chunksProgress = [fileOffset];
+      var chunksCancel = [];
+      var events = new EventEmitter();
+      var promise = tasks.chain([
+        function initializeUpload() {
+          if (uploadId) {
+            return { path: uploadPath, id: uploadId };
+          } else {
+            return Uploads.initiate()
+              .then(function(ctx) {
+                if (ctx.type === 's3') {
+                  ctx.path = ctx.key;
+                } else if (ctx.type === 'swift') {
+                  ctx.path = ctx.object;
+                }
+                return ctx;
+              });
+          }
+        },
+        function uploadChunks(ctx) {
+          uploadId = ctx.id;
+          uploadPath = ctx.path;
+          var result = collection
+            .map(
+              chunks(file, { chunkSize: chunkSize, fileOffset: fileOffset }),
+              function(v) { return uploadChunk(v.chunk, v.index, uploadId, uploadPath); }
+            );
+          result.events.on('start', function(ctx) {
+            chunksProgress[ctx.index] = 0;
+            if (ctx.promise && ctx.promise.cancel) {
+              chunksCancel[ctx.index] = function() { ctx.promise.cancel(); };
+            }
+            ctx.promise.events.on('progress', function(progress) {
+              chunksProgress[ctx.index] = progress.loaded;
+              var progression = chunksProgress.reduce(function(m, v) { return m + v; }, 0) / file.size;
+              events.emit('progress', progression * 100);
+            });
+          });
+          result.events.on('end', function() {  fileOffset += chunkSize;});
+          result.events.on('end', function(ctx) {  delete chunksCancel[ctx.index]; });
+          return result.all()
+            .then(function() { return { uploadId: uploadId, uploadPath: uploadPath }; });
+        },
+        function completeUpload(ctx) {
+          return tasks.retry({
+            task: function() {
+              return Uploads.complete(ctx.uploadId, ctx.uploadPath)
+                .then(function() { return { uploadId: ctx.uploadId, uploadPath: ctx.uploadPath, type: ctx.type }; });
+            },
+            isRetryable: function(err) {
+              // AWS S3 could return 400 after network issues => retyable
+              if ([HTTP.NOT_FOUND, HTTP.FORBIDDEN].indexOf(err.status) > -1) {
+                return false;
+              }
+              return true;
+            },
+            delay: function(cpt) { return cpt * 10000; },
+            maxRetry: 5
+          });
+        }
+      ])()
+        .catch(function(err) {
+          throw { err: err, uploadId: uploadId, uploadPath: uploadPath, fileOffset: fileOffset };
+        });
+      return Object.assign(promise, { events: events, cancel: function() {
+        chunksCancel.forEach(function(cancel) { cancel(); });
+      } });
+    }
+
+    var concurrentUploads = {};
     /**
      * @ngdoc function
      * @methodOf predicsis.jsSDK.helpers.uploadHelper
      * @name upload
      * @description upload a file
+     * You can also resume an upload using optional serverUploadId, fileOffset and uploadPath
      * The upload method raises the following events during the upload process:
      * <ul>
      *   <li><kbd>jsSDK.upload.starting</kbd></li>
@@ -3424,11 +3621,11 @@ angular
      *     <td>Concatenation of a timestamp and uploaded file name</td>
      *   </tr>
      *   <tr>
-     *     <td><kbd>key</kbd></td>
+     *     <td><kbd>path</kbd></td>
      *     <td>
      *       Destination folder of uploaded file.
      *       This value will be required to create the Source resource once the upload finished.
-     *       It's initialized to null and updated when the GET /sources/credentials/s3 request is resolved.
+     *       It's initialized to null and updated when upload is initialized
      *     </td>
      *   </tr>
      *   <tr>
@@ -3460,50 +3657,61 @@ angular
      * About the <kbd>jsSDK.upload.starting</kbd> event. As it's fired before sending the
      * "Get credential" request. So,
      * - you may have a delay between <kbd>jsSDK.upload.starting</kbd> and the first <kbd>jsSDK.upload.progress</kbd> events.
-     * - the <kbd>key</kbd> parameter of the <kbd>uploadObject</kbd> object is not set
-     *
-     * The upload is performed through a XMLHttpRequest, and all details about endpoint, security,
-     * destination folder is handled by the API and its <code>Sources.getCredentials</code> request.
+     * - the <kbd>path</kbd> parameter of the <kbd>uploadObject</kbd> object is not set
      *
      * @param {Object} file html5 File instance
-     * @param {String=s3} storageService Name of PredicSis' storage service.
-     *                                   The API only accepts one of the following values: s3, swift.
+     * @param {Object} options
+     * @param {Number} options.chunkSize size of each part in Bytes
+     * @param {String} options.serverUploadId upload id used by storage server (for resuming upload only)
+     * @param {Number} options.fileOffset start uploading file from this offset (Bytes) (for resuming upload only)
+     * @param {Number} options.uploadPath path used by the storage server (for resuming upload only)
      */
-    this.processFile = function(file, storageService) {
-      storageService = storageService || 's3';
+    this.processFile = function(file, options) {
+      var self = this;
+      var chunkSize = options.chunkSize || 50 * 1024 * 1024;
+      var uploadRes;
+      if (options.serverUploadId) {
+        uploadRes = upload(file, {
+          chunkSize: chunkSize,
+          uploadId: options.serverUploadId,
+          fileOffset: options.fileOffset,
+          uploadPath: options.uploadPath
+        });
+      } else {
+        uploadRes = upload(file, { chunkSize: chunkSize });
+      }
+      var uploadId = options.uploadId || new Date().getTime() + '_' + (file.name || '');
 
-      var xhr2 = new XMLHttpRequest();
-      var uploadId =  new Date().getTime() + '_' + (file.name || '');
+      uploadRes.events.on('progress', function(progress) {
+        $rootScope.$broadcast('jsSDK.upload.progress', { fileName: file.name, id: uploadId, progression: progress });
+      });
+      uploadRes.then(function(ctx) {
+        delete concurrentUploads[uploadId];
+        $rootScope.$broadcast('jsSDK.upload.uploaded', { id: uploadId,  path: ctx.uploadPath, fileName: file.name, type: ctx.type });
+      });
+      uploadRes.catch(function(err) {
+        //delete concurrentUploads[uploadId];
+        $rootScope.$broadcast('jsSDK.upload.error', { fileName: file.name, id: uploadId, err: err }, function() {
+          self.processFile(file, { chunkSize: chunkSize, uploadId: uploadId, serverUploadId: err.uploadId, uploadPath: err.uploadPath, fileOffset: err.fileOffset });
+        });
+      });
       var uploadObject = concurrentUploads[uploadId] = {
         id: uploadId,
         path: null,
-        pathName: null,
+        type: null,
         fileName: file.name,
         fileSize: file.size,
         progression: 0,
         isUploading: true,
+        chunkSize: chunkSize,
         created_at: new Date().toISOString(),
         cancelUpload: function() {
-          xhr2.abort();
+          uploadRes.cancel();
           delete concurrentUploads[uploadId];
           $rootScope.$broadcast('jsSDK.upload.cancelled', uploadObject);
         }
       };
-
       $rootScope.$broadcast('jsSDK.upload.starting', uploadObject);
-
-      Sources
-        .getCredentials(storageService)
-        .then(function(credentials) {
-          if (credentials.type === 's3') {
-            uploadObject.path = credentials.key;
-            uploadObject.pathName = 'key';
-          } else if (credentials.type === 'swift') {
-            uploadObject.path = credentials.object;
-            uploadObject.pathName = 'object';
-          }
-          upload(uploadObject, xhr2, credentials, file);
-        });
     };
 
     /**
@@ -3514,7 +3722,7 @@ angular
      * @return {Array} List of active upload objects. An active upload has the following properties:
      * <ul>
      *   <li>id</li>
-     *   <li>key</li>
+     *   <li>path</li>
      *   <li>fileName</li>
      *   <li>fileSize</li>
      *   <li>progression</li>
@@ -3538,7 +3746,7 @@ angular
      * @return {Object} An upload object with the following properties:
      * <ul>
      *   <li>id</li>
-     *   <li>key</li>
+     *   <li>path</li>
      *   <li>fileName</li>
      *   <li>fileSize</li>
      *   <li>progression</li>

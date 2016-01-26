@@ -64,7 +64,7 @@ You can start using our SDK assuming you already have a [user token](https://dev
 
 Once you're done, you can send API request easily:
 
-- list projects: 
+- list projects:
     ```
     predicsisAPI.Projects
       .all()
@@ -90,18 +90,24 @@ See the [SDK documentation](http://yllieth.github.io/predicsis_ml_sdk-javascript
 //Get an HTML5 File instance
 fileInput.addEventListener('change', function(evt) {
   var file = evt.target.files[0];
-  s3FileHelper
-    .upload(file, function progressHandler(event) {
-      //Update a progress bar using standard XMLHttpRequestProgressEvent
-    })
-    .then(function(params) {
-      //file successfully uploaded to s3
-      var filename = params.filename;
-      var key = params.key;//S3 key
-    })
-    .catch(function(err){
-
-    });
+  predicsisAPI.uploadHelper
+    .processFile(file, { chunkSize: 50 * 1024 * 1024 });
+  $rootScope.$on('jsSDK.upload.starting', function(event, upload) {
+    console.log(upload.id, upload.fileName, upload.fileSize, upload.progression);
+  });
+  $rootScope.$on('jsSDK.upload.progress', function(event, upload) {
+    console.log(upload.id, upload.fileName, upload.fileSize, upload.progression, upload.path);
+  });
+  $rootScope.$on('jsSDK.upload.uploaded', function(event, upload) {
+    console.log(upload.id, upload.fileName, upload.fileSize, upload.progression, upload.path);
+  });
+  $rootScope.$on('jsSDK.upload.cancelled', function(event, upload) {
+    console.log(upload.id, upload.fileName, upload.fileSize, upload.progression, upload.path);
+  });
+  $rootScope.$on('jsSDK.upload.error', function(event, failure, retry) {
+    console.log(failure.id, failure.fileName, failure.path, failure.err);
+    retryButton.addEventListener('click', retry);
+  });
 });
 ```
 
