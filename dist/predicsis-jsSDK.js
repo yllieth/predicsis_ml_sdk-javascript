@@ -34,7 +34,11 @@ angular
 
       Restangular.setBaseUrl(this.getBaseUrl());
       Restangular.setDefaultHeaders(requestHeaders);
-      Restangular.setErrorInterceptor(function(response) { errorHandler(response); });
+      Restangular.setErrorInterceptor(function(response) {
+        if (response.config.headers === undefined || response.config.headers['X-CLIENT-NOTIFY-ERROR'] !== false) {
+          errorHandler(response);
+        }
+      });
       Jobs.setErrorHandler(function(err) {
         // Normalize with restangular errors
         errorHandler({ data: { errors: err.errors, warnings: err.warnings }, config: { url: err.url, method: 'GET', action: err.action } });
@@ -3068,7 +3072,7 @@ angular
      * @return {Promise} An object containing a part_url field (PUT part presigned url)
      */
     this.getPartUrl = function(id, partNumber, path) {
-      return upload(id).get({ part_number: partNumber, path: path });
+      return upload(id).get({ part_number: partNumber, path: path }, {'X-CLIENT-NOTIFY-ERROR': false});
     };
 
     /**
@@ -3079,7 +3083,7 @@ angular
      * @return {Promise} resolve when upload is completed
      */
     this.complete = function(id, path) {
-      return upload(id).patch({ path: path });
+      return upload(id).patch({ path: path }, {}, {'X-CLIENT-NOTIFY-ERROR': false});
     };
 
   });
@@ -3568,8 +3572,21 @@ angular
             .then(function() { return { uploadId: uploadId, uploadPath: uploadPath }; });
         },
         function completeUpload(ctx) {
-          return Uploads.complete(ctx.uploadId, ctx.uploadPath)
-            .then(function() { return { uploadId: ctx.uploadId, uploadPath: ctx.uploadPath, type: ctx.type }; });
+          return tasks.retry({
+            task: function() {
+              return Uploads.complete(ctx.uploadId, ctx.uploadPath)
+                .then(function() { return { uploadId: ctx.uploadId, uploadPath: ctx.uploadPath, type: ctx.type }; });
+            },
+            isRetryable: function(err) {
+              // AWS S3 could return 400 after network issues => retyable
+              if ([HTTP.NOT_FOUND, HTTP.FORBIDDEN].indexOf(err.status) > -1) {
+                return false;
+              }
+              return true;
+            },
+            delay: function(cpt) { return cpt * 10000; },
+            maxRetry: 5
+          });
         }
       ])()
         .catch(function(err) {
