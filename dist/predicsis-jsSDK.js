@@ -3470,22 +3470,18 @@ angular
       var offset = options.fileOffset || 0;
       var done = false;
       var index = 0;
-      var result = {};
-      result[Symbol.iterator] = function() {
-        return {
-          next: function() {
-            if (done) {
-              return { done: true };
-            }
-            var chunk = file.slice(offset, offset + CHUNK_SIZE);
-            done = chunk.size < CHUNK_SIZE;
-            offset += CHUNK_SIZE;
-            index++;
-            return { done: false, value: { chunk: chunk, index:  index } };
+      return {
+        next: function() {
+          if (done) {
+            return { done: true };
           }
-        };
+          var chunk = file.slice(offset, offset + CHUNK_SIZE);
+          done = chunk.size < CHUNK_SIZE;
+          offset += CHUNK_SIZE;
+          index++;
+          return { done: false, value: { chunk: chunk, index:  index } };
+        }
       };
-      return result;
     }
 
     function uploadChunk(chunk, index, id, path) {
@@ -3648,14 +3644,13 @@ angular
      *     <td><kbd>created_at</kbd></td>
      *     <td>A timestamp in ISO format like <kbd>2014-05-02T15:27:37.687Z</kbd></td>
      *   </tr>
-     *   <tr>
-     *     <td><kbd>cancelUpload</kbd></td>
-     *     <td>A function which will stop the upload by aborting the request</td>
-     *   </tr>
      * </table>
      *
+     * error event does not provide created_at and progression but provides an err attribute
+     * this event is fired with a cancel callback as a second argument
+     *
      * About the <kbd>jsSDK.upload.starting</kbd> event. As it's fired before sending the
-     * "Get credential" request. So,
+     * upload creation request. So,
      * - you may have a delay between <kbd>jsSDK.upload.starting</kbd> and the first <kbd>jsSDK.upload.progress</kbd> events.
      * - the <kbd>path</kbd> parameter of the <kbd>uploadObject</kbd> object is not set
      *
@@ -3691,7 +3686,7 @@ angular
       });
       uploadRes.catch(function(err) {
         //delete concurrentUploads[uploadId];
-        $rootScope.$broadcast('jsSDK.upload.error', { fileName: file.name, id: uploadId, err: err }, function() {
+        $rootScope.$broadcast('jsSDK.upload.error', { fileName: file.name, id: uploadId, err: err, path: err.uploadPath }, function() {
           self.processFile(file, { chunkSize: chunkSize, uploadId: uploadId, serverUploadId: err.uploadId, uploadPath: err.uploadPath, fileOffset: err.fileOffset });
         });
       });
