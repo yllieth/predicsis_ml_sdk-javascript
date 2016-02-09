@@ -35,9 +35,7 @@ angular
       Restangular.setBaseUrl(this.getBaseUrl());
       Restangular.setDefaultHeaders(requestHeaders);
       Restangular.setErrorInterceptor(function(response) {
-        if (response.config.headers === undefined || response.config.headers['X-CLIENT-NOTIFY-ERROR'] !== false) {
-          errorHandler(response);
-        }
+        errorHandler(response);
       });
       Jobs.setErrorHandler(function(err) {
         // Normalize with restangular errors
@@ -3072,7 +3070,7 @@ angular
      * @return {Promise} An object containing a part_url field (PUT part presigned url)
      */
     this.getPartUrl = function(id, partNumber, path) {
-      return upload(id).get({ part_number: partNumber, path: path }, {'X-CLIENT-NOTIFY-ERROR': false});
+      return upload(id).get({ part_number: partNumber, path: path });
     };
 
     /**
@@ -3083,7 +3081,7 @@ angular
      * @return {Promise} resolve when upload is completed
      */
     this.complete = function(id, path) {
-      return upload(id).patch({ path: path }, {}, {'X-CLIENT-NOTIFY-ERROR': false});
+      return upload(id).patch({ path: path }, {});
     };
 
   });
