@@ -1,4 +1,4 @@
-<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Datasets.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L178" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Datasets</code>
+<a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/edit/master/lib/model/Datasets.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L178" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">Datasets</code>
 <div><span class="hint">service in module <code ng:non-bindable="">predicsis.jsSDK.models</code>
 </span>
 </div>
@@ -178,13 +178,13 @@
 </div></li>
 </ul>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L320" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([ids])</h3>
+<ul class="methods"><li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L320" class="view-source icon-eye-open"> </a><h3 id="methods_all">all([ids])</h3>
 <div class="all"><div class="all-page"><p>Get all (or a list of) datasets</p>
 </div><h5 id="methods_all_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[ids]</td><td><a href="" class="label type-hint type-hint-array">Array</a></td><td><div class="all-page"><p>List of datasets&#39; id you want to fetch</p>
 </div></td></tr></tbody></table><h5 id="methods_all_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="all-page"><p>List of datasets</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L225" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L225" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(params)</h3>
 <div class="create"><div class="create-page"><p>Create a dataset from a source</p>
 <p><h7 id="methods_create_basic-dataset-creation">Basic dataset creation</h7>
 <pre class="prettyprint linenums">
@@ -214,67 +214,70 @@
 </div></td></tr></tbody></table><h5 id="methods_create_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="create-page"><p>New dataset or new scoreset</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L247" class="view-source icon-eye-open"> </a><h3 id="methods_createfromupload">createFromUpload(fileName, destFolder, pathName)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L247" class="view-source icon-eye-open"> </a><h3 id="methods_createfromupload">createFromUpload(fileName, destFolder, pathName)</h3>
 <div class="createfromupload"><div class="createfromupload-page"><p>Create API resources once an upload is successfully finished:</p>
 <ul>
   <li><kbd>POST /sources</kbd></li>
   <li><kbd>POST /datasets</kbd></li>
-</ul></div><h5 id="methods_createfromupload_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fileName</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="createfromupload-page"><p>used to create the source and the dataset</p>
+</ul>
+</div><h5 id="methods_createfromupload_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fileName</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="createfromupload-page"><p>used to create the source and the dataset</p>
 </div></td></tr><tr><td>destFolder</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="createfromupload-page"><p>AWS key where the dataset has been uploaded</p>
 </div></td></tr><tr><td>pathName</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="createfromupload-page"><p>name of the key used to provide destFolder (&#39;key&#39; for S3, &#39;object&#39; for swift)</p>
 </div></td></tr></tbody></table><h5 id="methods_createfromupload_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="createfromupload-page"><p>Newly created dataset</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L441" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(id)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L441" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(id)</h3>
 <div class="delete"><div class="delete-page"><p>Permanently destroy a specified dataset</p>
 </div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>id</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="delete-page"><p>Id of the dataset you want to remove</p>
 </div></td></tr></tbody></table><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="delete-page"><p>Removed dataset</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L341" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(id)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L341" class="view-source icon-eye-open"> </a><h3 id="methods_get">get(id)</h3>
 <div class="get"><div class="get-page"><p>Get a single dataset by its id</p>
 </div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>id</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><p>Dataset identifier</p>
 </div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="get-page"><p>Requested dataset</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L372" class="view-source icon-eye-open"> </a><h3 id="methods_getchildren">getChildren(datasetId, dictionaryId)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L372" class="view-source icon-eye-open"> </a><h3 id="methods_getchildren">getChildren(datasetId, dictionaryId)</h3>
 <div class="getchildren"><div class="getchildren-page"><p>Get learning/testing subsets of an original dataset</p>
 <div><span class="badge get">get</span><code>/datasets</code></div>
 <div><span class="badge get">get</span><code>/datasets/:learned_dataset_id</code></div>
-<div><span class="badge get">get</span><code>/datasets/:tested_dataset_id</code></div></div><h5 id="methods_getchildren_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>datasetId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getchildren-page"><p>parent Dataset identifier</p>
+<div><span class="badge get">get</span><code>/datasets/:tested_dataset_id</code></div>
+</div><h5 id="methods_getchildren_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>datasetId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getchildren-page"><p>parent Dataset identifier</p>
 </div></td></tr><tr><td>dictionaryId</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getchildren-page"><p>Identifier of the <a href="#/api/predicsis.jsSDK.models.Dictionaries">Dictionary</a></p>
 </div></td></tr></tbody></table><h5 id="methods_getchildren_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="getchildren-page"><ul>
 <li><code>children.train</code>: learning dataset</li>
 <li><code>children.test</code>: testing dataset</li>
-</ul></div></td></tr></table></div>
+</ul>
+</div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L484" class="view-source icon-eye-open"> </a><h3 id="methods_haschildren">hasChildren(dataset)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L484" class="view-source icon-eye-open"> </a><h3 id="methods_haschildren">hasChildren(dataset)</h3>
 <div class="haschildren"><div class="haschildren-page"><p>Tells if a dataset has subsets</p>
 </div><h5 id="methods_haschildren_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="haschildren-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
 </div></td></tr></tbody></table><h5 id="methods_haschildren_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="haschildren-page"><p><kbd>true</kbd> / <kbd>false</kbd></p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L510" class="view-source icon-eye-open"> </a><h3 id="methods_ischild">isChild(dataset)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L510" class="view-source icon-eye-open"> </a><h3 id="methods_ischild">isChild(dataset)</h3>
 <div class="ischild"><div class="ischild-page"><p>Tells if a dataset is a child dataset
 <b>Note:</b> A dataset is considered as a child if it has a parent. There is no orphan among datasets!</p>
 </div><h5 id="methods_ischild_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="ischild-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
 </div></td></tr></tbody></table><h5 id="methods_ischild_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="ischild-page"><p><kbd>true</kbd> / <kbd>false</kbd></p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L563" class="view-source icon-eye-open"> </a><h3 id="methods_isformatted">isFormatted(dataset)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L563" class="view-source icon-eye-open"> </a><h3 id="methods_isformatted">isFormatted(dataset)</h3>
 <div class="isformatted"><div class="isformatted-page"><p>Tells if a dataset has both header and separator defined.</p>
 </div><h5 id="methods_isformatted_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="isformatted-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
 </div></td></tr></tbody></table><h5 id="methods_isformatted_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="isformatted-page"><p><kbd>true</kbd> / <kbd>false</kbd></p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L497" class="view-source icon-eye-open"> </a><h3 id="methods_isparent">isParent(dataset)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L497" class="view-source icon-eye-open"> </a><h3 id="methods_isparent">isParent(dataset)</h3>
 <div class="isparent"><div class="isparent-page"><p>Tells if a dataset is a parent dataset.
 <b>Note:</b> A parent may have any children, but its <kbd>parent_dataset_id</kbd> must be null</p>
 </div><h5 id="methods_isparent_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="isparent-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
 </div></td></tr></tbody></table><h5 id="methods_isparent_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="isparent-page"><p><kbd>true</kbd> / <kbd>false</kbd></p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L582" class="view-source icon-eye-open"> </a><h3 id="methods_isscore">isScore(dataset)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L582" class="view-source icon-eye-open"> </a><h3 id="methods_isscore">isScore(dataset)</h3>
 <div class="isscore"><div class="isscore-page"><p>Tells if a dataset is the result of a score.
 A score result is identified by the following rules:</p>
 <ul>
@@ -282,11 +285,12 @@ A score result is identified by the following rules:</p>
   <li><code>dataset.main_modality !== null</code></li>
   <li><code>dataset.classifier !== null</code></li>
   <li><code>dataset.dataset_id !== null</code></li>
-</ul></div><h5 id="methods_isscore_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="isscore-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
+</ul>
+</div><h5 id="methods_isscore_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="isscore-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
 </div></td></tr></tbody></table><h5 id="methods_isscore_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="isscore-page"><p><kbd>true</kbd> / <kbd>false</kbd></p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L546" class="view-source icon-eye-open"> </a><h3 id="methods_istestpart">isTestPart(dataset, sampling)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L546" class="view-source icon-eye-open"> </a><h3 id="methods_istestpart">isTestPart(dataset, sampling)</h3>
 <div class="istestpart"><div class="istestpart-page"><p>Tells if a dataset is a test subset.
 <b>Note:</b> A dataset is considered as a test subset if its sampling is negative and equal to the given <kbd>sampling</kbd> value.</p>
 </div><h5 id="methods_istestpart_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="istestpart-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
@@ -295,7 +299,7 @@ compute a negative one. (If you give 70, we&#39;ll use -70, and if you give -70,
 </div> <p><em>(default: 70)</em></p></td></tr></tbody></table><h5 id="methods_istestpart_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="istestpart-page"><p><kbd>true</kbd> / <kbd>false</kbd></p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L526" class="view-source icon-eye-open"> </a><h3 id="methods_istrainpart">isTrainPart(dataset, sampling)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L526" class="view-source icon-eye-open"> </a><h3 id="methods_istrainpart">isTrainPart(dataset, sampling)</h3>
 <div class="istrainpart"><div class="istrainpart-page"><p>Tells if a dataset is a train subset.
 <b>Note:</b> A dataset is considered as a train subset if its sampling is positive and equal to the given <kbd>sampling</kbd> value.
 A sampling must be between 0 and 100.</p>
@@ -305,19 +309,20 @@ compute a positive one. (If you give 70, we&#39;ll use 70, and if you give -70, 
 </div> <p><em>(default: 70)</em></p></td></tr></tbody></table><h5 id="methods_istrainpart_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="istrainpart-page"><p><kbd>true</kbd> / <kbd>false</kbd></p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L457" class="view-source icon-eye-open"> </a><h3 id="methods_removedependencies">removeDependencies(dataset)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L457" class="view-source icon-eye-open"> </a><h3 id="methods_removedependencies">removeDependencies(dataset)</h3>
 <div class="removedependencies"><div class="removedependencies-page"><p>Remove dataset&#39;s children and sources</p>
 <div><span class="badge delete">delete</span><code>/sources/:source_id<code></div>
 <div><span class="badge delete">delete</span><code>/datasets/:train_subset_id</code></div>
-<div><span class="badge delete">delete</span><code>/datasets/:test_subset_id</code></div></div><h5 id="methods_removedependencies_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="removedependencies-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
+<div><span class="badge delete">delete</span><code>/datasets/:test_subset_id</code></div>
+</div><h5 id="methods_removedependencies_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>dataset</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="removedependencies-page"><p>Instance of <a href="#/api/predicsis.jsSDK.models.Datasets">dataset</a></p>
 </div></td></tr></tbody></table><h5 id="methods_removedependencies_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="removedependencies-page"><p>Removed dataset</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L290" class="view-source icon-eye-open"> </a><h3 id="methods_split">split(id, name, filename, sampling)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L290" class="view-source icon-eye-open"> </a><h3 id="methods_split">split(id, name, filename, sampling)</h3>
 <div class="split"><div class="split-page"><p>Split a dataset into subsets according to <code>smapling</code> ratio.
 <b>Note:</b></p>
 <ul>
-  <li>Learning subset will be named <code>learned<em>#dataset_name#</code>
+  <li>Learning subset will be named <code>learned_#dataset<em>name#</code>
   <li>Testing subset will be named <code>tested</em>#dataset_name#</code>
   <li>Idem for learning/testing filenames</li>
 </ul>
@@ -336,7 +341,7 @@ based on the compilation of random generator (which can be different from one OS
 </div> <p><em>(default: 70)</em></p></td></tr></tbody></table><h5 id="methods_split_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="split-page"><p>Subsets</p>
 </div></td></tr></table></div>
 </li>
-<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/3e12a3e/lib/model/Datasets.js#L422" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(id, changes)</h3>
+<li><a href="https://github.com/yllieth/predicsis_ml_sdk-javascript/blob/a33a891/lib/model/Datasets.js#L422" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(id, changes)</h3>
 <div class="update"><div class="update-page"><p>Update specified dataset
 You can update the following parameters:</p>
 <ul>
@@ -355,7 +360,8 @@ You can update the following parameters:</p>
     The view requires a tabulation to be able to build the preview.<br/>
     To do so, the separator given to the preview method must be &quot;\t&quot;.
   </li>
-</ul></div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>id</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="update-page"><p>Id of the dictionary you want to update</p>
+</ul>
+</div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>id</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="update-page"><p>Id of the dictionary you want to update</p>
 </div></td></tr><tr><td>changes</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="update-page"><p>see above description to know parameters you are able to update</p>
 </div></td></tr></tbody></table><h5 id="methods_update_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="update-page"><p>Updated dataset</p>
 </div></td></tr></table></div>
