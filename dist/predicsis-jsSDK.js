@@ -471,9 +471,10 @@ angular
      * @param {String} fileName used to create the source and the dataset
      * @param {String} destFolder AWS key where the dataset has been uploaded
      * @param {String} pathName name of the key used to provide destFolder ('key' for S3, 'object' for swift)
+     * @param {String} container name of the container or bucket used for uploading file
      * @return {Promise} Newly created dataset
      */
-    this.createFromUpload = function(fileName, destFolder, type) {
+    this.createFromUpload = function(fileName, destFolder, type, container) {
       type = type || 's3';
 
       var Sources = $injector.get('Sources');
@@ -481,8 +482,10 @@ angular
       var dataStore = { type: type };
       if (type === 's3') {
         dataStore.key = destFolder;
+        dataStore.bucket = container;
       } else if (type === 'swift') {
         dataStore.object = destFolder;
+        dataStore.container = container;
       } else {
         throw 'Invalid source dataStore type : ' + type;
       }
@@ -3056,7 +3059,13 @@ angular
      * @return {Promise} New upload
      */
     this.initiate = function() {
-      return uploads().post({});
+      return uploads().post({})
+        .then(function(result) {
+          if (result.type === 's3') {
+            result.container = result.bucket;
+          }
+          return result;
+        });
     };
 
     /**
@@ -3542,8 +3551,8 @@ angular
           }
         },
         function uploadChunks(ctx) {
-          uploadId = ctx.id;
-          uploadPath = ctx.path;
+          var uploadId = ctx.id;
+          var uploadPath = ctx.path;
           var result = collection
             .map(
               chunks(file, { chunkSize: chunkSize, fileOffset: fileOffset }),
@@ -3563,13 +3572,13 @@ angular
           result.events.on('end', function() {  fileOffset += chunkSize;});
           result.events.on('end', function(ctx) {  delete chunksCancel[ctx.index]; });
           return result.all()
-            .then(function() { return { uploadId: uploadId, uploadPath: uploadPath }; });
+            .then(function() { return { uploadId: uploadId, uploadPath: uploadPath, container: container }; });
         },
         function completeUpload(ctx) {
           return tasks.retry({
             task: function() {
               return Uploads.complete(ctx.uploadId, ctx.uploadPath)
-                .then(function() { return { uploadId: ctx.uploadId, uploadPath: ctx.uploadPath, type: ctx.type }; });
+                .then(function() { return { uploadId: ctx.uploadId, uploadPath: ctx.uploadPath, type: ctx.type, container: ctx.container }; });
             },
             isRetryable: function(err) {
               // AWS S3 could return 400 after network issues => retyable
@@ -3680,7 +3689,7 @@ angular
       });
       uploadRes.then(function(ctx) {
         delete concurrentUploads[uploadId];
-        $rootScope.$broadcast('jsSDK.upload.uploaded', { id: uploadId,  path: ctx.uploadPath, fileName: file.name, type: ctx.type });
+        $rootScope.$broadcast('jsSDK.upload.uploaded', { id: uploadId,  path: ctx.uploadPath, fileName: file.name, type: ctx.type, container: ctx.container });
       });
       uploadRes.catch(function(err) {
         //delete concurrentUploads[uploadId];
