@@ -2895,7 +2895,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Sources', function($q, Restangular) {
+  .service('Sources', function($q, Restangular, Jobs) {
     'use strict';
 
     function source(id) { return Restangular.one('sources', id); }
@@ -2931,8 +2931,11 @@ angular
      * @param {Object} params See above example.
      * @return {Promise} New source
      */
-    this.create = function(source, dataStore) {
-      return sources().post({source: source, data_store: dataStore });
+    this.create = function(_source, dataStore) {
+      return Jobs.wrapAsyncPromise(sources().post({source: _source, data_store: dataStore }))
+        .then(function(result) {
+          return source(result.id).get();
+        });
     };
 
     /**
@@ -3553,6 +3556,7 @@ angular
         function uploadChunks(ctx) {
           var uploadId = ctx.id;
           var uploadPath = ctx.path;
+          var container = ctx.container;
           var result = collection
             .map(
               chunks(file, { chunkSize: chunkSize, fileOffset: fileOffset }),
