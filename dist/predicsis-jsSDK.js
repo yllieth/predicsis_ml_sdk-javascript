@@ -3082,7 +3082,7 @@ angular
      * @return {Promise} An object containing a part_url field (PUT part presigned url)
      */
     this.getPartUrl = function(id, partNumber, path) {
-      return upload(id).get({ part_number: partNumber, path: path });
+      return upload(id).get({ part_number: partNumber, path: path }, { hideErrors: true });
     };
 
     /**
@@ -3504,7 +3504,7 @@ angular
            }
          });
       }
-      return Object.assign(tryTask(), { events: events });
+      return angular.extend(tryTask(), { events: events });
     }
 
     function chunks(file, options) {
@@ -3552,7 +3552,7 @@ angular
       });
       var promiseMeta = { events: events, cancel: function() { isCancelled = true; cancel(); } };
       events.emit('start', { index: index, cancel: promiseMeta.cancel });
-      return Object.assign(promise,  promiseMeta);
+      return angular.extend(promise,  promiseMeta);
     }
 
     function upload(file, options) {
@@ -3627,7 +3627,7 @@ angular
         .catch(function(err) {
           throw { err: err, uploadId: uploadId, uploadPath: uploadPath, fileOffset: fileOffset };
         });
-        return Object.assign(promise, { events: events, cancel: function() {
+        return angular.extend(promise, { events: events, cancel: function() {
           chunksCancel.forEach(function(cancel) { cancel(); });
         } });
     }
