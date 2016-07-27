@@ -20,7 +20,7 @@
     "angular": "1.3.17",
     "restangular": "1.5.1",
     "rehttp": "~1.1.5",
-    "swissknife": "~0.1.3"
+    "bluebird": "^3.4.1"
   },
   "main": "dist/predicsis-jsSDK.js",
   "ignore": [
