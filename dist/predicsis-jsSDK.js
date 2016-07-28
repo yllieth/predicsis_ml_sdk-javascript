@@ -1204,7 +1204,7 @@ angular
 
               //resolve promise if status is completed (and stop interval loop)
               clearInterval(intervalId);
-              deferred.resolve(jobId);
+              deferred.resolve(job.next_job_id ? self.listen(job.next_job_id) : jobId);
 
             } else {
 
@@ -2895,7 +2895,7 @@ angular
  */
 angular
   .module('predicsis.jsSDK.models')
-  .service('Sources', function($q, Restangular) {
+  .service('Sources', function($q, Restangular, Jobs) {
     'use strict';
 
     function source(id) { return Restangular.one('sources', id); }
@@ -2931,8 +2931,11 @@ angular
      * @param {Object} params See above example.
      * @return {Promise} New source
      */
-    this.create = function(source, dataStore) {
-      return sources().post({source: source, data_store: dataStore });
+    this.create = function(_source, dataStore) {
+      return Jobs.wrapAsyncPromise(sources().post({source: _source, data_store: dataStore }))
+        .then(function(result) {
+          return source(result.id).get();
+        });
     };
 
     /**
@@ -3079,7 +3082,7 @@ angular
      * @return {Promise} An object containing a part_url field (PUT part presigned url)
      */
     this.getPartUrl = function(id, partNumber, path) {
-      return upload(id).get({ part_number: partNumber, path: path });
+      return upload(id).get({ part_number: partNumber, path: path, hideErrors: true });
     };
 
     /**
@@ -3446,8 +3449,6 @@ angular
   .service('uploadHelper', function($rootScope, $injector) {
     'use strict';
 
-    var tasks = swissknife.tasks;
-    var collection = swissknife.collection;
     var HTTP = { CREATED: 201, OK: 200, NOT_FOUND: 404, BAD_REQUEST: 400, FORBIDDEN: 403 };
     var Uploads = $injector.get('Uploads');
 
@@ -3472,47 +3473,73 @@ angular
       this.removeEventListener = this.off;
     }
 
-    function chunks(file, options) {
-      var CHUNK_SIZE = options.chunkSize;
-      var offset = options.fileOffset || 0;
-      var done = false;
-      var index = 0;
-      return {
-        next: function() {
-          if (done) {
-            return { done: true };
-          }
-          var chunk = file.slice(offset, offset + CHUNK_SIZE);
-          done = chunk.size < CHUNK_SIZE;
-          offset += CHUNK_SIZE;
-          index++;
-          return { done: false, value: { chunk: chunk, index:  index } };
-        }
+    function wait(ms) {
+      return function (value) {
+        return new Promise(function(resolve) {
+          setTimeout(function () { resolve(value) }, ms);
+        });
       };
     }
 
-    function uploadChunk(chunk, index, id, path) {
+    function retry(options) {
+      options = options || {};
+      options.delay = options.delay || function (cpt) { return 0; }
+      options.isRetryable = options.isRetryable || function (err) { return true; }
+      options.maxRetry = options.maxRetry || 5;
+
       var events = new EventEmitter();
+
+      function tryTask(retryCpt) {
+        retryCpt = retryCpt || 1;
+        var result = options.task(options.ctx);
+        events.emit('try', { promise: result, retries: retryCpt });
+        return result.catch(function (err) {
+           if (options.isRetryable(err) && retryCpt < options.maxRetry) {
+             return wait(retryCpt ? options.delay(retryCpt) : 0)()
+               .then(function () {
+                 return tryTask(retryCpt + 1);
+               });
+           } else {
+             throw err;
+           }
+         });
+      }
+      return angular.extend(tryTask(), { events: events });
+    }
+
+    function chunks(file, options) {
+      var chunks = [];
+      var CHUNK_SIZE = options.chunkSize;
+      var offset = options.fileOffset || 0;
+      var index = parseInt(offset / CHUNK_SIZE, 10);
+      while (offset < file.size) {
+        index++;
+        var chunk = file.slice(offset, offset + CHUNK_SIZE);
+        chunks.push({ chunk: chunk, index: index });
+        offset += CHUNK_SIZE;
+      }
+      return chunks;
+    }
+
+    function uploadChunk(chunk, index, id, path, events) {
       var cancel = function() {};
       var isCancelled = false;
-      var promise = tasks.retry({
-        task: tasks.chain([
-          function getUploadUrl() {
-            return Uploads.getPartUrl(id, index, path);
-          },
-          function upload(authorization) {
-            var result = rehttp.request({ url: authorization.part_url, method: 'PUT', body: chunk });
-            cancel = function() { result.cancel(); };
-            result.events.on('uploadProgress', function(progress) { events.emit('progress', progress); });
-            return result;
-          },
-          function checkUploadStatus(res) {
-            if (res.status !== HTTP.OK) {
-              throw res;
-            }
-            return res;
-          }
-        ]),
+      var promise = retry({
+        task: function () {
+          return Uploads.getPartUrl(id, index, path)
+            .then(function upload(authorization) {
+              var result = rehttp.request({ url: authorization.part_url, method: 'PUT', body: chunk });
+              cancel = function() { result.cancel(); };
+              result.events.on('uploadProgress', function(progress) { events.emit('progress', { progress: progress, index: index }); });
+              return result;
+            })
+            .then(function checkUploadStatus(res) {
+              if (res.status !== HTTP.OK) {
+                throw res;
+              }
+              return res;
+            });
+        },
         isRetryable: function(err) {
           // AWS S3 could return 400 after network issues => retyable
           if ([HTTP.NOT_FOUND, HTTP.FORBIDDEN].indexOf(err.status) > -1) {
@@ -3523,7 +3550,9 @@ angular
         delay: function(cpt) { return cpt * 10000; },
         maxRetry: 5
       });
-      return Object.assign(promise, { events: events, cancel: function() { isCancelled = true; cancel(); } });
+      var promiseMeta = { events: events, cancel: function() { isCancelled = true; cancel(); } };
+      events.emit('start', { index: index, cancel: promiseMeta.cancel });
+      return angular.extend(promise,  promiseMeta);
     }
 
     function upload(file, options) {
@@ -3534,48 +3563,52 @@ angular
       var chunksProgress = [fileOffset];
       var chunksCancel = [];
       var events = new EventEmitter();
-      var promise = tasks.chain([
-        function initializeUpload() {
-          if (uploadId) {
-            return { path: uploadPath, id: uploadId };
-          } else {
-            return Uploads.initiate()
-              .then(function(ctx) {
-                if (ctx.type === 's3') {
-                  ctx.path = ctx.key;
-                } else if (ctx.type === 'swift') {
-                  ctx.path = ctx.object;
-                }
-                return ctx;
-              });
-          }
-        },
-        function uploadChunks(ctx) {
+      var promise = Promise.resolve(function initializeUpload() {
+        if (uploadId) {
+          return { path: uploadPath, id: uploadId };
+        } else {
+          return Uploads.initiate()
+            .then(function(ctx) {
+              if (ctx.type === 's3') {
+                ctx.path = ctx.key;
+              } else if (ctx.type === 'swift') {
+                ctx.path = ctx.object;
+              }
+              return ctx;
+            });
+        }
+      }());
+      promise = promise
+        .then(function uploadChunks(ctx) {
           var uploadId = ctx.id;
           var uploadPath = ctx.path;
-          var result = collection
-            .map(
-              chunks(file, { chunkSize: chunkSize, fileOffset: fileOffset }),
-              function(v) { return uploadChunk(v.chunk, v.index, uploadId, uploadPath); }
-            );
-          result.events.on('start', function(ctx) {
+          var container = ctx.container;
+          var type = ctx.type;
+          var uploadChunksEvents = new EventEmitter();
+          uploadChunksEvents.on('start', function(ctx) {
             chunksProgress[ctx.index] = 0;
-            if (ctx.promise && ctx.promise.cancel) {
-              chunksCancel[ctx.index] = function() { ctx.promise.cancel(); };
+            if (ctx.cancel) {
+              chunksCancel[ctx.index] = function() { ctx.cancel(); };
             }
-            ctx.promise.events.on('progress', function(progress) {
-              chunksProgress[ctx.index] = progress.loaded;
+            uploadChunksEvents.on('progress', function(ctx) {
+              chunksProgress[ctx.index] = ctx.progress.loaded;
               var progression = chunksProgress.reduce(function(m, v) { return m + v; }, 0) / file.size;
               events.emit('progress', progression * 100);
             });
           });
-          result.events.on('end', function() {  fileOffset += chunkSize;});
-          result.events.on('end', function(ctx) {  delete chunksCancel[ctx.index]; });
-          return result.all()
-            .then(function() { return { uploadId: uploadId, uploadPath: uploadPath, container: container }; });
-        },
-        function completeUpload(ctx) {
-          return tasks.retry({
+          uploadChunksEvents.on('end', function() {  fileOffset += chunkSize;});
+          uploadChunksEvents.on('end', function(ctx) {  delete chunksCancel[ctx.index]; });
+          var result = Promise
+            .map(
+              chunks(file, { chunkSize: chunkSize, fileOffset: fileOffset }),
+              function(v) { return uploadChunk(v.chunk, v.index, uploadId, uploadPath, uploadChunksEvents); },
+              { concurrency : 3 }
+            );
+          return result
+            .then(function() { return { uploadId: uploadId, uploadPath: uploadPath, container: container, type: type }; });
+        })
+        .then(function completeUpload(ctx) {
+          return retry({
             task: function() {
               return Uploads.complete(ctx.uploadId, ctx.uploadPath)
                 .then(function() { return { uploadId: ctx.uploadId, uploadPath: ctx.uploadPath, type: ctx.type, container: ctx.container }; });
@@ -3590,14 +3623,13 @@ angular
             delay: function(cpt) { return cpt * 10000; },
             maxRetry: 5
           });
-        }
-      ])()
+        })
         .catch(function(err) {
           throw { err: err, uploadId: uploadId, uploadPath: uploadPath, fileOffset: fileOffset };
         });
-      return Object.assign(promise, { events: events, cancel: function() {
-        chunksCancel.forEach(function(cancel) { cancel(); });
-      } });
+        return angular.extend(promise, { events: events, cancel: function() {
+          chunksCancel.forEach(function(cancel) { cancel(); });
+        } });
     }
 
     var concurrentUploads = {};
@@ -3689,7 +3721,7 @@ angular
       });
       uploadRes.then(function(ctx) {
         delete concurrentUploads[uploadId];
-        $rootScope.$broadcast('jsSDK.upload.uploaded', { id: uploadId,  path: ctx.uploadPath, fileName: file.name, type: ctx.type, container: ctx.container });
+        $rootScope.$broadcast('jsSDK.upload.uploaded', { id: uploadId,  path: ctx.uploadPath, fileName: file.name, fileSize: file.size, type: ctx.type, container: ctx.container });
       });
       uploadRes.catch(function(err) {
         //delete concurrentUploads[uploadId];
