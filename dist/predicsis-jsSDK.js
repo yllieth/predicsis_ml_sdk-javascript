@@ -3584,26 +3584,31 @@ angular
           var uploadPath = ctx.path;
           var container = ctx.container;
           var type = ctx.type;
+
+          var progressHandler = _.throttle(function(ctx) {
+            chunksProgress[ctx.index] = ctx.progress.loaded;
+            var progression = chunksProgress.reduce(function(m, v) { return m + v; }, 0) / file.size;
+            events.emit('progress', progression * 100);
+          }, 100);
+
           var uploadChunksEvents = new EventEmitter();
           uploadChunksEvents.on('start', function(ctx) {
             chunksProgress[ctx.index] = 0;
             if (ctx.cancel) {
               chunksCancel[ctx.index] = function() { ctx.cancel(); };
             }
-            uploadChunksEvents.on('progress', function(ctx) {
-              chunksProgress[ctx.index] = ctx.progress.loaded;
-              var progression = chunksProgress.reduce(function(m, v) { return m + v; }, 0) / file.size;
-              events.emit('progress', progression * 100);
-            });
+            uploadChunksEvents.on('progress', progressHandler);
           });
           uploadChunksEvents.on('end', function() {  fileOffset += chunkSize;});
           uploadChunksEvents.on('end', function(ctx) {  delete chunksCancel[ctx.index]; });
+
           var result = Promise
             .map(
               chunks(file, { chunkSize: chunkSize, fileOffset: fileOffset }),
               function(v) { return uploadChunk(v.chunk, v.index, uploadId, uploadPath, uploadChunksEvents); },
               { concurrency : 3 }
             );
+
           return result
             .then(function() { return { uploadId: uploadId, uploadPath: uploadPath, container: container, type: type }; });
         })
