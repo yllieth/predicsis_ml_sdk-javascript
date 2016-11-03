@@ -460,6 +460,17 @@ angular
 
     /**
      * @ngdoc function
+     * @name createSync
+     * @methodOf predicsis.jsSDK.models.Datasets
+     * @param {Object} params See create description
+     * @return {Promise} New dataset or new scoreset
+     */
+    this.createSync = function(params) {
+      return datasets().post({dataset: params});
+    };
+
+    /**
+     * @ngdoc function
      * @name createFromUpload
      * @methodOf predicsis.jsSDK.models.Datasets
      * @description Create API resources once an upload is successfully finished:
@@ -531,31 +542,35 @@ angular
      *   test: {id: "..."}
      * }
      */
-    this.split = function(id, name, filename, sampling) {
-      filename = filename || name;
-      sampling = sampling || DEFAULT_SAMPLING;
+     this.split = function(id, name, filename, sampling) {
+       filename = filename || name;
+       sampling = sampling || DEFAULT_SAMPLING;
 
-      var learn = {
-        type: 'subset',
-        dataset_id: id,
-        name: 'learned_' + name,
-        data_file: {filename: 'learned_' + filename},
-        sampling: sampling
-      };
+       var train = {
+         type: 'subset',
+         dataset_id: id,
+         name: 'learned_' + name,
+         data_file: {filename: 'learned_' + filename},
+         sampling: sampling
+       };
 
-      var test = {
-        type: 'subset',
-        dataset_id: id,
-        name: 'tested_' + name,
-        data_file: {filename: 'tested_' + filename},
-        sampling: -sampling
-      };
+       var test = {
+         type: 'subset',
+         dataset_id: id,
+         name: 'tested_' + name,
+         data_file: {filename: 'tested_' + filename},
+         sampling: -sampling
+       };
 
-      return $q.all({
-        train: this.create(learn),
-        test: this.create(test)
-      });
-    };
+       return this.getChildren(id)
+         .then(function(datasets) {
+           // wait for children jobs or create them if they do not exists yet
+           return $q.all({
+             train: datasets.train ? Jobs.wrapAsyncPromise(Promise.resolve(datasets.train)) : self.create(train),
+             test: datasets.test ? Jobs.wrapAsyncPromise(Promise.resolve(datasets.test)) : self.create(test)
+           });
+         });
+     };
 
     /**
      * @ngdoc function
@@ -611,34 +626,55 @@ angular
      * to the good dictionary, which contains the selected target.
      *
      * @param {String} datasetId parent Dataset identifier
-     * @param {String} dictionaryId Identifier of the {@link predicsis.jsSDK.models.Dictionaries Dictionary}
+     * @param {String} [dictionaryId] Identifier of the {@link predicsis.jsSDK.models.Dictionaries Dictionary}
      * @return {Promise}
      * <ul>
      *   <li><code>children.train</code>: learning dataset</li>
      *   <li><code>children.test</code>: testing dataset</li>
      * </ul>
      */
-    this.getChildren = function(datasetId, dictionaryId) {
-      var Dictionaries = $injector.get('Dictionaries');
+     this.getChildren = function(datasetId, dictionaryId) {
+       var Dictionaries = $injector.get('Dictionaries');
+       var valid_statuses = ['processing', 'completed'];
 
-      return Dictionaries.get(dictionaryId)
-        .then(function(dictionary) {
-          return self.all(dictionary.dataset_ids);
-        })
-        .then(function(childrenCandidates) {
-          return childrenCandidates.reduce(function(memo, child) {
-            if (child.dataset_id === datasetId) {
-              if (self.isTrainPart(child, DEFAULT_SAMPLING)) {
-                memo.train = child;
-              } else if (self.isTestPart(child, -DEFAULT_SAMPLING)) {
-                memo.test = child;
-              }
-            }
+       var datasets = dictionaryId === undefined ? self.all() : Dictionaries.get(dictionaryId)
+         .then(function(dictionary) {
+           return self.all(dictionary.dataset_ids);
+         });
 
-            return memo;
-          }, {});
-        });
-    };
+       return datasets
+         .then(function(childrenCandidates) {
+           // get all dataset children (attached to dictionary if provided)
+           return childrenCandidates.filter(function(child) {
+             return child.dataset_id === datasetId
+                && (self.isTrainPart(child, DEFAULT_SAMPLING) || self.isTestPart(child, DEFAULT_SAMPLING));
+           });
+         })
+         .then(function(childrenCandidates) {
+           // attach job status to children
+           return Promise.all(childrenCandidates.map(function(child) {
+             return Jobs.getStatus(child);
+           }))
+            .then(function(childrenCandidates) {
+              // return the most advanced children (completed > running > pending) for train and test
+              // failed failed children are filtered as status failed is not in valid_statuses
+              return childrenCandidates.reduce(function(memo, child) {
+                if (self.isTrainPart(child, DEFAULT_SAMPLING)) {
+                  var memoStatusIndex = valid_statuses.indexOf(memo.train ? memo.train.job_status : null);
+                  if (valid_statuses.indexOf(child.job_status) > memoStatusIndex) {
+                    memo.train = child;
+                  }
+                } else if (self.isTestPart(child, DEFAULT_SAMPLING)) {
+                  var memoStatusIndex = valid_statuses.indexOf(memo.test ? memo.test.job_status : null);
+                  if (valid_statuses.indexOf(child.job_status) > memoStatusIndex) {
+                    memo.test = child;
+                  }
+                }
+                return memo;
+              }, {})
+            })
+         })
+     };
 
     /**
      * @ngdoc function
@@ -915,13 +951,18 @@ angular
      * @param {Object} dataset We need a dataset to generate a dictionary, and especially the following information:
      * - <code>dataset.name</code> to name the dictionary like: <code>"dictionary_#{name}"</code>
      * - <code>dataset.id</code>
+     * @param {Boolean} sync do not wait for the dataset job when sync is true
      * @return {Object} Promise of a new dictionary
      */
-    this.createFromDataset = function(dataset) {
-      return this.create({
+    this.createFromDataset = function(dataset, sync) {
+      sync = sync || false;
+
+      var params = {
         name: encodeURI('dictionary_' + dataset.name.toLowerCase()),
         dataset_id: dataset.id
-      });
+      };
+
+      return sync ? this.createSync(params) : this.create(params);
     };
 
     //this.clone = function(dictionary) {
@@ -954,6 +995,17 @@ angular
         .then(function(result) {
           return dictionary(result.id).get();
         });
+    };
+
+    /**
+     * @ngdoc function
+     * @name createSync
+     * @methodOf predicsis.jsSDK.models.Dictionaries
+     * @param {Object} params See create
+     * @return {Object} Promise of a new dictionary
+     */
+    this.createSync = function(params) {
+      return dictionaries().post({dictionary: params});
     };
 
     /**
@@ -1266,6 +1318,36 @@ angular
       });
     };
 
+
+    /**
+     * @ngdoc function
+     * @methodOf predicsis.jsSDK.models.Jobs
+     * @name getStatus
+     * @description get entity's jobs status
+     *
+     * Usage example:
+     * <pre>
+     * return Jobs
+     *   .getStatus(datasets)
+     *   .then(function(status) {
+     *     // completed | failed | processing
+     *   });
+     * </pre>
+     *
+     * @param {Object} entity
+     * @return {Promise} See above example
+     */
+     this.getStatus = function(entity) {
+       var jobId = (entity.job_ids || []).slice(-1)[0];
+
+       return self.get(jobId)
+         .then(function(job) {
+           return job.next_job_id ?
+             self.getStatus({ job_ids: [job.next_job_id] }) :
+             angular.extend({}, entity, { job_status: job.status });
+         });
+     };
+
     /**
      * @ngdoc function
      * @methodOf predicsis.jsSDK.models.Jobs
@@ -1368,6 +1450,17 @@ angular
         .then(function(result) {
           return modality(result.id).get();
         });
+    };
+
+    /**
+     * @ngdoc function
+     * @name createSync
+     * @methodOf predicsis.jsSDK.models.Modalities
+     * @param {Object} params See create
+     * @return {Promise} Returned modalities set does not contain modalities themselves. (see create)
+     */
+    this.createSync = function(params) {
+      return modalities().post({modalities_set: params});
     };
 
     /**
@@ -1563,6 +1656,17 @@ angular
         .then(function(result) {
           return model(result.id).get();
         });
+    };
+
+    /**
+     * @ngdoc function
+     * @name createSync
+     * @methodOf predicsis.jsSDK.models.Models
+     * @param {Object} params See create.
+     * @return {Promise} New model
+     */
+    this.createSync = function(params) {
+      return models().post({model: params});
     };
 
     /**
@@ -2138,6 +2242,17 @@ angular
         .then(function(result) {
           return preparationRulesSet(result.id).get();
         });
+    };
+
+    /**
+     * @ngdoc function
+     * @name createSync
+     * @methodOf predicsis.jsSDK.models.PreparationRules
+     * @param {Object} params See create
+     * @return {Promise} New preparation rules set
+     */
+    this.createSync = function(params) {
+      return preparationRulesSets().post({preparation_rules_set: params});
     };
 
     /**
@@ -2765,6 +2880,17 @@ angular
 
     /**
      * @ngdoc function
+     * @name createSync
+     * @methodOf predicsis.jsSDK.models.Reports
+     * @param {Object} params See create
+     * @return {Object} Promise of a report
+     */
+     this.createSync = function(params) {
+       return reports().post({report: params});
+     };
+
+    /**
+     * @ngdoc function
      * @name all
      * @methodOf predicsis.jsSDK.models.Reports
      * @description Get all (or a list of) generated reports
@@ -2936,6 +3062,17 @@ angular
         .then(function(result) {
           return source(result.id).get();
         });
+    };
+
+    /**
+     * @ngdoc function
+     * @name createSync
+     * @methodOf predicsis.jsSDK.models.Sources
+     * @param {Object} params See create.
+     * @return {Promise} New source
+     */
+    this.createSync = function(_source, dataStore) {
+      return sources().post({source: _source, data_store: dataStore });
     };
 
     /**
