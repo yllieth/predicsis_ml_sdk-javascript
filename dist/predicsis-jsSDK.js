@@ -96,41 +96,41 @@ angular
  *
  * <table>
  *   <tr>
- *     <td><span class="badge get">get</span> <kbd>/data_files</kbd></td>
+ *     <td><span class="badge get">get</span> <kbd>/datafiles</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.models.Datafiles#methods_all Datafiles.all()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
- *     <td><span class="badge get">get</span> <kbd>/data_files/:id</kbd></td>
+ *     <td><span class="badge get">get</span> <kbd>/datafiles/:id</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.models.Datafiles#methods_get Datafiles.get()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
- *     <td><span class="badge get">get</span> <kbd>/data_files/:id/signed_url</kbd></td>
+ *     <td><span class="badge get">get</span> <kbd>/datafiles/:id/signed_url</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.models.Datafiles#methods_getsignedurl Datafiles.getSignedUrl()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tr>
- *     <td><span class="badge get">get</span> <kbd>/data_files/:id/signed_url</kbd></td>
+ *     <td><span class="badge get">get</span> <kbd>/datafiles/:id/signed_url</kbd></td>
  *     <td><kbd>{@link predicsis.jsSDK.models.Datafiles#methods_download Datafiles.download()}</kbd></td>
  *     <td></td>
  *   </tr>
  *   <tfoot>
- *     <tr><td colspan="3">Official documentation is available at https://developer.predicsis.com/doc/v1/data_management/data_file/</td></tr>
+ *     <tr><td colspan="3">Official documentation is available at https://developer.predicsis.com/doc/v1/data_management/datafile/</td></tr>
  *   </tfoot>
  * </table>
  *
- * Output example of a <kbd>data_file</kbd>:
+ * Output example of a <kbd>datafile</kbd>:
  * <pre>
  * {
- *   data_file: {
+ *   datafile: {
  *     id: "54edf76c6170700001870000",
  *     filename: "hello.csv",
  *     type: "S3",
  *     size: 24,
  *     signed_url: {
  *       links: {
- *         self: "https://api.predicsis.com/data_files/53c7e7b668796493d3010000/signed_url"
+ *         self: "https://api.predicsis.com/datafiles/53c7e7b668796493d3010000/signed_url"
  *       }
   *    }
  *   }
@@ -140,7 +140,7 @@ angular
  * Output example of a <kbd>signed_url</kbd>:
  * <pre>
  * {
- *   data_file: {
+ *   datafile: {
  *     signed_url: "http://prod.kml-api.s3-us-west-2.amazonaws.com/uploads/5347b31750432d45a5020000/sources/1415101671848/source.csv"
  *   }
  * }
@@ -151,8 +151,8 @@ angular
   .service('Datafiles', function($q, Restangular) {
     'use strict';
 
-    function dataFile(id) { return Restangular.one('data_files', id); }
-    function dataFiles() { return Restangular.all('data_files'); }
+    function dataFile(id) { return Restangular.one('datafiles', id); }
+    function dataFiles() { return Restangular.all('datafiles'); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -162,7 +162,7 @@ angular
      * @methodOf predicsis.jsSDK.models.Datafiles
      * @description Get all (or a list of) data files
      * @param {Array} [dataFileIds] List of data files' ids you want to fetch
-     * @return {Promise} A list of data_files
+     * @return {Promise} A list of datafiles
      */
     this.all = function(dataFileIds) {
       if(dataFileIds === undefined) {
@@ -180,9 +180,9 @@ angular
      * @ngdoc function
      * @name get
      * @methodOf predicsis.jsSDK.models.Datafiles
-     * @description Get a single data_file by its id
-     * @param {String} dataFileId data_file identifier
-     * @return {Promise} A single data_file
+     * @description Get a single datafile by its id
+     * @param {String} dataFileId datafile identifier
+     * @return {Promise} A single datafile
      */
     this.get = function(dataFileId) {
       return dataFile(dataFileId).get();
@@ -192,7 +192,7 @@ angular
      * @ngdoc function
      * @name getSignedUrl
      * @methodOf predicsis.jsSDK.models.Datafiles
-     * @description Get a signed_url of a data_file
+     * @description Get a signed_url of a datafile
      * @param {String} datasetId dataset identifier
      * @return {Promise} A signed url you can download raw file with
      */
@@ -318,7 +318,7 @@ angular
  *     children_dataset_ids: [],
  *     dictionary_ids: [],
  *     generated_dictionaries_ids: [],
- *     data_file: '54904b09776f720001650000',
+ *     datafile: '54904b09776f720001650000',
  *     main_modality: null,
  *     classifier_id: null,
  *     dataset_id: null,
@@ -426,7 +426,7 @@ angular
      *    source_ids: ['original_source_id'],
      *    header:     true,
      *    separator:  '\t',
-     *    data_file:  { filename: 'source.csv' },
+     *    datafile:  { filename: 'source.csv' },
      *    type:       'uploaded_dataset'
      *  }
      *  </pre>
@@ -443,7 +443,7 @@ angular
      *    main_modality:     $main_modality$,
      *    separator:         $separator$,
      *    header:            $header$,
-     *    data_file:         { filename: $name$ },
+     *    datafile:         { filename: $name$ },
      *    type:              'scoreset'
      *  }
      *  </pre>
@@ -478,7 +478,7 @@ angular
       type = type || 's3';
 
       var Sources = $injector.get('Sources');
-      var source = { name: fileName, data_file: { filename: fileName } };
+      var source = { name: fileName, datafile: { filename: fileName } };
       var dataStore = { type: type };
       if (type === 's3') {
         dataStore.key = destFolder;
@@ -496,7 +496,7 @@ angular
             type: 'uploaded_dataset',
             name: fileName,
             source_ids: [source.id],
-            data_file: { filename: fileName }
+            datafile: { filename: fileName }
           });
         });
     };
@@ -539,7 +539,7 @@ angular
         type: 'subset',
         dataset_id: id,
         name: 'learned_' + name,
-        data_file: {filename: 'learned_' + filename},
+        datafile: {filename: 'learned_' + filename},
         sampling: sampling
       };
 
@@ -547,7 +547,7 @@ angular
         type: 'subset',
         dataset_id: id,
         name: 'tested_' + name,
-        data_file: {filename: 'tested_' + filename},
+        datafile: {filename: 'tested_' + filename},
         sampling: -sampling
       };
 
@@ -2883,7 +2883,7 @@ angular
  *   name: "hello.csv",
  *   user_id: "541b06dc617070006d060000",
  *   dataset_ids: [],
- *   data_file: {
+ *   datafile: {
  *     id: "54edf76c6170700001870000",
  *     filename: "hello.csv",
  *     type: "S3",

@@ -98,41 +98,41 @@
  *
  * &lt;table&gt;
  *   &lt;tr&gt;
- *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/data_files&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/datafiles&lt;/kbd&gt;&lt;/td&gt;
  *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Datafiles#methods_all Datafiles.all()}&lt;/kbd&gt;&lt;/td&gt;
  *     &lt;td&gt;&lt;/td&gt;
  *   &lt;/tr&gt;
  *   &lt;tr&gt;
- *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/data_files/:id&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/datafiles/:id&lt;/kbd&gt;&lt;/td&gt;
  *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Datafiles#methods_get Datafiles.get()}&lt;/kbd&gt;&lt;/td&gt;
  *     &lt;td&gt;&lt;/td&gt;
  *   &lt;/tr&gt;
  *   &lt;tr&gt;
- *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/data_files/:id/signed_url&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/datafiles/:id/signed_url&lt;/kbd&gt;&lt;/td&gt;
  *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Datafiles#methods_getsignedurl Datafiles.getSignedUrl()}&lt;/kbd&gt;&lt;/td&gt;
  *     &lt;td&gt;&lt;/td&gt;
  *   &lt;/tr&gt;
  *   &lt;tr&gt;
- *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/data_files/:id/signed_url&lt;/kbd&gt;&lt;/td&gt;
+ *     &lt;td&gt;&lt;span class=&quot;badge get&quot;&gt;get&lt;/span&gt; &lt;kbd&gt;/datafiles/:id/signed_url&lt;/kbd&gt;&lt;/td&gt;
  *     &lt;td&gt;&lt;kbd&gt;{@link predicsis.jsSDK.models.Datafiles#methods_download Datafiles.download()}&lt;/kbd&gt;&lt;/td&gt;
  *     &lt;td&gt;&lt;/td&gt;
  *   &lt;/tr&gt;
  *   &lt;tfoot&gt;
- *     &lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;Official documentation is available at https://developer.predicsis.com/doc/v1/data_management/data_file/&lt;/td&gt;&lt;/tr&gt;
+ *     &lt;tr&gt;&lt;td colspan=&quot;3&quot;&gt;Official documentation is available at https://developer.predicsis.com/doc/v1/data_management/datafile/&lt;/td&gt;&lt;/tr&gt;
  *   &lt;/tfoot&gt;
  * &lt;/table&gt;
  *
- * Output example of a &lt;kbd&gt;data_file&lt;/kbd&gt;:
+ * Output example of a &lt;kbd&gt;datafile&lt;/kbd&gt;:
  * &lt;pre&gt;
  * {
- *   data_file: {
+ *   datafile: {
  *     id: &quot;54edf76c6170700001870000&quot;,
  *     filename: &quot;hello.csv&quot;,
  *     type: &quot;S3&quot;,
  *     size: 24,
  *     signed_url: {
  *       links: {
- *         self: &quot;https://api.predicsis.com/data_files/53c7e7b668796493d3010000/signed_url&quot;
+ *         self: &quot;https://api.predicsis.com/datafiles/53c7e7b668796493d3010000/signed_url&quot;
  *       }
   *    }
  *   }
@@ -142,7 +142,7 @@
  * Output example of a &lt;kbd&gt;signed_url&lt;/kbd&gt;:
  * &lt;pre&gt;
  * {
- *   data_file: {
+ *   datafile: {
  *     signed_url: &quot;http://prod.kml-api.s3-us-west-2.amazonaws.com/uploads/5347b31750432d45a5020000/sources/1415101671848/source.csv&quot;
  *   }
  * }
@@ -153,8 +153,8 @@ angular
   .service(&#039;Datafiles&#039;, function($q, Restangular) {
     &#039;use strict&#039;;
 
-    function dataFile(id) { return Restangular.one(&#039;data_files&#039;, id); }
-    function dataFiles() { return Restangular.all(&#039;data_files&#039;); }
+    function dataFile(id) { return Restangular.one(&#039;datafiles&#039;, id); }
+    function dataFiles() { return Restangular.all(&#039;datafiles&#039;); }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -164,7 +164,7 @@ angular
      * @methodOf predicsis.jsSDK.models.Datafiles
      * @description Get all (or a list of) data files
      * @param {Array} [dataFileIds] List of data files&#039; ids you want to fetch
-     * @return {Promise} A list of data_files
+     * @return {Promise} A list of datafiles
      */
     this.all = function(dataFileIds) {
       if(dataFileIds === undefined) {
@@ -182,9 +182,9 @@ angular
      * @ngdoc function
      * @name get
      * @methodOf predicsis.jsSDK.models.Datafiles
-     * @description Get a single data_file by its id
-     * @param {String} dataFileId data_file identifier
-     * @return {Promise} A single data_file
+     * @description Get a single datafile by its id
+     * @param {String} dataFileId datafile identifier
+     * @return {Promise} A single datafile
      */
     this.get = function(dataFileId) {
       return dataFile(dataFileId).get();
@@ -194,7 +194,7 @@ angular
      * @ngdoc function
      * @name getSignedUrl
      * @methodOf predicsis.jsSDK.models.Datafiles
-     * @description Get a signed_url of a data_file
+     * @description Get a signed_url of a datafile
      * @param {String} datasetId dataset identifier
      * @return {Promise} A signed url you can download raw file with
      */

@@ -185,7 +185,7 @@
  *     children_dataset_ids: [],
  *     dictionary_ids: [],
  *     generated_dictionaries_ids: [],
- *     data_file: &#039;54904b09776f720001650000&#039;,
+ *     datafile: &#039;54904b09776f720001650000&#039;,
  *     main_modality: null,
  *     classifier_id: null,
  *     dataset_id: null,
@@ -290,7 +290,7 @@ angular
      *    source_ids: [&#039;original_source_id&#039;],
      *    header:     true,
      *    separator:  &#039;\t&#039;,
-     *    data_file:  { filename: &#039;source.csv&#039; }
+     *    datafile:  { filename: &#039;source.csv&#039; }
      *  }
      *  &lt;/pre&gt;
      *
@@ -306,7 +306,7 @@ angular
      *    main_modality:     $main_modality$,
      *    separator:         $separator$,
      *    header:            $header$,
-     *    data_file:         { filename: $name$ }
+     *    datafile:         { filename: $name$ }
      *  }
      *  &lt;/pre&gt;
      *
@@ -339,7 +339,7 @@ angular
       pathName = pathName || &#039;key&#039;;
 
       var Sources = $injector.get(&#039;Sources&#039;);
-      var source = { name: fileName, data_file: { filename: fileName } };
+      var source = { name: fileName, datafile: { filename: fileName } };
       source[pathName] = destFolder;
 
       return Sources.create(source)
@@ -347,7 +347,7 @@ angular
           return self.create({
             name: fileName,
             source_ids: [source.id],
-            data_file: { filename: fileName }
+            datafile: { filename: fileName }
           });
         });
     };
@@ -385,14 +385,14 @@ angular
       var learn = {
         parent_dataset_id: id,
         name: &#039;learned_&#039; +  name,
-        data_file: {filename: &#039;learned_&#039; + filename},
+        datafile: {filename: &#039;learned_&#039; + filename},
         sampling: sampling
       };
 
       var test = {
         parent_dataset_id: id,
         name: &#039;tested_&#039; + name,
-        data_file: {filename: &#039;tested_&#039; + filename},
+        datafile: {filename: &#039;tested_&#039; + filename},
         sampling: -sampling
       };
 
